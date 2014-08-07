@@ -6,7 +6,7 @@
             	name="webkit_stock_tracking" 
 		        model="stock.tracking" 
 		        auto="False" 
-		        file="mmx_pack/report/stock_trackling_list.mako" 
+		        file="stock_pack_wizard/report/stock_trackling_list.mako" 
 		        string="Pack List webkit" 
 		        report_type="webkit"/>
 		        
@@ -15,9 +15,10 @@
 		        name="rml_stock_tracking" 
 		        model="stock.tracking" 
 		        auto="False" 
-		        file="mmx_pack/report/stock_trackling_list.rml" 
+		        file="stock_pack_wizard/report/stock_trackling_list.rml" 
 		        string="Pack List rml" 
 		        report_type="pdf"/>
+
 		
     </data>
 </openerp>

@@ -233,16 +233,8 @@ class ProductProductAdapter(GenericAdapter):
         """ Update records on the external system """
         # XXX actually only ol_catalog_product.update works
         # the PHP connector maybe breaks the catalog_product.update
-        prices = []
-	try:
-            prices = data.pop('prices')
-	except:
-            prices = []
-        stocks = []
-        try:
-            stocks = data.pop('stocks')
-        except:
-            stocks = []
+        prices = data.pop('prices')
+        stocks = data.pop('stocks')
         for price in prices:
             custom_data = {'price': price[1]}
             if str(price[0]) in stocks:

@@ -357,6 +357,7 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
     @mapping
     def map_all(self, record):
         assert self._icops
+        map_test = self._get_mapping(self._icops.concept, record)
         return self._get_mapping(self._icops.concept, record)
 
     def so2so_price(self, record):

@@ -78,7 +78,9 @@ class sale_order_line(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         context = context or {}
-        if 'state' in context:
+        if not vals:
+            return
+        if 'state' in context and vals and 'state' in vals:
             vals['state'] = context['state']
         return super(sale_order_line, self).create(cr, uid, vals, context)
 

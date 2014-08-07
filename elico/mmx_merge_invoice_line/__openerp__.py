@@ -1,12 +1,11 @@
-
-
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#    Author: Jon Chow <jon.chow@elico-corp.com>
-#
+#    Copyright (c) 2010-2014 Elico Corp. All Rights Reserved.
+#    Augustin Cisterne-Kaas <augustin.cisterne-kaas@elico-corp.com>
+#    Alex Duan <alex.duan@elico-corp.com>
+
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -22,5 +21,19 @@
 #
 ##############################################################################
 
-import stock_tracking_list
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+{'name': 'Merge invoice lines',
+ 'version': '1.0',
+ 'category': 'Generic Modules',
+ 'depends': ['stock', 'delivery'],
+ 'author': 'Elico Corp',
+ 'license': 'AGPL-3',
+ 'website': 'https://www.elico-corp.com',
+ 'description': """
+    merge the invoice line with the same product.
+""",
+ 'images': [],
+ 'demo': [],
+ 'data': ["merge_invoice_line_wizard_view.xml"],
+ 'installable': True,
+ 'application': False,
+ }

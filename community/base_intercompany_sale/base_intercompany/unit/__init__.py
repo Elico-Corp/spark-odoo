@@ -1,11 +1,10 @@
-
-
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#    Author: Jon Chow <jon.chow@elico-corp.com>
+#    Copyright (c) 2010-2014 Elico Corp. All Rights Reserved.
+#    Augustin Cisterne-Kaas <augustin.cisterne-kaas@elico-corp.com>
+#    Eric Caudal <eric.caudal@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,5 +21,6 @@
 #
 ##############################################################################
 
-import stock_tracking_list
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+import binder
+import export_synchronizer
+import backend_adapter

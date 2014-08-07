@@ -22,11 +22,47 @@
 
 from openerp.osv import fields, osv
 
-
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
-    _order = 'sequence desc, order_id desc, id'
-    _columns={}
+    #Alex Duan 2014-3-17 sorted by onhand QTY. change field: qty_available to store=True
+    _order = 'qty_available desc, sequence desc, order_id desc, id'
+    
+    def _get_qty_available(self, cr, uid, ids, field_name, args, context=None):
+        if not ids:
+            return
+        if not isinstance(ids, (list, tuple)):
+            ids = [ids]
+        res = {}
+        for sol in self.browse(cr, uid, ids, context):
+            res[sol.id] = sol.product_id.qty_available or 0.0
+        return res
+       
+    _columns={
+            'qty_available': fields.function(_get_qty_available, 
+                type="float",
+                string='Quantity On Hand',
+                store = True
+                ),
+            # 'qty_available': fields.related('product_id', 'qty_available', 
+            #     type='float', string='Quantity On Hand', store=True)
+    }
+
+    def _generate_order_by(self, order_spec, query):
+        '''
+            rewrite the orm method, this can let null last when is desc order,
+            and the field is qty_available.
+            once the official changes return, this method may crash.
+        '''
+        function_attrs = super(sale_order_line, self)._columns
+        res = super(sale_order_line, self)._generate_order_by(order_spec, query)
+        if res.count('qty_available'):
+            splited_res = res.split(',')
+            for i, r in enumerate(splited_res):
+                if r and r.count('desc') and r.count('qty_available'):
+                    splited_res[i] = r + ' NULLS LAST '
+            res = ','.join(splited_res)
+        return res
+
     
 
         

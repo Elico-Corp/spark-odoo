@@ -1,11 +1,9 @@
-
-
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#    Author: Jon Chow <jon.chow@elico-corp.com>
+#    Author: Alex Duan <alex.duan@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,5 +20,28 @@
 #
 ##############################################################################
 
-import stock_tracking_list
+{
+    'name': 'Stock Pack webkit report',
+    'version': '1.0',
+    'author': 'Elico Corp',
+    'website': 'http://www.elico-corp.com',
+    'summary': '',
+    'description': """
+     Ability to print a delivery note for final customer 
+        and put it with the containers' load.
+    """,
+    'depends': ['base', 'stock', 'stock_pack_wizard'],
+    'category': '',
+    'sequence': 10,
+    'demo': [],
+    'data': [
+        'stock_pack_report_webkit_report.xml',
+    ],
+    'test': [],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'css': [],
+}
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

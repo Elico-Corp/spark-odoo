@@ -14,7 +14,7 @@
 		</record>
 		
 		<!-- PO Lines tree in  PO from view jon.chow#elico-corp.com Jul 11, 2013 -->
-        <!--<record id="inherit_purchase_order_form_view" model="ir.ui.view">
+        <record id="inherit_purchase_order_form_view" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
@@ -23,6 +23,6 @@
                     <field name="note"/>
                 </xpath>
             </field>
-        </record>-->
+        </record>
 	</data>
 </openerp>

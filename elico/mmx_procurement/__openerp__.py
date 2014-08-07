@@ -38,8 +38,7 @@
     'data':         ['wizard/wizard_sol2pol_view.xml',
                      'wizard/scheduler_proc.xml',
                      'procurement_view.xml',
-#                     'purchase_view.xml'
-
+                     'purchase_view.xml'
                      #'security/ir.model.access.csv',
                     ],
     'test':         [],

@@ -53,7 +53,6 @@ class sale_shipment(report_sxw.rml_parse):
        
         
         
-
 report_sxw.report_sxw(
     'report.sale_shipment_webkit',
     'sale.shipment',
