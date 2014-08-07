@@ -1,0 +1,42 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+id_group_user_race,Employee race,mmx_product.model_product_race,base.group_user,1,0,0,0
+id_group_user_archive,Employee archive,mmx_product.model_product_archive,base.group_user,1,0,0,0
+id_group_user_brand,Employee brand,mmx_product.model_product_brand,base.group_user,1,0,0,0
+id_group_user_championship,Employee championship,mmx_product.model_product_championship,base.group_user,1,0,0,0
+id_group_user_circuit,Employee circuit,mmx_product.model_product_circuit,base.group_user,1,0,0,0
+id_group_user_color,Employee color,mmx_product.model_product_color,base.group_user,1,0,0,0
+id_group_user_driver,Employee driver,mmx_product.model_product_driver,base.group_user,1,0,0,0
+id_group_user_manufacturer,Employee manufacturer,mmx_product.model_product_manufacturer,base.group_user,1,0,0,0
+id_group_user_model,Employee model,mmx_product.model_product_model,base.group_user,1,0,0,0
+id_group_user_rank,Employee rank,mmx_product.model_product_rank,base.group_user,1,0,0,0
+id_group_user_race_ed,Employee race_ed,mmx_product.model_product_race_ed,base.group_user,1,0,0,0
+id_group_user_classification,Employee classification,mmx_product.model_product_classification,base.group_user,1,0,0,0
+id_group_user_scale,Employee scale,mmx_product.model_product_scale,base.group_user,1,0,0,0
+id_group_user_team,Employee team,mmx_product.model_product_team,base.group_user,1,0,0,0
+,,,,,,,
+id_group_product_manager_race,Product Manager race,mmx_product.model_product_race,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_archive,Product Manager archive,mmx_product.model_product_archive,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_brand,Product Manager brand,mmx_product.model_product_brand,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_championship,Product Manager championship,mmx_product.model_product_championship,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_circuit,Product Manager circuit,mmx_product.model_product_circuit,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_color,Product Manager color,mmx_product.model_product_color,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_driver,Product Manager driver,mmx_product.model_product_driver,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_manufacturer,Product Manager manufacturer,mmx_product.model_product_manufacturer,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_model,Product Manager model,mmx_product.model_product_model,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_rank,Product Manager rank,mmx_product.model_product_rank,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_race_ed,Product Manager race_ed,mmx_product.model_product_race_ed,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_classification,Product Manager classification,mmx_product.model_product_classification,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_scale,Product Manager scale,mmx_product.model_product_scale,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_team,Product Manager team,mmx_product.model_product_team,mmx_product.group_product_manager,1,1,1,1
+,,,,,,,
+id_group_product_manager_product,Product Manager Product,product.model_product_product,mmx_product.group_product_manager,1,1,1,1
+id_group_product_manager_product_template,Product Manager Product Template,product.model_product_template,mmx_product.group_product_manager,1,1,1,1
+,,,,,,,
+product.access_product_product_sale_manager,Product Read Only salemanager,model_product_product,base.group_sale_manager,1,0,0,0
+stock.access_product_product_stock_manager,Product Read Only stock_manager,product.model_product_product,stock.group_stock_manager,1,0,0,0
+stock.access_product_product_stock_user,Product Read Only stock_user,product.model_product_product,stock.group_stock_user,1,0,0,0
+purchase.access_product_product_purchase_manager,Product Read Only purchase_manager,product.model_product_product,purchase.group_purchase_manager,1,0,0,0
+product.template salemanager,Product Template Read Only salemanager,account.model_product_template,base.group_sale_manager,1,0,0,0
+product.template stock_manager,Product Template Read Only stock_manager,account.model_product_template,stock.group_stock_manager,1,0,0,0
+product.template stock user,Product Template Read Only stock_user,account.model_product_template,stock.group_stock_user,1,0,0,0
+product.template purchase_manager,Product Template Read Only purchase_manager,account.model_product_template,purchase.group_purchase_manager,1,0,0,0

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+<!-- SOL wizard form view jon.chow#elico-corp.com Aug 9, 2013-->
+<record id="wizard_assign_shipment_from_view" model="ir.ui.view">
+    <field name="name">wizard_assign_shipment.form</field>
+    <field name="model">wizard.assign.shipment</field>
+    <field name="arch" type="xml">
+        <form string="Assign Shipment" version="7.0">
+        	<group>
+        		<label string="Assign Shipment and Final QTy for SOL"/>
+            </group>
+            <group>
+                <field name="date"/>
+                <field name="shipment_id"/>
+            	   <field name="lines" colspan="4" nolabel="1">
+             		<tree create="0" editable='1'>	
+              			<field name="sol_id" invisible="1" widget="selection"/>
+              			<field name="so_id"/>  
+              			<field name="product_id"/>
+              			<field name="product_qty"/>
+              			<field name='final_qty'/>
+              			<field name="product_state"/>
+             		</tree>
+              	</field>
+            </group>
+            <footer>
+            	<button name="action" string="Confirm" type="object" class="oe_highlight"/>
+                or
+                <button string="Cancel" class="oe_link" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013 -->
+<act_window id="action_wizard_assign_shipment" 
+    name="Assign Shipment" 
+	  multi="False" 
+    key2="client_action_multi" 
+    res_model="wizard.assign.shipment" 
+    src_model="sale.order.line" 
+    view_id="wizard_assign_shipment_from_view" 
+    view_mode="form" 
+    target="new"/>
+		
+</data>
+</openerp>

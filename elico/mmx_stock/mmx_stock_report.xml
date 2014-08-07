@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<!--pact list report webkeit  jon.chow#elico-corp.com Jun 25, 2013-->
+        <report id="webkit_delivery_pack_report" 
+            	name="webkit_delivery_pack" 
+		        auto="False" 
+		        model="stock.picking.out" 
+		        file="mmx_stock/report/delivery_pack.mako" 
+		        string="Packing List" 
+		        report_type="webkit"/>
+    	
+    	<!--pact list report webkeit  jon.chow#elico-corp.com Jun 25, 2013-->
+        <report id="webkit_delivery_lots_report" 
+            	name="webkit_delivery_lots" 
+        		header="False"
+		        auto="True" 
+		        model="stock.picking.out" 
+		        file="mmx_stock/report/delivery_lots.mako" 
+		        string="Delivery lot" 
+		        report_type="webkit"/>
+    </data>
+</openerp>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+
+<menuitem id="menu_online_sales" name="Online Sales" parent="base.menu_base_partner"   sequence='2'/>
+<menuitem id="menu_sales_operations" name="Sales Operations" parent="base.menu_base_partner"   sequence='2'/>
+
+
+
+</data>
+</openerp>

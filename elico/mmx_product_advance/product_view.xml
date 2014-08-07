@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+<!--  
+# ('draft','Draft'),
+# ('private','Private'),
+# ('catalogue','Catalogue'),
+# ('preorder','Preorder'),
+# ('order','Order'),
+# ('solded','Sold out'),
+
+-->
+
+        <!-- Jon: Advance Product Form View  advance -->
+		<record id="advance_normal_form_view" model="ir.ui.view">
+			<field name="name">advance_normal_form_view</field>
+			<field name="model">product.product</field>
+			<field name="inherit_id" ref="product.product_normal_form_view" />
+			<field name="arch" type="xml">
+			    <!-- replace  product.template state,  user product_product state,  jon.chow#elico-corp.com Jun 3, 2013-->
+                <xpath expr="//group[@name='status']/field[@name='state']" position="replace"/>
+			
+				<xpath expr="//form/sheet" position="before" version="7.0">
+					<header>
+						<button name="create_wkf"   string="Create wkf for all" groups="base.group_system" type="object"/>
+						<button name="approve"      string="Confirm MMX Type"   groups="mmx_product.group_product_manager" states="draft"                                              type="workflow" class="oe_highlight"/>
+						<button name="back_approve" string="Previous Stage"     groups="mmx_product.group_product_manager" states="private,catalogue,preorder,order,solded"  type="workflow" class="oe_highlight"/>
+						<button name="approve"      string="Next Stage"         groups="mmx_product.group_product_manager" states="private,catalogue,preorder,order,solded"  type="workflow" class="oe_highlight"/>
+						
+						<field name="state"  widget="statusbar"  readonly="1"
+						       statusbar_visible="private,catalogue,preorder,order,solded"   
+						       statusbar_colors='{"draft":"blue","private":"blue","catalogue":"red","preorder":"#ff9900","order":"green","solded":"black"}'/>
+					</header>
+				</xpath>
+			</field>
+		</record>
+		
+		<!-- product form  -->
+		<record id="inherit_minimax_product_normal_form_view" model="ir.ui.view">
+			<field name="name">minimax_product_normal_form_view</field>
+			<field name="model">product.product</field>
+			<field name="inherit_id" ref="mmx_product.minimax_product_normal_form_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='default_code']" position="after">
+					<group col="6">
+						<group colspan="2" name='mmx_type'>
+							<label for="mmx_type"  string="Product Type" style="font-size:12px;" colspan="2"/>
+							<field name="mmx_type" attrs="{'readonly': [('state','!=','draft'),('state','!=',False)]}" nolabel="1" colspan="2"/>
+						</group>
+					</group>
+				</xpath>	
+			</field>
+		</record>
+		
+		
+        <!-- product tree jon.chow#elico-corp.com May 27, 2013-->
+        <record id="inherit_product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree.mmx_advance</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//tree" position="inside">
+            		<field name="mmx_type"/>
+            	</xpath>
+            </field>
+        </record>
+		
+        <!-- product search jon.chow#elico-corp.com May 27, 2013-->
+        <record id="inherit_product_search_form_view_mmx_advance" model="ir.ui.view">
+            <field name="name">product.search.form.mmx_advance</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//search/group/filter[@string='Category']" position="after">
+            		<filter string="MMX type" domain="[]" context="{'group_by':'mmx_type'}"/>
+            		<filter string="Status"   domain="[]" context="{'group_by':'state'}"/>
+            	</xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

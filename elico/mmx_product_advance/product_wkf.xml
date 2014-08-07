@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- mmx product work follow -->
+		<record id="wkf_product_product" model="workflow">
+			<field name="name">product_product_wkf</field>
+			<field name="osv">product.product</field>
+			<field name="on_create">True</field>
+		</record>
+		
+		<!-- Activity -->
+		<record id="act_draft" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="flow_start">True</field>
+		    <field name="name">draft</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'draft'})</field>
+		</record>
+		<record id="act_private" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">private</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'private'})</field>
+		</record>  
+		
+		
+		
+		<record id="act_catalogue" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">catalogue</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'catalogue'})</field>
+		</record> 
+		<record id="act_preorder" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">preorder</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'preorder'})</field>
+		</record> 
+		<record id="act_order" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">order</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'order'})</field>
+		</record> 
+	 
+		<record id="act_solded" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">solded</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'solded'})</field>
+		</record> 
+		<record id="act_done" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="flow_stop">True</field>
+		    <field name="name">done</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'done'})</field>
+		</record>
+		
+		
+		
+		<!-- Transistion -->
+		<record id="trans_draft_private" model="workflow.transition">
+		    <field name="act_from" ref="act_draft"/>
+		    <field name="act_to" ref="act_private"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type != False</field>
+		</record>
+		
+		<record id="trans_private_draft" model="workflow.transition">
+		    <field name="act_from" ref="act_private"/>
+		    <field name="act_to" ref="act_draft"/>
+		    <field name="signal">back_approve</field>
+		</record>
+		
+		
+		<record id="trans_private_catalogue" model="workflow.transition">
+		    <field name="act_from" ref="act_private"/>
+		    <field name="act_to" ref="act_catalogue"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		<record id="trans_catalogue_private" model="workflow.transition">
+		    <field name="act_from" ref="act_catalogue"/>
+		    <field name="act_to" ref="act_private"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		
+		
+		<record id="trans_catalogue_preorder" model="workflow.transition">
+		    <field name="act_from" ref="act_catalogue"/>
+		    <field name="act_to" ref="act_preorder"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		<record id="trans_preorder_catalogue" model="workflow.transition">
+		    <field name="act_from" ref="act_preorder"/>
+		    <field name="act_to" ref="act_catalogue"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		
+		
+		<record id="trans_preorder_order" model="workflow.transition">
+		    <field name="act_from" ref="act_preorder"/>
+		    <field name="act_to" ref="act_order"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		<record id="trans_order_preorder" model="workflow.transition">
+		    <field name="act_from" ref="act_order"/>
+		    <field name="act_to" ref="act_preorder"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+		
+		
+		
+
+		
+		
+		<record id="trans_order_solded" model="workflow.transition">
+		    <field name="act_from" ref="act_order"/>
+		    <field name="act_to" ref="act_solded"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type == 'limited_edition'</field>
+		</record>
+		<record id="trans_solded_order" model="workflow.transition">
+		    <field name="act_from" ref="act_solded"/>
+		    <field name="act_to" ref="act_order"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type == 'limited_edition'</field>
+		</record>
+		
+		
+		<record id="trans_solded_done" model="workflow.transition">
+		    <field name="act_from" ref="act_solded"/>
+		    <field name="act_to" ref="act_done"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">False</field>
+		</record>
+		
+		<record id="trans_private_order" model="workflow.transition">
+		    <field name="act_from" ref="act_private"/>
+		    <field name="act_to" ref="act_order"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type =='oem'</field>
+		</record>
+		<record id="transorder_private_" model="workflow.transition">
+		    <field name="act_from" ref="act_order"/> 
+		    <field name="act_to" ref="act_private"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type =='oem'</field>
+		</record>
+		
+		
+		<record id="trans_order_solded" model="workflow.transition">
+		    <field name="act_from" ref="act_order"/>
+		    <field name="act_to" ref="act_solded"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type =='limited_edition'</field>
+		</record>
+		<record id="trans_order_done" model="workflow.transition">
+		    <field name="act_from" ref="act_order"/>
+		    <field name="act_to" ref="act_done"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">False</field>
+		</record>
+		
+
+		
+
+		<!-- for announcement confirm, directly goto  preorder -->
+		<record id="trans_direct_catalogue_preorder" model="workflow.transition">
+		    <field name="act_from" ref="act_catalogue"/>
+		    <field name="act_to" ref="act_preorder"/>
+		    <field name="signal">goto_preorder</field>
+		    <field name="condition">mmx_type != 'oem'</field>
+		</record>
+
+<!--  
+  ('oem','OEM'),
+  ('regular','Regular'),
+  ('limited_edition','Limited edition'),
+
+# ('draft','Draft'),
+# ('private','Private'),
+# ('catalogue','Catalogue'),
+# ('preorder','Preorder'),
+# ('order','Order'),
+# ('solded','Sold out'),
+-->
+
+	</data>
+</openerp>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- jon PO Lines tree view add  alloc qty jon.chow#elico-corp.com Jul 11, 2013 -->
+		<record id="inherit_purchase_order_line" model="ir.ui.view">
+		    <field name="name">purchase_order_line.form</field>
+		    <field name="model">purchase.order.line</field>
+		    <field name="inherit_id" ref="purchase_order_line.purchase_order_line_tree"/>
+		    <field name="arch" type="xml">
+		        <field name="product_qty" position="after">
+		            <field name="note" 		attrs="{'readonly':[('state','!=','draft')]}"/>
+		        </field>
+		    </field>
+		</record>
+		
+		<!-- PO Lines tree in  PO from view jon.chow#elico-corp.com Jul 11, 2013 -->
+        <!--<record id="inherit_purchase_order_form_view" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_qty']" position="after">
+                    <field name="note"/>
+                </xpath>
+            </field>
+        </record>-->
+	</data>
+</openerp>

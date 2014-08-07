@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- SOL wizard form view jon.chow#elico-corp.com Aug 9, 2013-->
+        <record id="wizard_sol_split_from_view" model="ir.ui.view">
+            <field name="name">wizard_sol_split.form</field>
+            <field name="model">wizard.sol.split</field>
+         	<field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="SOL split Wizard" version="7.0">
+                	<group>
+                		<label string="Split SO Lines that porduct state is Order and Final Qty is Confirmed"/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="confirm_orgin"/>
+                            <field name="shipment_id" />
+                    	   <field name="lines" colspan="4" nolabel="1">
+	                    		<tree create="0" editable='1'>	
+	                            <!-- <field name="sol_id" invisible="1" domain="[('order_id','=',so_id)]" widget="selection"/> -->
+	                    			<field name="sol_id" invisible="1" widget="selection"/>
+	                    			<field name="so_id"/>  
+	                    			<field name="product_id"/>
+	                    			<field name="product_qty"/>
+	                    			<field name='final_qty'/>
+	                    			<field name="product_state"/>
+	                    		</tree>
+                      	</field>
+                    </group>
+                    <footer>
+                    	<button name="split_sol" string="Confirm" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+		
+		
+        <!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013 -->
+        <act_window id="action_wizard_sol_split" 
+            name="Confirm Order Line" 
+        	 multi="False" 
+            key2="client_action_multi" 
+            res_model="wizard.sol.split" 
+            src_model="sale.order.line" 
+            view_id="wizard_sol_split_from_view" 
+            view_mode="form" 
+            target="new"/>
+		
+	</data>
+</openerp>

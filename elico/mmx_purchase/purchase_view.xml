@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- PO Lines tree view  jon.chow#elico-corp.com Jun 4, 2013-->
+		<record id="inherit_purchase_order_line_tree" model="ir.ui.view">
+		    <field name="name">purchase.order.line.tree</field>
+		    <field name="model">purchase.order.line</field>
+		    <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+		    <field name="arch" type="xml">
+		    	<xpath expr="/tree/field[@name='price_subtotal']" position="after">
+		    		<field name="job_number"/>
+		    	</xpath>
+		    </field>
+		</record>
+		
+		<!-- PO form view   jon.chow#elico-corp.com Jun 4, 2013-->
+	    <record id="inherit_purchase_order_form" model="ir.ui.view">
+	        <field name="name">purchase.order.form</field>
+	        <field name="model">purchase.order</field>
+	        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+	        <field name="arch" type="xml">
+	        	<xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree" position="inside">
+	        		<field name="job_number"/>
+	        	</xpath>
+	        </field>
+	    </record>
+	
+	
+	<!--  jon.chow#elico-corp.com Sep 26, 2013-->
+	   <record model="ir.ui.view" id="inehrit_view_move_picking_tree">
+            <field name="name">stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                	<field name="type"  invisible='1' />
+                	<!--  can invisible by context or ???-->
+                    <field name="job_number"/>
+                </xpath>
+            </field>
+        </record>
+        
+	<!-- attrs="{'invisible':[('type','!=','in')]}"  jon.chow#elico-corp.com Sep 26, 2013-->
+	
+	</data>
+</openerp>

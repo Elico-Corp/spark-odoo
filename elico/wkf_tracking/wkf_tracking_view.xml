@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="wkf_tracking_tree_view">
+		    <field name="name">wkf.tracking.tree</field>
+		    <field name="model">wkf.tracking</field>
+		    <field name="arch" type="xml">
+		        <tree string="WKF tracking" create="0">
+		            <field name="name"/>
+		    		<field name="res_type"/>
+		    		<field name="res_id"/>
+		    		<field name="act_from"/>
+		    		<field name="act_to"/>
+		    		<field name="user_id"/>
+		    		<field name="act_time"/>
+		    	</tree>
+		    </field>
+		</record>
+		<record model="ir.ui.view" id="wkf_tracking_form_view">
+		    <field name="name">wkf.tracking.form</field>
+		    <field name="model">wkf.tracking</field>
+		    <field name="arch" type="xml">
+		    	<form string="WKF tracking">
+		    		<group col="4">
+			    		<field name="name"/>
+			    		<field name="res_type"/>
+			    		<field name="res_id"/>
+			    		<field name="act_from"/>
+			    		<field name="act_to"/>
+			    		<field name="act_time"/>
+		    		</group>
+		    	</form>
+		    </field>
+		</record>
+		<record model="ir.ui.view" id="wkf_tracking_form_search">
+		    <field name="name">wkf.tracking.search</field>
+		    <field name="model">wkf.tracking</field>
+		    <field name="arch" type="xml">
+		    	<search string="WKF tracking">
+		    		<field name="name"/>
+		    		<field name="user_id"/>
+		    		<group string="Group By..." expand="0">
+						<filter string="Resource Type"  context="{'group_by':'res_type'}"/>
+						<filter string="User" 			context="{'group_by':'user_id'}"/>
+						<filter string="Product" 		context="{'group_by':'res_id'}"/>
+		    		</group>
+		    	</search>
+		    </field>
+		</record>
+		<record id="action_wkf_tracking" model="ir.actions.act_window">
+			<field name="name">Product Status Records</field>
+			<field name="res_model">wkf.tracking</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('res_type','=','product.product')]</field>
+		</record>	
+		
+	
+	
+	 	<!-- product wkf tracking record  tree           jon.chow#elico-corp.com Jul 18, 2013-->
+		<record model="ir.ui.view" id="wkf_tracking_product_tree_view">
+		    <field name="name">wkf.tracking.product.tree</field>
+		    <field name="model">wkf.tracking.product</field>
+		    <field name="arch" type="xml">
+		    	<tree string="WKF tracking" create="0">
+		    		<field name="product_id"/>
+		    		<field name="res_type"  invisible="1"/>
+		    		<field name="res_id" 	invisible="1"/>
+		    		<field name="act_from"/>
+		    		<field name="act_to"/>
+		    		<field name="user_id"/>
+		    		<field name="act_time"/>
+		    		<field name="name" 		invisible="1"/>
+		    	</tree>
+		    </field>
+		</record>
+		<!-- product wkf tracking record  form           jon.chow#elico-corp.com Jul 18, 2013-->
+		<record model="ir.ui.view" id="wkf_tracking_product_form_view">
+		    <field name="name">wkf.tracking.product.form</field>
+		    <field name="model">wkf.tracking.product</field>
+		    <field name="arch" type="xml">
+		    	<form string="WKF tracking">
+		    		<group col="4">
+			    		<field name="product_id"/>
+			    		<field name="res_type" invisible="1"/>
+			    		<field name="res_id"   invisible="1"/>
+			    		<field name="act_from"/>
+			    		<field name="act_to"/>
+			    		<field name="act_time"/>
+		    		</group>
+		    	</form>
+		    </field>
+		</record>
+		<!-- product wkf tracking record  search           jon.chow#elico-corp.com Jul 18, 2013-->
+		<record model="ir.ui.view" id="wkf_tracking_product_form_search">
+		    <field name="name">wkf.tracking.product.search</field>
+		    <field name="model">wkf.tracking.product</field>
+		    <field name="arch" type="xml">
+		    	<search string="WKF tracking">
+		    		<field name="name"/>
+		    		<field name="user_id"/>
+		    		<group string="Group By..." expand="0">
+						<filter string="User" 	 context="{'group_by':'user_id'}"/>
+						<filter string="Product" context="{'group_by':'product_id'}"/>
+		    		</group>
+		    	</search>
+		    </field>
+		</record>
+		
+		<record id="action_wkf_tracking_product" model="ir.actions.act_window">
+			<field name="name">Product Status Records</field>
+			<field name="res_model">wkf.tracking.product</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('res_type','=','product.product')]</field>
+		</record>
+		<menuitem id="menu_wkf_tracking_product" name="Product Status Record" parent="mmx_product.minimax_configuration" action="action_wkf_tracking_product" sequence="999"/>
+		
+	
+
+	</data>
+</openerp>

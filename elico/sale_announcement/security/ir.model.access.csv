@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sale_announcement,Sale Announcement,sale_announcement.model_sale_announcement,base.group_user,1,0,0,0
+sale_announcement_wizard,Sale Announcement Wizard,sale_announcement.model_sale_announcement_report_wizard,base.group_user,1,1,1,1
+sale_announcement_product_manager,Announcement Product Manager,sale_announcement.model_sale_announcement,mmx_product.group_product_manager,1,1,1,1
+sale_announcement_queue_job,Sale Announcement queue job,connector.model_queue_job,base.group_user,1,1,1,
+sale_annoucement_manager,Annnoucemetn Manager,sale_announcement.model_sale_announcement,sale_announcement.manager_sale_announcement,1,1,1,1
+

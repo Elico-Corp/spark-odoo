@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+		<!--Order Report-->
+		<report id="sale.report_sale_order" 
+				name="l10n.cn.order" 
+				auto="False" 
+				model="sale.order" 
+				rml="mmx_sale_report/report/order.rml" 
+				string="Order"/>
+		
+		<!-- Jon: Contract same as Order,so Contract is kelit not need  Contract    -->				
+		<!--     
+		<report id="l10n_cn_report_contract" 
+				name="l10n.cn.contract" 
+				auto="False" 
+				model="sale.order" 
+				rml="l10n_cn_report_sale/report/contract.rml" 
+				string="Contract"/-->
+		
+	</data>
+</openerp>

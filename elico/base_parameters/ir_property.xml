@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--  ir.property tree view  --> 
+		<record id="inherit_ir_property_tree_view" model="ir.ui.view">
+		    <field name="name">ir.property.form</field>
+		    <field name="model">ir.property</field>
+		    <field name="inherit_id" ref="base.ir_property_view_search"/>
+		    <field name="arch" type="xml">
+		        <xpath expr="//search" position="inside">
+		            <group string="Group By..." expand="0">
+		            	<filter string="Field"   icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'fields_id'}"/>
+		            	<filter string="Company" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'company_id'}"/>
+		            </group>
+		        </xpath>
+		    </field>
+		</record>
+	</data>
+</openerp>

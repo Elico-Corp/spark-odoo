@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--Jon Generic product_team tree view-->
+		<record id="product_team_tree_view" model="ir.ui.view">
+		    <field name="name">product_team.tree</field>
+			<field name="model">product.team</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+			    <field name="name"/>
+				<field name="country_id"/>
+			</field>
+		</record>
+		<!--Jon Generic product_team from view-->
+		<record id="product_team_form_view" model="ir.ui.view">
+			<field name="name">product_team.form</field>
+			<field name="model">product.team</field>
+			<field name="type">form</field>
+			<field name="priority">1</field>
+			<field name="arch" type="xml">
+				<form string="Team Form">
+					<group col="4">
+						<field name="name"/>
+						<field name="country_id"/>
+						<field name="championship_ids" widget="many2many_tags" colspan="4"/>
+					</group>
+				</form>
+			</field>
+		</record>
+		
+		<record id="action_minimax_team" model="ir.actions.act_window">
+			<field name="name">Teams Database</field>
+			<field name="res_model">product.team</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+			  	<p>Click to start creating a new racing team</p>
+			</field>
+		</record>	
+		
+		<record id="action_team_tree_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="1"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="product_team_tree_view"/>
+			<field name="act_window_id" ref="action_minimax_team"/>
+		</record>
+		<record id="action_team_form_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="2"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="product_team_form_view"/>
+			<field name="act_window_id" ref="action_minimax_team"/>
+		</record>
+		
+		<!--jon  minimax  Product action menu  ,Product/Racing Data/Team  --> 
+		<menuitem id="menu_minimax_team" name="Teams" parent="minimax_racing_data" action="action_minimax_team" sequence="5"/>
+		
+	</data>
+</openerp>

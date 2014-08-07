@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<record model="ir.ui.view" id="wizard_product_multi_sol_form_view">
+    <field name="name">wizard.product.multi.sol.form</field>
+    <field name="model">wizard.product.multi.sol</field>
+    <field name="arch" type="xml">
+          <form string="Add product to Sale Orders">
+               <group col="2" colspan="4">
+               	   <field name='so_ids' domain="[('state','=','draft')]" nolabel='1'/>
+               	   <newline/>
+               	   <button name="add_to_multi_so" string="Apply" type="object" class='oe_highlight'/>
+               </group>
+          </form>
+    </field>
+</record>
+
+<act_window id="act_wizard_product_multi_sol" 
+    name="Add product to Sale Orders" 
+	multi="True"
+    key2="client_action_multi" 
+    res_model="wizard.product.multi.sol" 
+    src_model="product.product" 
+    view_id="wizard_product_multi_sol_form_view"
+    target="new" 
+    view_mode="tree,form" 
+    view_type="form"/>
+
+    
+</data>
+</openerp>

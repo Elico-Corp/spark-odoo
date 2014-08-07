@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- wizard_sol2polform view  jon.chow#elico-corp.com Jun 25, 2013-->
+    	<record id="wizard_sol2pol_form_view" model="ir.ui.view">
+        	<field name="name">wizard_sol2pol</field>
+        	<field name="model">wizard.sol2pol</field>
+        	<field name="arch" type="xml">
+	            <form string="wizard sol to pol" version="7.0">
+	            	<group string="MAX Scheduler">
+	            		<field name="filter_model" string='Filter Model' />
+	            		<field name="company_id"   attrs="{'invisible':[('filter_model','!=','company')]}"/>
+	            		<field name="so_ids" widget='many2many_tags' attrs="{'invisible':[('filter_model','!=','order')]}"/>
+	            	</group>
+	            	<group string="Standard Scheduler">
+	            	</group>
+		            <footer>
+		                <button name="run_mmx_schedule" string="Confirm" type="object" class="oe_highlight"/>
+		                 or
+		                <button string="Cancel" class="oe_link" special="cancel"/>
+		            </footer>
+	            </form>
+	        </field>
+	    </record>
+		
+		
+	    <!--wizard action  jon.chow#elico-corp.com Jun 25, 2013-->
+		<!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013-->
+		<act_window id="action_wizard_sol2pol"
+		    name="Create POL accord SOL"
+		    multi="True"
+		    key2="client_action_multi"
+		    res_model="wizard.sol2pol"
+		    src_model="sale.order.line"
+		    target="new"
+		    view_mode="form" 
+		    view_type="form"/>
+	</data>
+</openerp>

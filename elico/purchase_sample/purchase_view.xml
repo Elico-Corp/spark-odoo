@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<record model="ir.ui.view" id="inherit_purchase_order_form">
+     <field name="name">purchase.order.form</field>
+     <field name="model">purchase.order</field>
+     <field name="inherit_id" ref="purchase.purchase_order_form"/>
+     <field name="arch" type="xml">
+         <xpath expr="//field[@name='partner_ref']" position="after">
+             <field name="is_sample" on_change="onchange_is_sample(is_sample,company_id,order_line,context)"/>
+         </xpath>
+         <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position='attributes'>
+         	<attribute name='on_change'>onchange_product_id(parent.pricelist_id,product_id,0,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,parent.is_sample,context)</attribute>
+         </xpath>
+         <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_qty']" position='attributes'>
+         	<attribute name='on_change'>onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,parent.is_sample,context)</attribute>
+         </xpath>
+         <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom']" position='attributes'>
+         	<attribute name='on_change'>onchange_product_uom(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,name,price_unit,parent.is_sample,context)</attribute>
+         </xpath>
+         
+         <xpath expr="//field[@name='location_id']" position='attributes'>
+         	<attribute name='widget'>selection</attribute>
+         	<attribute name='domain'>['|',('name','ilike','stock'),('name','ilike','sample')]</attribute>
+         </xpath>>
+     </field>
+</record>
+
+</data>
+</openerp>

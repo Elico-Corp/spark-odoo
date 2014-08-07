@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_compute_schedulers_wizard_draft_so" model="ir.ui.view">
+            <field name="name">Run Schedulers (with DRAFT/CART SO)</field>
+            <field name="model">procurement.order.compute.all</field>
+            <field name="inherit_id" ref="procurement.view_compute_schedulers_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='automatic']" position="after">
+                    <field name="draft_so"/>
+                    <field name="cart_so"/>
+                    <field name="wishlist_so"/>
+                    <field name="merge_po"/>
+                </xpath>
+            </field>
+        </record>
+        
+        
+        <!-- CRON -->
+        <record id="ir_cron_proc_scheduler_mmx" forcecreate="True" model="ir.cron">
+            <field name="name">Run MMX Scheduler</field>
+            <field name="active" eval="False"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+			<field name="nextcall">2013-09-10 23:00:00</field>
+            <field name="model" eval="'procurement.order'"/>
+            <field name="function" eval="'run_scheduler'"/>
+            <field name="args">(True, True, True, True, False,)</field>
+        </record>
+        
+        <record id="ir_cron_proc_scheduler_mix" forcecreate="True" model="ir.cron">
+            <field name="name">Run MIX Scheduler</field>
+            <field name="active" eval="False"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+			<field name="nextcall">2013-09-10 23:00:00</field>
+            <field name="model" eval="'procurement.order'"/>
+            <field name="function" eval="'run_scheduler'"/>
+            <field name="args">(True, True, True, True, True,)</field>
+        </record>
+        
+        <record id="ir_cron_proc_scheduler_max" forcecreate="True" model="ir.cron">
+            <field name="name">Run MAX Scheduler</field>
+            <field name="active" eval="False"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+			<field name="nextcall">2013-09-10 23:00:00</field>
+            <field name="model" eval="'procurement.order'"/>
+            <field name="function" eval="'run_scheduler'"/>
+            <field name="args">(True, True, True, True, True,)</field>
+        </record>
+    </data>
+</openerp>

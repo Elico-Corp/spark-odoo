@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data noupdate='1'>
+
+<record id="sequence_sale_shipment" model="ir.sequence.type">
+    <field name="name">Sale Shipmentr</field>
+    <field name="code">sale.shipment</field>
+</record>
+
+<record id="sequence_sale_shipment_min" model="ir.sequence">
+    <field name="name">MIX Shipment</field>
+    <field name="code">sale.shipment</field>
+    <field name="prefix">MIXSHIP/</field>
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name='company_id' search="[('name','ilike','mix')]"/>
+</record>
+<record id="sequence_sale_shipment_max" model="ir.sequence">
+    <field name="name">MAX Shipment</field>
+    <field name="code">sale.shipment</field>
+    <field name="prefix">MAXSHIP/</field>
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name='company_id' search="[('name','ilike','max')]"/>
+</record>
+<record id="sequence_sale_shipment_mmx" model="ir.sequence">
+    <field name="name">MMX Shipment</field>
+    <field name="code">sale.shipment</field>
+    <field name="prefix">MMXSHIP/</field>
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name='company_id' search="[('name','ilike','minimax')]"/>
+</record>
+<record id="sequence_sale_shipment_holding" model="ir.sequence">
+    <field name="name">HOLDING Shipment</field>
+    <field name="code">sale.shipment</field>
+    <field name="prefix">HOLDING SHIP/</field>
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name='company_id' search="[('name','ilike','holding')]"/>
+</record>
+
+		
+
+</data>
+</openerp>

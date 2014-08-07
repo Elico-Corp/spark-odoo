@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<menuitem action="action_wizard_fifo"
+         name='FIFO Reservation'
+         id="menu_action_wizard_fifo"
+         parent="procurement.menu_stock_sched"
+         sequence="100"
+         groups="stock.group_stock_manager"/>
+</data>
+</openerp>
+
+

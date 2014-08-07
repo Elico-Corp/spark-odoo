@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<!--   remove menu MAX SScheduler
+        <menuitem name="MAX Scheduler" action="action_wizard_sol2pol" id="menu_stock_proc_schedulers_mmx" parent="procurement.menu_stock_sched" sequence="21" groups="stock.group_stock_manager"/>
+		-->
+     	<record id="inherit_procurement_order_form_view" model="ir.ui.view">
+     	    <field name="name">procurement.order.form</field>
+	        <field name="model">procurement.order</field>
+	        <field name="inherit_id" ref="procurement.procurement_form_view"/>
+	        <field name="arch" type="xml">
+	            <xpath expr="//form/sheet/notebook" position="inside">
+	                <page string="SOL info">
+	                    <group>
+	                        <field name="sol_ids" nolabel="1"/>
+	                    </group>
+	                </page>
+	            </xpath>
+	            
+	            <xpath expr="//form/sheet/notebook/page[@string='Extra Information']" position="inside">
+	                 <field name="po_state"/>
+	            </xpath>
+	        </field>
+	    </record>
+    	
+     	
+	    <!--SOL Tree view   jon.chow#elico-corp.com Jul 15, 2013-->
+	    <record id="inherit_inherit_view_order_line_tree" model="ir.ui.view">
+	        <field name="name">sale.order.line.tree</field>
+	        <field name="model">sale.order.line</field>
+	        <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree"/>
+	        <field name="arch" type="xml">
+	            <xpath expr="//tree" position="inside">
+	                <field name="procurement_id" groups="base.group_system" readonly="1"/>
+	            </xpath>
+	        </field>
+	    </record>
+	    
+	    
+	    <!-- PO form view, add page to display the SOL info  jon.chow#elico-corp.com Jul 15, 2013-->
+		<!--record id="inherit_purchase_order_form" model="ir.ui.view">
+			<field name="name">purchase.orderr.form</field>
+		    <field name="model">purchase.order</field>
+		    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+		    <field name="arch" type="xml">
+		        <xpath expr="//form/sheet/notebook" position="inside">
+		            <page string="Linked Sales">
+		            	<field name="sol_ids"/>
+		            </page>
+		        </xpath>
+		    </field>
+		</record-->
+		
+		
+		<!-- res.company view  jon.chow#elico-corp.com Jul 31, 2013-->
+	  	<record id="inherit_view_company_tree" model="ir.ui.view">
+	  	    <field name="name">res.company.tree</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="inside">
+                    <field name="sequence_mmx_schedule" groups="base.group_system"/>
+                </xpath>
+            </field>
+        </record>
+		<!--  res.company  form view  -->
+	  	<record id="inherit_view_company_form" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/notebook/page[@string='Configuration']" position="inside">
+                    <group>
+                    	<field name="sequence_mmx_schedule" groups="base.group_system"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+	<!-- nobody can unlink partner  jon.chow#elico-corp.com Sep 24, 2013-->
+	<record model="ir.model.access" id="base.access_res_partner_group_partner_manager">
+		<field name='perm_unlink' eval='0'/>
+
+	</record>
+
+
+</data>
+</openerp>

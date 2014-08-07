@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_company_form" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml" >
+                <group name="account_grp" position="after">
+                    <group string="Connector">
+                        <field name="stock_user_id" />
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

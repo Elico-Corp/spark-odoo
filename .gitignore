@@ -1,0 +1,10 @@
+.bzrignore
+.bzr
+*.pyc
+*.DS_STORE
+*.~*
+others/*
+addons/bzr.back
+server/bzr.back
+web/bzr.back
+server/openerp/filestorage

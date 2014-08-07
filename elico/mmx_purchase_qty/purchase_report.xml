@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--PO Lines webkit report   jon.chow#elico-corp.com Jun 25, 2013-->
+		<report id="purchase_order_line" 
+			  	name="mmx_purchase_order_line"  
+			  	auto="True" 
+			  	model="purchase.order.line" 
+			  	file="mmx_purchase_qty/report/purchase_order_line.mako" 
+			  	string="POL Report" 
+			  	report_type="webkit"/>
+	  	
+	  	
+		<!--  PO webkit report   jon.chow#elico-corp.com Jun 25, 2013-->
+		<report id="purchase.report_purchase_quotation" 
+				name="mmx_purchase_order" 
+				auto="False" 
+				model="purchase.order" 
+				file="mmx_purchase_qty/report/purchase_order.mako"  
+		        string="Request for Quotation" 
+		        report_type="webkit"/>
+		
+	</data>
+</openerp>

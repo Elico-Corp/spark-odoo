@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    <!--  jon.chow#elico-corp.com Nov 6, 2013
+    <record id="report_sale_announcement" model='ir.actions.report.xml'>
+    	<field name='name'>sale_announcement_webkit1</field>
+    	<field name='report_name'>sale_announcement_webkit1</field>
+    	<field name='auto'>False</field>
+    	<field name='model'>sale.announcement</field>
+    	<field name='file'>mmx_sale_ann_webkit/report/sale_announcement.mako</field>
+    	<field name='string'>Pricelist</field>
+    	<field name='report_type'>webkit</field>
+    	<field name='webkeit_header' ref='elico_report_webkit.ir_header_webkit_basesample1'/>
+    </record>
+    -->
+    
+        <report id="sale.report_sale_announcement" 
+        		name="sale_announcement_webkit1"
+        		auto="False" 
+        		model="sale.announcement" 
+                file="mmx_sale_ann_webkit/report/sale_announcement.mako" 
+        		string="Pricelist"
+        		report_type="webkit"/>
+        		
+    </data>
+</openerp>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<!--  PO webkit report   jon.chow#elico-corp.com Aug 28, 2013-->
+<report id="sale_announcement_webkit_report" 
+		name="sale_announcement_webkit" 
+		auto="True" 
+		model="sale.announcement.report.wizard" 
+		file="sale_announcement/report/sale_announcement.mako"  
+        string="Announcement" 
+        report_type="webkit"/>
+</data>
+</openerp>

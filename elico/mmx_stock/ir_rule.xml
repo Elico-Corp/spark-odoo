@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+
+<!--  jon.chow#elico-corp.com Nov 19, 2013
+https://code.launchpad.net/~openerp-dev/openobject-addons/trunk-bug-1167393-nco
+-->
+
+<record model="ir.rule" id="stock.stock_picking_out_rule">
+     <field name="name">stock_picking_out multi-company</field>
+        <field name="model_id" search="[('model','=','stock.picking.out')]" model="ir.model"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+</record>
+
+<record model="ir.rule" id="stock.stock_picking_in_rule">
+     <field name="name">stock_picking_in multi-company</field>
+        <field name="model_id" search="[('model','=','stock.picking.in')]" model="ir.model"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+</record>
+
+
+</data>
+</openerp>

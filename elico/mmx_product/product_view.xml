@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	    <!-- Jon:  Product Form View  Minimax -->
+		<record id="minimax_product_normal_form_view" model="ir.ui.view">
+			<field name="name">minimax_product_normal_form_view</field>
+			<field name="model">product.product</field>
+			<field name="inherit_id" ref="product.product_normal_form_view" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+                <xpath expr="//label[@for='categ_id']" position="replace"/>
+                <xpath expr="//field[@name='description_sale']" position="replace"/>
+                <xpath expr="//separator[@string='Description for Quotations']" position="replace"/>
+              	
+                
+				<xpath expr="//field[@name='categ_id']" position="replace">
+				    <label for="default_code"  string="Internal Reference" style="font-size:12px;"/>
+                    <field name="default_code" colspan="4"/>
+                    <group col="6">
+                        <group colspan="2">
+                            <label for="brand_id"  string="Product Brand" style="font-size:12px;"/>
+                            <field name="brand_id" colspan="2" required="1" nolabel="1"/>
+                        </group>
+                        <group colspan="2">
+                            <label for="year"  string="Catalogue Year" style="font-size:12px;" colspan="2"/>
+                            <field name="year" colspan="2" nolabel="1"/>
+                        </group>
+                        <group colspan="2">
+                            <label for="catalogue_extra_info"  colspan="2" string="Catalogue Extra Info" style="font-size:12px;"/>
+                            <field name="catalogue_extra_info" colspan="2" nolabel="1"/>
+                        </group>
+                    </group>
+                    <label for="categ_id"  string="Product Category" style="font-size:12px;"/>
+                    <field name="categ_id" on_change="onchange_categ_id(categ_id)" colspan="4"/>
+                    
+                
+     
+                </xpath>
+                
+                <!-- Dami: Tab "Information" -->                  
+                <xpath expr="//page[@string='Information']" position="replace">
+                    <page string="Information">
+                        <group>
+                            <group>
+                                <field name="type" invisible="1"/>
+                                <field name="uom_id" on_change="onchange_uom(uom_id,uom_po_id)" groups="product.group_uom"/>
+                                <field name="scale_id"  widget="selection"/>
+                                <field name="model_id"/>
+                                <field name="model_year"/>
+                                <field name="is_racing" groups="base.group_system"/>
+                            </group>
+                            
+                            <group>
+                                <!--field name="default_code"/-->
+                                <label for="ean13"/>
+                                <div name="ean">
+                                    <field name="ean13" placeholder="e.g. 5901234123457"/>
+                                </div>
+                                <field name="color_ids" widget="many2many_tags"/>
+                                <field name="availability_date"/>
+                            </group>
+                        </group>
+						
+						<!-- Dami: Racing Information group of fields. Visible only for "Racing Car" Category -->                                 
+                        <group col="4" string="Racing Information" attrs="{'invisible':[('is_racing','!=',True)]}" >
+                            <group colspan="2">
+                                <field name="race_ed_id"/>
+                                <field name="classification_id" on_change="onchange_classification_id(classification_id)" context="{'model_id':model_id, 'race_ed_id':race_ed_id }"/>
+                            </group>
+                            <group colspan="2">
+                            	<field name="rank_id" 	 widget="selection"/>
+                                <field name="driver_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <label for="notes" />                        
+                        <field name="notes" placeholder="Notes..." />
+                        <button name="generation_sale_description" type="object" string="Generation sale description"/>
+                        <separator string="Description for Quotations"/>
+                    	<field name="description_sale" placeholder="Describes the product for sale..."/>
+                    </page>
+                </xpath>
+                
+                <!-- Dami: Tab Sales Conditions 
+                <xpath expr="//group[@string='Sale Conditions']" position="inside">
+                	<field name="list_price"/>
+                </xpath>
+                --> 
+                
+                
+				<!-- sales page only sale_manager can see. jon.chow#elico-corp.com Jun 4, 2013-->
+				<xpath expr="//page[@string='Sales']" position="attributes">
+					<attribute name="groups">base.group_sale_manager</attribute>
+				</xpath>
+                
+                <!-- Dami: Add new tab Internal Info --> 
+                <xpath expr="//page[@string='Sales']" position="after">
+                    <page string="Internal Info" groups="base.group_user">
+                        <group col="4">
+                            <group colspan="2">
+	                            <field name="archive_id"/>
+	                            <field name="dev_status_id" widget="selection"/>
+	                            <field name="hs_code"/>
+                            </group>
+                            
+                            <group colspan="2">
+	                           	<field name="product_manager"/>
+	                           	<field name="type" groups="base.group_system"/>
+	                           	<field name="dbox_approve"/>
+	                           	<field name="customs_description"/>
+                            </group>
+                            <separator string="Description"/>
+                            <field name="description" placeholder="Describes the product characteristics..." colspan="4" nolabel="1"/>
+                        </group>
+                    </page>
+                </xpath>
+                
+                <xpath expr="//group[@name='status']" position="attributes">
+					<attribute name="invisible">1</attribute>
+                </xpath>
+
+
+                <xpath expr="//div[@name='options']" position="inside">
+                		<field name='do_not_allow_checkout'/>
+                		 <label for="do_not_allow_checkout"/>
+                </xpath>
+				
+        	</field>
+   		</record>
+        
+		
+        <!-- product tree jon.chow#elico-corp.com May 27, 2013-->
+        <record id="inherit_product_product_tree_view" model="ir.ui.view">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//tree" position="inside">
+            		<field name="year" invisible='1'/>
+            	</xpath>
+				<xpath expr="//field[@name='lst_price']" position="attributes">
+					<attribute name="groups">base.group_sale_manager</attribute>
+		        </xpath>
+            </field>
+        </record>
+        
+		
+        <!-- product search jon.chow#elico-corp.com May 27, 2013-->
+        <record id="inherit_product_search_form_view" model="ir.ui.view">
+            <field name="name">product.search.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//search/field[@name='name']" position="after">
+            		<field name="year"/>
+            	</xpath>
+            	<xpath expr="//search/group/filter[@string='Category']" position="after">
+            		<filter string="Catalogue Year" domain="[]" context="{'group_by':'year'}"/>
+            	</xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

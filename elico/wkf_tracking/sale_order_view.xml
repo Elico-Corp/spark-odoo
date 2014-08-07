@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+        <record model="ir.ui.view" id="inherit_view_order_form">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                	<page string='Status Record'>
+                		<field name='wkf_tracking_ids' nolabel="1">
+							<tree>
+					    		<field name="act_from"/>
+					    		<field name="act_to"/>
+					    		<field name="user_id"/>
+					    		<field name="act_time"/>
+							</tree>
+                		</field>
+                	</page>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    
+</data>
+</openerp>

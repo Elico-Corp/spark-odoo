@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- add then conform sale  check   jon.chow#elico-corp.com Jul 4, 2013-->
+		<record id="sale.trans_draft_router" model="workflow.transition">
+		    <field name="signal">order_confirm</field>
+		    <field name="condition">test_exceptions() and confirm_check()</field>
+		</record>
+	</data>
+</openerp>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- product_dev_status tree  jon.chow#elico-corp.com May 17, 2013-->
+		<record id="product_dev_status_tree_view" model="ir.ui.view">
+		    <field name="name">product_dev_status.tree</field>
+		    <field name="model">product.dev.status</field>
+		    <field name="arch" type="xml">
+		    	<tree string="product_dev_status" editable="bottom">
+		    		<field name="name"/>
+		    	</tree>
+		    </field>
+		</record>
+		
+		<record id="action_product_dev_status" model="ir.actions.act_window">
+			<field name="name">product_dev_status</field>
+			<field name="res_model">product.dev.status</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start creating a new Product Development Status.</p>
+			</field>
+		</record>
+		
+ 		<menuitem id="menu_product_dev_status" name="Product Development Status" parent="minimax_configuration" action="action_product_dev_status" sequence="121"/>
+	</data>
+	
+	
+	<data noupdate="1">
+	    <record id="product_dev_status_hand" model="product.dev.status">
+	        <field name="name">Prototype Hand Sample</field>
+		</record>
+		<record id="product_dev_status_deco" model="product.dev.status">
+			<field name="name">Prototype Deco Sample</field>
+		</record>
+	</data>
+</openerp>

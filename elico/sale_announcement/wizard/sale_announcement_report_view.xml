@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_sale_announcement_report" model="ir.ui.view">
+            <field name="name">sale.announcement.report.wizard.form</field>
+            <field name="model">sale.announcement.report.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml" >
+                <form string="Sale Announcement Report Wizard" version="7.0">
+                    <group>
+                        <field name="partner_id" />
+                    </group>
+                    <footer>
+                        <button name="print_report" string="_Print" type="object" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_wizard_sol_split" 
+            name="Print" 
+            key2="client_action_multi" 
+            res_model="sale.announcement.report.wizard" 
+            src_model="sale.announcement" 
+            view_id="view_sale_announcement_report" 
+            view_mode="form" 
+            target="new"/>
+    </data>
+</openerp>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--Jon Generic product_scale tree view-->
+		<record id="product_scale_tree_view" model="ir.ui.view">
+			<field name="name">product_scale.tree</field>
+			<field name="model">product.scale</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<field name="name"/>
+			</field>
+		</record>
+		<!--Jon Generic product_scale from view-->
+		<record id="product_scale_form_view" model="ir.ui.view">
+			<field name="name">product_scale.form</field>
+			<field name="model">product.scale</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<field name="name"/>
+			</field>
+		</record>
+		
+		<record id="action_minimax_scale" model="ir.actions.act_window">
+			<field name="name">Scale</field>
+			<field name="res_model">product.scale</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start creating a new product scale.</p>
+			</field>
+		</record>
+		
+		<!--jon  minimax  Product action menu  ,Product/Configuration/scale  --> 
+		<menuitem id="menu_minimax_scale" name="Scale" parent="minimax_configuration" action="action_minimax_scale" sequence="4"/>
+	
+	</data>
+</openerp>

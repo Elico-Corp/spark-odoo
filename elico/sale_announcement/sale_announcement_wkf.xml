@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<!-- sale.announcement work follow -->
+<record id="wkf_sale_announcement" model="workflow">
+	<field name="name">sale_announcement_wkf</field>
+	<field name="osv">sale.announcement</field>
+	<field name="on_create">True</field>
+</record>
+
+<record id="act_draft" model="workflow.activity">
+    <field name="wkf_id" ref="wkf_sale_announcement"/>
+    <field name="flow_start">True</field>
+    <field name="name">draft</field>
+    <field name="kind">dummy</field>
+</record>
+<record id="act_publish" model="workflow.activity">
+    <field name="wkf_id" ref="wkf_sale_announcement"/>
+    <field name="name">publish</field>
+    <field name="kind">function</field>
+    <field name="action">action_publish()</field>
+</record>
+<record id="act_cancel" model="workflow.activity">
+    <field name="wkf_id" ref="wkf_sale_announcement"/>
+    <field name="name">cancel</field>
+    <field name="kind">function</field>
+    <field name="action">action_cancel()</field>
+</record>
+<record id="act_back_draft" model="workflow.activity">
+    <field name="wkf_id" ref="wkf_sale_announcement"/>
+    <field name="name">back_draft</field>
+    <field name="kind">function</field>
+    <field name="action">action_back_draft()</field>
+</record>
+
+
+<!-- Trans jon.chow#elico-corp.com Sep 29, 2013-->
+
+<record id="trans_draft2publish" model="workflow.transition">
+    <field name="act_from" ref="act_draft"/>
+    <field name="act_to" ref="act_publish"/>
+    <field name="signal">approve</field>
+    <field name="condition">True</field>
+</record>
+<record id="trans_publish2cancel" model="workflow.transition">
+    <field name="act_from" ref="act_publish"/>
+    <field name="act_to" ref="act_cancel"/>
+    <field name="signal">cancel</field>
+    <field name="condition">True</field>
+</record>
+<record id="trans_cancel2back_draft" model="workflow.transition">
+    <field name="act_from" ref="act_cancel"/>
+    <field name="act_to" ref="act_back_draft"/>
+    <field name="signal">back_draft</field>
+    <field name="condition">check_back_draft()</field>
+</record>
+<record id="trans_back_draft2publish" model="workflow.transition">
+    <field name="act_from" ref="act_back_draft"/>
+    <field name="act_to" ref="act_publish"/>
+    <field name="signal">approve</field>
+    <field name="condition">True</field>
+</record>
+
+
+
+    
+</data>
+</openerp>

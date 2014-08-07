@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+
+<record model="ir.ui.view" id="sale_announcement_tree_view">
+    <field name="name">sale.announcement.tree</field>
+    <field name="model">sale.announcement</field>
+    <field name="arch" type="xml">
+		<tree string="sale announcement tree" colors="red:state=='draft';green:state=='publish';gray:state=='cancel';">
+			<field name='name'/>
+			<field name='state'/>
+			<field name='sequence'/>
+			<field name='create_date' groups='base.group_system'/>
+			<field name='public_date'/>
+			<field name='responsible_uid'/>
+		</tree>
+    </field>
+</record>
+
+
+<record model="ir.ui.view" id="sale_announcement_form_view">
+    <field name="name">sale.announcement.form</field>
+    <field name="model">sale.announcement</field>
+    <field name="arch" type="xml">
+		<form string="sale announcement form"  version="7.0">
+			<header>
+				<button name='approve' string='Publish' class="oe_highlight" states='draft,'/>
+				<button name='cancel'  string='Cancel' class="oe_highlight" states='publish,'/>
+				<button name='back_draft'  string='Back Draft' class="oe_highlight" states='cancel,'/>
+				<field name='state' widget="statusbar" readonly="1" statusbar_colors='{"draft":"red","cancel":"gray","publish":"green"}'/>
+			</header>
+			<sheet>
+				<group col='4'>
+					<field name='name'/>
+					<field name='create_date'/>
+					<field name='sequence'/>
+					<field name='public_date'/>
+					<field name='responsible_uid'/>
+				</group>
+				<group col='4'>
+					<notebook>
+						<page string='Products'>
+							<field name='product_ids' nolabel='1' widget="many2many" 
+								   domain="[('state','=','catalogue'),('mmx_type','!=','oem'),('announcement_id','=',False)]"
+								   context="{'categ_ids':categ_ids,'order_categ_ids':order_categ_ids,}">
+								<tree editable='1'>
+									<field name='default_code' readonly='1'/>
+									<button name='link_to_product' icon='oe_m2o_open'  type='object'/>
+									<field name='name' readonly='1'/>
+									<field name='mmx_type' readonly='1'/>
+									<field name='state' readonly='1'/>
+									<field name='availability_date'/>
+									
+									<!--TODO,not only single approve,should a function include this,then add order_categ plus ann_categ  -->
+									<button name='approve_from_announcement' icon='STOCK_GO_FORWARD' type='object'  states='preorder'
+									     context="{'categ_ids':context.get('categ_ids',False),'order_categ_ids':context.get('order_categ_ids',False), }"/>
+									
+								</tree>
+							</field>
+						</page>
+						<page string='Announcement Website Categories'>
+							<field name='categ_ids'></field>
+						</page>
+						<page string='Order Website Categories'>
+							<field name='order_categ_ids'/>
+						</page>
+					</notebook>
+				</group>
+	
+			</sheet>
+		</form>
+    </field>
+</record>
+
+
+<record model="ir.ui.view" id="sale_announcement_search_view">
+    <field name="name">sale.announcement.search</field>
+    <field name="model">sale.announcement</field>
+    <field name="arch" type="xml">
+		<search string="sale announcement search">
+			<field name='name'/>
+			<field name='sequence'/>
+            <filter icon="terp-check" name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+            <filter icon="terp-check" name="publish" string="Publish" domain="[('state', '=', 'publish')]"/>
+            <filter icon="terp-check" name="cancel" string="Cancel" domain="[('state', '=', 'cancel')]"/>
+            <group expand="0" string="Group By...">
+                 <filter string="User" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'responsible_uid'}"/>
+                 <filter string="State" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'state'}"/>
+                 <filter string="Publication Date" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'public_date'}"/>
+            </group>
+			
+		</search>
+    </field>
+</record>
+
+<record id="action_sale_announcement" model="ir.actions.act_window">
+    <field name="name">Sale Announcement</field>
+    <field name="res_model">sale.announcement</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form,tree</field>
+    <field name="view_id" ref="sale_announcement_tree_view" />
+	<field name="help" type="html">
+	  <p class="oe_view_nocontent_create">
+	    Click to check Sale Announcement.
+	  </p>
+	</field>
+</record>
+<menuitem id="menu_sale_announcement" name="Sale Announcement" parent="sale_menu.menu_sales_operations" action="action_sale_announcement" groups="base.group_sale_salesman,base.group_sale_manager" sequence="25"/>
+	
+
+
+<!-- product form  -->
+<record id="inherit_minimax_product_normal_form_view" model="ir.ui.view">
+	<field name="name">minimax_product_normal_form_view</field>
+	<field name="model">product.product</field>
+	<field name="inherit_id" ref="mmx_product_advance.inherit_minimax_product_normal_form_view" />
+	<field name="arch" type="xml">
+		<xpath expr="//group/group[@name='mmx_type']" position="after">
+			<group colspan="2" name='announcement'>
+				<label for="announcement_id"  string='Announcement' style="font-size:12px;" colspan="2"/>
+				<field name="announcement_id" readonly='1' nolabel="1" colspan="2"/>
+			</group>
+		</xpath>	
+	</field>
+</record>
+
+<!-- product tree jon.chow#elico-corp.com May 27, 2013-->
+<record id="inherit_product_product_tree_view" model="ir.ui.view">
+    <field name="name">product.product.tree</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_product_tree_view"/>
+    <field name="arch" type="xml">
+    	<xpath expr="//tree" position="inside">
+    		<field name='announcement_id'/>
+    	</xpath>
+    </field>
+</record>
+
+<!-- product search jon.chow#elico-corp.com May 27, 2013-->
+<record id="inherit_product_search_form_view" model="ir.ui.view">
+    <field name="name">product.search.form</field>
+    <field name="model">product.product</field>
+    <field name="inherit_id" ref="product.product_search_form_view"/>
+    <field name="arch" type="xml">
+
+    	<xpath expr="//search/group/filter[@string='Category']" position="after">
+    		<filter string="Announcement" domain="[]" context="{'group_by':'announcement_id'}"/>
+    	</xpath>
+    </field>
+</record>
+
+<!-- sale by product tree view -->
+<record model="ir.ui.view" id="inherit_view_order_line_tree_no_cart">
+    <field name="name">sale.order.line.form</field>
+    <field name="model">sale.order.line</field>
+    <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree_no_cart"/>
+    <field name="arch" type="xml">
+        <xpath expr="//tree" position="inside">
+            <field name="announcement_id"/>
+        </xpath>
+    </field>
+</record>
+<record model="ir.ui.view" id="inherit_view_sales_order_line_filter">
+    <field name="name">sale.order.line.select</field>
+    <field name="model">sale.order.line</field>
+    <field name="inherit_id" ref="sale.view_sales_order_uninvoiced_line_filter"/>
+    <field name="arch" type="xml">
+		<xpath expr="//search/group[@string='Group By...']" position="inside">
+			<filter name="group_announcement_id" string="Announcement" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'announcement_id'}"/>
+		</xpath>
+    </field>
+    
+</record>
+
+
+    
+</data>
+</openerp>

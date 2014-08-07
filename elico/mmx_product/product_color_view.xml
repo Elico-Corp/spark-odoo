@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--Jon Generic product_color tree view-->
+		<record id="product_color_tree_view" model="ir.ui.view">
+			<field name="name">product_color.tree</field>
+			<field name="model">product.color</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<field name="name"/>
+				<field name="code"/>
+			</field>
+		</record>
+		
+		<!--Jon Generic product_color from view-->
+		<record id="product_color_form_view" model="ir.ui.view">
+			<field name="name">product_color.form</field>
+			<field name="model">product.color</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<form string="Product Archive Form">
+					<group col="4">
+						<field name="name"/>
+						<field name="code"/>
+					</group>
+				</form>
+			</field>
+		</record>
+		
+		<record id="action_minimax_color" model="ir.actions.act_window">
+			<field name="name">Colors</field>
+			<field name="res_model">product.color</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start creating a new product color</p>
+			</field>
+		</record>	
+		
+		<record id="action_color_tree_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="0"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="product_color_tree_view"/>
+			<field name="act_window_id" ref="action_minimax_color"/>
+		</record>	
+		<record id="action_color_form_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="1"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="product_color_form_view"/>
+			<field name="act_window_id" ref="action_minimax_color"/>
+		</record>
+		
+		<!--jon  minimax  Product action menu  Product/Configuration/color  --> 
+		<menuitem id="menu_minimax_color" name="Colors" parent="minimax_configuration" action="action_minimax_color" sequence="9"/>
+	
+	</data>
+</openerp>

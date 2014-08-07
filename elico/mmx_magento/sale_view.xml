@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+        <record id="action_carts" model="ir.actions.act_window">
+            <field name="name">Carts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','=','cart')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a cart.
+              </p>
+            </field>
+        </record>
+
+        <record id="wishlist_tree_view" model="ir.ui.view">
+            <field name="name">Wishlist Tree View</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <tree string="Wishlist orders" create="false">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Quotation Number"/>
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="wishlist_form_view" model="ir.ui.view">
+            <field name="name">Wishlist Sale order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <form position="attributes">
+                    <attribute name="create">0</attribute>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_wishlists" model="ir.actions.act_window">
+            <field name="name">Wishlists</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="wishlist_tree_view" />
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','=','wishlist')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a wishlist.
+              </p>
+            </field>
+        </record>
+
+        <menuitem name="Online"
+            id="menu_online_sale"
+            parent="base.menu_base_partner"
+            sequence="2"
+            groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <menuitem action="action_carts" name='Carts'  id="menu_sale_cart" parent="menu_online_sale" sequence="2" groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <menuitem action="action_wishlists" name='Wishlists'  id="menu_sale_wishlist" parent="menu_online_sale" sequence="2" groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+	    <record id="sale.action_orders" model="ir.actions.act_window">
+	        <field name="domain">[('state','not in',('cart','wishlist','draft','sent','cancel'))]</field>
+	    </record>
+
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <label string="Sales Order " position="replace">
+                    <label string="Sales Order " attrs="{'invisible': [('state','in',('cart','wishlist', 'draft','sent'))]}"/>
+                    <label string="Cart " attrs="{'invisible': [('state','!=','cart')]}"/>
+                    <label string="Wishlist " attrs="{'invisible': [('state','!=','wishlist')]}"/>
+                </label>
+            </field>
+        </record>
+        <!-- cart is considered as a sale order so we need to rechech the statistics and be sure that makes sens (is it normal to validate a cart where we transformed it into a sales order) -->
+	</data>
+</openerp>

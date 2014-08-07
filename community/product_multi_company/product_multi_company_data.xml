@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+ 
+	<record forcecreate="True" id="property_list_price" model="ir.property">
+	    <field name="name">property_list_price</field>
+	    <field name="fields_id" search="[('model','=','product.template'),('name','=','list_price')]"/>
+
+	</record>
+
+
+    
+</data>
+</openerp>

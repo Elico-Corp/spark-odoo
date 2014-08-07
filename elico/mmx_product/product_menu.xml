@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--jon  minimax  Product menu ,Top Menu  Product/  -->
+		<menuitem id="minimax_product_top" name="Product" sequence="11" string="Product"/>
+		
+		<!--jon  minimax  Product menu ,Product/Product   -->
+		<menuitem id="minimax_product_rel" name="Product" parent="minimax_product_top" sequence="1"/>
+	
+		<!--jon  minimax  Product menu ,Product/Racing Database   -->
+		<menuitem id="minimax_racing_data" name="Racing Database" parent="minimax_product_top" sequence="2"/>
+	    
+	    <menuitem id="minimax_racing" name="Races" parent="minimax_racing_data" sequence="1"/>
+	    
+		<!--jon  minimax  Product menu ,Product/Configuration   -->
+		<menuitem id="minimax_configuration" name="Configuration" parent="minimax_product_top" sequence="3"/>
+		
+		<!--jon  minimax  Product action menu  ,Product/Product/Product-->
+		<menuitem id="menu_minimax_product" name="Product" action="product.product_normal_action" parent="minimax_product_rel" sequence="2"/>
+		
+		<!--Dami  Minimax  Products by Category action menu  Product/Product/Product-->
+	    <menuitem id="menu_minimax_products_category" action="product.product_category_action" parent="minimax_product_rel" sequence="3" />
+		
+		<!--jon product/product/product category -->
+	    <menuitem id="menu_minimax_products_category"
+		     action="product.product_category_action_form"
+		     parent="minimax_product_rel"
+		     sequence="4"
+		     groups="mmx_product.group_product_manager"/>
+	    
+
+
+		
+	</data>
+</openerp>

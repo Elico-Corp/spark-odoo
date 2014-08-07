@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+	<!-- new group  product_manager    jon.chow#elico-corp.com Jun 4, 2013-->
+    <record id="group_product_manager" model="res.groups">
+        <field name="name">Product Manager</field>
+        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    </record>
+    
+
+</data>
+</openerp>

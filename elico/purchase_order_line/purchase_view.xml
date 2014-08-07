@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- POL Tree jon.chow#elico-corp.com Jun 6, 2013-->
+        <record id="purchase_order_line_tree" model="ir.ui.view">
+            <field name="name">purchase.order.line.tree</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Order Lines" create="false" editable="top" colors="red:state=='draft';green:state=='confirmed';green:state=='done';gray:state=='cancel';">
+                    <field name="order_id" 		  	readonly="1"/>
+                     <button name="link_to_order" 	string="SO" type="object" icon="oe_m2o_open"/>
+                    <field name="name" 				invisible="1"/>
+                    <field name="job_number"/>
+                    <field name="partner_id" 		string="Supplier" invisible="1"/>
+                    <field name="product_id" 		readonly="1"/>
+                    <field name="price_unit" 		invisible="1"/>
+                    <field name="product_qty" 		attrs="{'readonly':[('state','!=','draft')]}"/>
+                    <field name="product_uom" 		readonly="1" groups="base.group_system"/>
+                    <field name="price_subtotal" 	invisible="1"/>
+                    <field name="date_planned"   	widget="date" width="135" readonly="1"/>
+                    <field name="state" invisible="1"/>
+                    <field name="invoiced" invisible="1"/>
+                    <field name="product_mmx_type" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- POL search  -->
+        <record id="purchase_order_line_search_today" model="ir.ui.view">
+            <field name="name">purchase.order.line.search.today</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/field[@name='order_id']" position="after">
+                    <separator/>
+                    <filter string="Today" 			domain="[('date_planned','&lt;=',time.strftime('%%Y-%%m-%%d 23:59:59')),('date_planned','&gt;=',time.strftime('%%Y-%%m-%%d 00:00:00'))]" help="Orders processed Today or planned for Today"  icon="terp-go-today"/>
+                    <filter string="Quotation" 		domain="[('state','=','draft')]"   name="pol_draft"   help="Draft purchase order lines"   icon="terp-gtk-go-back-rtl"/>
+                    <filter string="Purchase Order" domain="[('state','=','confirm')]" name="pol_confirm" help="Confirm purchase order lines" icon="terp-gtk-go-back-rtl"/>
+                </xpath>
+                 <xpath expr="/search/field[@name='partner_id']" position="after">
+                 	<separator/>
+                 	<field name="job_number" string="Job Number" filter_domain="[('job_number', 'ilike', self)]"/>
+                 </xpath>
+                
+                <xpath expr="/search/group/filter[@string='Product']" position="attributes">
+                	<attribute name="name">group_by_product</attribute>
+                </xpath>
+            	<xpath expr="//search/group[@string='Group By...']" position="inside">
+            		<filter string="Product Type" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_mmx_type'}"/>
+            		<filter string="Scheduled Date" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'date_planned'}"/>
+            	</xpath>
+            </field>
+        </record>
+        
+		<!-- POL action  jon.chow#elico-corp.com Jun 6, 2013-->
+		<record id="action_purchase_line" model="ir.actions.act_window">
+            <field name="name">Purchase By Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="purchase_order_line_tree"/>
+            <field name="search_view_id" ref="purchase.purchase_order_line_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to check Purchase Order Line.
+              </p>
+            </field>
+        </record>
+		
+		<!-- POL menu  jon.chow#elico-corp.com Jun 6, 2013-->
+    	<menuitem id="menu_purchase_line" name="Purchase by Product" parent="purchase.menu_procurement_management" action="action_purchase_line" sequence="0"/>
+    	<!--  change the PO quotation seq -->
+        <menuitem action="purchase.purchase_rfq" id="purchase.menu_purchase_rfq"
+            parent="purchase.menu_procurement_management"
+            sequence="1"/>
+		
+    </data>
+</openerp>

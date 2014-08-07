@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<record model="ir.ui.view" id="sale_shipment_tree_view">
+    <field name="name">sale.shipment.tree</field>
+    <field name="model">sale.shipment</field>
+    <field name="arch" type="xml">
+    	<tree string='Sale Shipment'>
+    		<field name='name'/>
+    		<field name='sequence'/>
+    		<field name='create_date'/>
+    	</tree>
+    </field>
+</record>
+
+<record model="ir.ui.view" id="sale_shipment_form_view">
+    <field name="name">sale.shipment.form</field>
+    <field name="model">sale.shipment</field>
+    <field name="arch" type="xml">
+    	<form string='Sale Shipment' version='7.0'>
+    		<group col='4'>
+	    		<field name='name' colspan='2'/>
+	    		<field name='create_date'/>
+	    		<field name='sequence' colspan='2'/>
+    		</group>
+    		<notebook>
+    			<page string='Sale Orders'>
+    				<field name='so_ids' nolabel='1' />
+    			</page>
+    			<page string='Delivery Orders'>
+    				<field name='picking_ids' nolabel='1'/>
+    			</page>
+                <page string="Stock Moves">
+                    <field name="stock_move_ids" nolabel="1"/>
+                </page>
+    		</notebook>
+    	</form>
+    </field>
+</record>
+
+
+<record id="action_sale_shipment" model="ir.actions.act_window">
+	<field name="name">Sale Shipment</field>
+	<field name="res_model">sale.shipment</field>
+	<field name="view_type">form</field>
+	<field name="view_mode">tree,form</field>
+	<field name="help" type="html">
+	  <p class="oe_view_nocontent_create">
+	  </p><p>
+		Click to start creating a new 
+	  </p>
+	</field>
+</record>	
+
+<menuitem id="menu_sale_shipment" name="Sale Shipment" parent="sale_menu.menu_sales_operations"  action='action_sale_shipment' sequence='52'/>
+
+
+<record model="ir.ui.view" id="inherit_sale_order">
+    <field name="name">sale.order.form</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='origin']" position="after">
+            <field name="sale_shipment_id"/>
+        </xpath>
+    </field>
+</record>
+<record model="ir.ui.view" id="inherit_stock_picking_out">
+    <field name="name">stock.picking.out.form</field>
+    <field name="model">stock.picking.out</field>
+    <field name="inherit_id" ref="stock.view_picking_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='auto_picking']" position="after">
+            <field name="sale_shipment_id"/>
+        </xpath>
+    </field>
+</record>
+
+
+<record id="shipment_sale_order_line_tree_no_cart" model="ir.ui.view">
+       <field name="name">shipment.sale_order_line.tree</field>
+       <field name="model">sale.order.line</field>
+       <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree_no_cart"/>
+       <field name="arch" type="xml">
+           <xpath expr="//tree" position="inside">
+               <field name="sale_shipment_id" readonly='1'/>
+           </xpath>
+   	</field>
+</record>
+
+<record id="shipment_inherit_view_sales_order_line_filter" model="ir.ui.view">
+    <field name="name">sale.order.line.select</field>
+    <field name="model">sale.order.line</field>
+    <field name="inherit_id" ref="sale.view_sales_order_uninvoiced_line_filter"/>
+    <field name="arch" type="xml">
+    	  <xpath expr="//search/filter[@name='sale order']" position="after">
+    		  <field name='sale_shipment_id' string="Shipment" />
+    		  <filter name='no_shipment' string="No shipment"  domain="[('sale_shipment_id','=',False)]"/>
+    	  </xpath>
+    	  
+         <xpath expr="//search/group[@string='Group By...']" position="inside">
+             <filter string="Shipment" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'sale_shipment_id'}"/>
+     	  </xpath>
+    </field>
+</record>
+
+</data>
+</openerp>

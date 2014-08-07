@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_move_form" model="ir.ui.view">
+            <field name="name">stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form" />
+            <field name="arch" type="xml" >
+                <group string="Traceability" position="after">
+                    <group string="Magento Bind IDS" colspan="4">
+                        <field name="magento_bind_ids">
+                            <tree string="Magento Bindings" editable="bottom">
+                                <field name="backend_id" />
+                                <field name="openerp_id" />
+                            </tree>
+                        </field>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

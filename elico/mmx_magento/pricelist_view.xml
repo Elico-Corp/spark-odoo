@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="product_pricelist_view" model="ir.ui.view">
+            <field name="name">product.pricelist.form</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <field name="version_id" position="after">
+                    <field name="magento_bind_ids">
+                        <tree string="Pricelist Version">
+                            <field name="backend_id"/>
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+        <record id="view_magento_product_pricelist_form" model="ir.ui.view">
+            <field name="name">magento.product.pricelist.form</field>
+            <field name="model">magento.product.pricelist</field>
+            <field name="arch" type="xml">
+                <form string="Magento Product Pricelist" version="7.0">
+                    <group>
+                        <field name="backend_id"/>
+                        <field name="magento_id"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

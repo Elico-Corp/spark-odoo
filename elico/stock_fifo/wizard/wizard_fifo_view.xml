@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<record model="ir.ui.view" id="wizard_fifo_view_form">
+    <field name="name">wizard.fifo.form</field>
+    <field name="model">wizard.fifo</field>
+    <field name="arch" type="xml">
+        <form string='FIFO Reservation' version='7.0'>
+        	<group >
+                <field name="re_check_confirm" />
+                
+           </group>
+           <footer>
+               <button name='action' string='Action' type='object' class='oe_highlight'/> 
+               or
+               <button string="Cancel" class="oe_link" special="cancel"/>
+           </footer>
+        </form>
+    </field>
+</record>
+
+
+<act_window id="action_wizard_fifo"
+    multi="True"
+    key2="client_action_multi"
+    name="FIFO Reservation"
+    res_model="wizard.fifo"
+    src_model="stock.picking"
+    view_mode="form"
+    target="new"
+    view_type="form"/>
+    
+
+</data>
+</openerp>

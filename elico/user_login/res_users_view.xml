@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+       <record id="inherit_view_users_tree" model="ir.ui.view">
+            <field name="name">res_users.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="login_date"/>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

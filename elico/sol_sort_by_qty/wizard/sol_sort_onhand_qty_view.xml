@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+
+<record model="ir.ui.view" id="sol_sort_onhand_qty_view_form">
+    <field name="name">sol.sort.onhand_qty.form</field>
+    <field name="model">sol.sort.onhand_qty</field>
+    <field name="arch" type="xml">
+    	<form string='SOL Sort By Onhand QTY'>
+    		<button name='action_sort' string='Sort' type='object'/>
+    	</form>
+    </field>
+</record>
+
+<act_window id="action_sol_sort_onhand_qty"
+    multi="True"
+    key2="client_action_multi" name="SOL Sort BY Onhand QTY"
+    res_model="sol.sort.onhand_qty" 
+    src_model="sale.order.line"
+    view_mode="form"
+    target="new"
+    view_type="form" />
+
+</data>
+</openerp>

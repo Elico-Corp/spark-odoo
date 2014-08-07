@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--stock move tree view   jon.chow#elico-corp.com Jun 25, 2013-->
+       	<record model="ir.ui.view" id="inherit_view_move_picking_tree_mmx">
+       	    <field name="name">stock.move.tree.mmx</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//tree/field[@name='location_id']" position="replace"/>
+            	
+                <xpath expr="//tree/field[@name='location_dest_id']" position="before">
+                	<field name="location_id" string="From location" groups="stock.group_stock_user"/>
+                </xpath>
+                
+                <xpath expr="//tree/field[@name='location_dest_id']" position="attributes">
+                	<attribute name='groups'>stock.group_stock_user</attribute>
+                </xpath>
+                
+                <xpath expr="//tree/button[@string='Scrap Products']" position="attributes">
+                	<attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                
+                <xpath expr="//tree/button[@string='Put in current pack']" position="attributes">
+                	<attribute name='invisible'>1</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <!--location widget select domain    lication jon.chow#elico-corp.com Sep 25, 2013-->
+        
+        <!--jon  Stock Moves Form -->
+		<record id="view_move_picking_form_KL" model="ir.ui.view">
+			<field name="name">stock.move.picking.form_KL</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="stock.view_move_picking_form" />
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='location_id']" position="attributes">
+					<attribute name="widget">selection</attribute>
+					<attribute name="domain">[('usage','in',['supplier','customer','internal',])]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+					<attribute name="widget">selection</attribute>
+					<attribute name="domain">[('usage','in',['supplier','customer','internal',])]</attribute>
+                </xpath>                
+            </field>
+        </record>
+        
+        <!-- stock.picking.out  stock.picking.in -->
+		<record id="inherit_view_move_form_KL" model="ir.ui.view">
+			<field name="name">inherit_view_move_form</field>
+			<field name="model">stock.move</field>
+			<field name="inherit_id" ref="stock.view_move_form" />
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='location_id']" position="attributes">
+					<attribute name="widget">selection</attribute>
+					<attribute name="domain">['|',('name','ilike','stock'),('usage','in',['supplier','customer',])]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+					<attribute name="widget">selection</attribute>
+					<attribute name="domain">['|',('name','ilike','stock'),('usage','in',['supplier','customer',])]</attribute>
+                </xpath>                
+            </field>
+        </record>
+        
+        <!--  stock.fill.inventory wizard jon.chow#elico-corp.com Aug 26, 2013-->
+        <record model="ir.ui.view" id="mmx_view_stock_fill_inventory">
+            <field name="name">stock.fill.inventory.form</field>
+            <field name="model">stock.fill.inventory</field>
+            <field name="inherit_id" ref="stock.view_stock_fill_inventory"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/group/field[@name='location_id']" position="replace">
+ 					<field name="location_id" groups="stock.group_locations" widget='selection' domain="['|',('name','ilike','sample'),('name','ilike','stock'),('usage','=','internal')]"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="inherit_stock_inventory">
+            <field name="name">stock.inventory.form</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='inventory_line_id']/tree/field[@name='location_id']" position="replace">
+ 					<field domain="['|',('name','ilike','sample'),('name','ilike','stock'),('usage','=','internal')]" widget='selection' name="location_id" groups="stock.group_locations"/>
+                </xpath>
+
+            </field>
+        </record>       
+        
+        
+        <!--    jon.chow#elico-corp.com Sep 27, 2013-->
+        <record model="ir.ui.view" id="inherit_iew_move_tree_reception_picking">
+            <field name="name">stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree_reception_picking"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/button[@name='330']" position="attributes">
+                    <attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                <xpath expr="//tree/button[@name='331']" position="attributes">
+                    <attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                <xpath expr="//tree/button[@name='339']" position="attributes">
+                    <attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                <xpath expr="//tree/button[@name='334']" position="attributes">
+                    <attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                <xpath expr="//tree/button[@name='action_done']" position="attributes">
+                    <attribute name='groups'>base.group_system</attribute>
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <button name="call_picking_partial" string="Partial Stock Move" type="object"
+                           icon="gtk-go-forward"
+                           states="draft,assigned,confirmed"
+                           invisible='1'
+                           groups="base.group_system"/>
+                </xpath>
+            </field>
+        </record> 
+        
+
+        
+	</data>
+</openerp>

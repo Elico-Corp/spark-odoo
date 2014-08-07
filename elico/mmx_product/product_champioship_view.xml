@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!--Jon Generic product_championship tree view-->
+		<record id="product_championship_tree_view" model="ir.ui.view">
+			<field name="name">product_championship.tree</field>
+			<field name="model">product.championship</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<field name="name"/>
+			</field>
+		</record>
+		
+		<!--Jon Generic product_championship from view-->
+		<record id="product_championship_form_view" model="ir.ui.view">
+			<field name="name">product_championship.form</field>
+			<field name="model">product.championship</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<field name="name"/>
+			</field>
+		</record>
+		
+		<record id="action_minimax_championship" model="ir.actions.act_window">
+			<field name="name">Championships Database</field>
+			<field name="res_model">product.championship</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start your championships database.</p>
+			</field>
+		</record>
+			
+		<!--jon  minimax  Product action menu  Product/Racing Data/Championships -->
+		<menuitem id="menu_minimax_archive" name="Championships" parent="minimax_racing_data" action="action_minimax_championship" sequence="2"/>
+	
+</data>
+</openerp>

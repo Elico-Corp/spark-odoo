@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- Sale Order form view  jon.chow#elico-corp.com Jul 4, 2013-->
+		<record id="inherit_view_order_form" model="ir.ui.view">
+		    <field name="name">sale_order.form</field>
+		    <field name="model">sale.order</field>
+		    <field name="type">form</field>
+		    <field name="inherit_id" ref="sale.view_order_form"/>
+		    <field name="arch" type="xml">
+		        <!-- jon  SO Lines can't select product that state is draft or sold-out  -->
+		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
+		            <attribute name="domain">[('state','in',['private','catalogue','preorder','order'])]</attribute>
+		        </xpath>
+		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+		            <attribute name="domain">[('state','in',['private','catalogue','preorder','order'])]</attribute>
+		        </xpath>
+		      	
+		        <!-- related the product state  jon.chow#elico-corp.com Jul 4, 2013-->
+		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+		        	<field name="product_state"/>
+		        </xpath>
+		        
+		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+		        	<field name="final_qty"/>
+		        </xpath>
+		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group" position="inside">
+			        <field name="final_qty"/>
+		        </xpath>
+		        <!-- new confirm button , replace the old confirm button  jon.chow#elico-corp.com Jul 4, 2013-->
+		        <xpath expr="//button[@name='action_button_confirm']" position="replace">
+		        	<button name="action_button_confirm_extend"  states='draft,wishlist' string="Confirm sale" class="oe_highlight" type="object"/>
+		        </xpath>
+		        
+		        <!-- why cant invisilbe this button , only can replace??   jon.chow#elico-corp.com Jul 4, 2013
+		        <xpath expr="//form/header/button[@name='action_button_confirm' and @states='draft']" position="replace"/>
+		        <xpath expr="//form/header/button[@name='action_button_confirm' and @states='sent']" position="replace"/>
+		        
+		        <xpath expr="//form/header/button[@name='action_view_invoice']" position="after">
+		        	<button name="%(action_wizard_order_split_2)d" states="draft" string="Split Sale Order" class="oe_highlight" type="action" />
+		        </xpath>
+		        -->
+		        
+		        
+		    </field>
+		</record>
+		
+		
+		<!-- Sale Order search view   jon.chow#elico-corp.com Jul 25, 2013-->
+<!-- 	    <record id="inherit_view_sales_order_filter" model="ir.ui.view">
+            <field name="name">sale.order.search</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search/filter[@name='sales']" position="after">
+                    <filter icon="terp-check" string="Is Cart" name="is_cart" domain="[('state','=','cart')]"/>
+                </xpath>
+            </field>
+        </record> -->
+		
+	    
+		<!-- SO lines menu tree view   jon.chow#elico-corp.com Jul 17, 2013-->
+	    <record id="mmx_status_sale_order_line_tree_view" model="ir.ui.view">
+            <field name="name">sale_order_line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='state']" position="after">
+                    <field name="product_state"/>
+                    <field name="so_state"/>
+                </xpath>
+                <xpath expr="//tree/field[@name='product_uom_qty']" position="after">
+                    <field name="final_qty" invisible='1'/>
+		            <field name="is_final_confirm" invisible='1'/>
+		            <field name="is_process" readonly="1" invisible='1'/>
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="colors">red:product_state=='Catalogue';#ff9900:product_state=='Announcement';green:product_state=='Order';red:product_state=='Sold out';</attribute>
+                    <attribute name="create">1</attribute>
+                </xpath>
+            </field>
+        </record>
+		
+		<!-- SO lines tree   search  jon.chow#elico-corp.com Jul 17, 2013-->
+        <record id="mmx_status_inherit_view_sales_order_line_filter" model="ir.ui.view">
+            <field name="name">sale.order.line.select</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_uninvoiced_line_filter"/>
+            <field name="arch" type="xml">
+            	  <xpath expr="//search/filter[@name='sale order']" position="before">
+            		  <filter icon="terp-gtk-go-back-rtl" string="Order Product" domain="[('product_state','=','Order')]" name="order_product" help="Draft sales order lines"/>
+            	  </xpath>
+                <xpath expr="//search/group[@string='Group By...']" position="inside">
+                    <filter string="Product Status" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'product_state'}"/>
+                    <filter string="SO Status" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'so_state'}"/>
+            	</xpath>
+            </field>
+        </record>
+        
+
+	    <record id="mmx_status_sale_order_line_tree_no_cart" model="ir.ui.view">
+            <field name="name">sale_order_line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree_no_cart"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="colors">red:product_state=='Catalogue';#ff9900:product_state=='Announcement';green:product_state=='Order';red:product_state=='Sold out';</attribute>
+                    <attribute name="create">1</attribute>
+                </xpath>
+                <xpath expr="//tree/field[@name='virtual_available']" position="after">
+                    <field name="final_qty" groups='base.group_sale_salesman'/>
+		            <field name="is_final_confirm" invisible='1'/>
+		            <field name="is_process" readonly="1" invisible='1'/>
+		            <field name="product_state"/>
+		            <field name="so_state"/>
+		        </xpath>
+        	</field>
+        </record>
+        
+        <!-- rename the  menu name Quoation ,Sale Order jon.chow#elico-corp.com Sep 24, 2013-->
+        <record id="sale.action_quotations" model="ir.actions.act_window">
+        	<field name="name">Offline Quotations</field>
+        </record>
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Confirmed Sales Orders</field>
+        </record>
+        <menuitem name='Sales Orders' action="sale.action_orders" id="sale.menu_sale_order" parent="base.menu_sales" sequence="5" groups="base.group_sale_salesman,base.group_sale_manager"/>
+        
+	</data>
+</openerp>

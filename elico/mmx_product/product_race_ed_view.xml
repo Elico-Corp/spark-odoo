@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>    
+	<data noupdate="1">
+    	<!-- Jon product_classification seq for fields 'name' -->
+	    <record id="seq_type_product_classification" model="ir.sequence.type">
+	        <field name="name">product_classification</field>
+	        <field name="code">product.classification</field>
+	    </record>
+	    <record id="seq_pos_product_classification" model="ir.sequence">
+	        <field name="name">product_classification</field>
+	        <field name="code">product.classification</field>
+	        <field name="prefix">PCF</field>
+	        <field name="padding">6</field>
+	        <field name="number_increment">1</field>
+	    </record>
+	</data>
+	
+	
+	<data>
+		<!--Jon Generic product_rank tree view-->
+		<record id="product_rank_tree_view" model="ir.ui.view">
+			<field name="name">product_rank.tree</field>
+			<field name="model">product.rank</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+	            <tree string="Ranking" editable="top">
+	                <field name="name"/>
+	                <field name="rank"/>
+	            </tree>
+			</field>
+		</record>
+		<record id="action_minimax_rank" model="ir.actions.act_window">
+			<field name="name">Ranking</field>
+			<field name="res_model">product.rank</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start creating a new product rank.</p>
+			</field>
+		</record>	
+		<!--jon  minimax  Product action menu  Product/Configuration/Samples Archive-->
+		<menuitem id="menu_minimax_rank" name="Ranking" parent="minimax_configuration" action="action_minimax_rank" sequence="120"/>
+	    
+	    
+	    
+		<!--Jon Generic product_race_ed tree view-->
+		<record id="product_race_ed_tree_view" model="ir.ui.view">
+			<field name="name">product_race_ed.tree</field>
+			<field name="model">product.race.ed</field>
+			<field name="type">tree</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+	            <field name="name"/>
+	            <field name="race_id"/>
+	            <field name="year"/>
+			</field>
+		</record>
+		
+		<!--Jon Generic product_race_ed from view-->
+		<record id="product_race_ed_form_view" model="ir.ui.view">
+			<field name="name">product_race_ed.form</field>
+			<field name="model">product.race.ed</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<form string="Race Edition Form" version="7.0">
+					<group col="4">
+	                    <group col="4" colspan="4">
+	                        <field name="name" 	  colspan="4"/>
+	                        <field name="race_id" colspan="2"/>
+	                        <field name="year" 	  colspan="2"/>
+	                    </group>
+	                    
+	                    <group colspan="4">
+	                        <h1><label string="Classification" for="classification_ids"/></h1>
+	                        <field name="classification_ids" colspan="4" nolabel="1">
+	                            <tree editable="top">
+	                                <field name="rank_id"/>
+	                                <field name="model_id"/>
+	                                <field name="name"/>
+	                                <field name="driver_ids" widget="many2many_tags" context="{'get_fullname':True}"/>
+	                            </tree>
+	                        </field>
+	                    </group>
+					</group>
+				</form>
+			</field>
+		</record>
+		
+		<record id="action_minimax_race_ed" model="ir.actions.act_window">
+			<field name="name">Races Edition</field>
+			<field name="res_model">product.race.ed</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create"></p>
+				<p>Click to start creating a new product race edition.</p>
+			</field>
+		</record>	
+		
+		<record id="action_race_ed_tree_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="0"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="product_race_ed_tree_view"/>
+			<field name="act_window_id" ref="action_minimax_race_ed"/>
+		</record>
+		
+		<record id="action_race_ed_form_view" model="ir.actions.act_window.view">
+			<field name="sequence" eval="0"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="product_race_ed_form_view"/>
+			<field name="act_window_id" ref="action_minimax_race_ed"/>
+		</record>
+		
+		<!--jon  minimax  Product action menu  ,Product/Racing Data/Race/Race Edition  --> 
+		<menuitem id="menu_minimax_race_ed" name="Race Editions" parent="minimax_racing" action="action_minimax_race_ed" sequence="4"/>
+		
+	    
+	    
+		<!--Jon Generic product_classification from view, when create form product.classification_id-->
+		<record id="product_product_classification_form_view" model="ir.ui.view">
+			<field name="name">product_classification.form</field>
+			<field name="model">product.classification</field>
+			<field name="type">form</field>
+			<field name="priority">0</field>
+			<field name="arch" type="xml">
+				<form string="Product Classification Form">
+	                <group>
+	                    <field name="name" 	  colspan="2"/>
+	                    <field name="rank_id" colspan="2"/>
+	                    <!--field name="model_id" colspan="2"/-->
+	                    <field name="driver_ids" colspan="2" widget="many2many_tags"/>
+	                    <!--field name="race_ed_id" colspan="2"/-->
+                	</group>
+				</form>
+			</field>
+		</record>
+	</data>
+</openerp>
