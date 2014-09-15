@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="inherit_minimax_product_base_price_normal_form_view" model="ir.ui.view">
+            <field name="name">product.form_normal_base_price_view_triple_price</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="mmx_sale_triple_price.inherit_minimax_product_normal_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="user_permission" invisible='1'/>                    
+                </xpath>
+                <xpath expr="//group[@string='Price']//field[@name='list3_price_label']" position="after">
+                    <newline/>
+                    <field name="base_price1" colspan="4" attrs="{'readonly':[('user_permission', '=', 'No')]}"/>
+                    <field name="base_price2" colspan="4" attrs="{'readonly':[('user_permission', '=', 'No')]}"/>
+                </xpath>
+            </field>
+        </record>        
+    </data>
+</openerp>
