@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data >
+        <record id="mmx_product_base_price_baseprice" model="res.groups">
+            <field name="name">Purchase - Base price</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>    
+    </data>
+</openerp>
