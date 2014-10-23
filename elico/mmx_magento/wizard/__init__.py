@@ -19,15 +19,4 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import binder
-from . import connector
-from . import backend
-from . import partner
-from . import magento_model
-from . import sale
-from . import consumer
-from . import product
-from . import magento
-from . import pricelist
-from . import company
-from . import wizard
+from . import wizard_mass_binding

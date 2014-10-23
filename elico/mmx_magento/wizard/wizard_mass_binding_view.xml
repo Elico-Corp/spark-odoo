@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="wizard_mass_binding_form">
+            <field name="name">wizard.mass.binding.form</field>
+            <field name="model">wizard.mass.binding</field>
+            <field name="arch" type="xml">
+                <form string="Magento Product" version="7.0">
+                    <group>
+                        <field name="backend_id"/>
+                        <field name="visibility" />
+                        <field name="tax_class" />
+                        <field name="status" />
+                        <field name="product_type" readonly="1"/>
+                        <field name="website_ids" />
+                        <field name="attribute_set_id" />
+                    </group>
+                    <group string="Inventory Options">
+                        <field name="manage_stock"/>
+                        <field name="backorders"/>
+                        <div class="oe_inline">
+                            <label for="magento_qty" class="oe_inline" />
+                            <field name="magento_qty" readonly="1" class="oe_inline"
+                                nolabel="1"/>
+                        </div>
+                    </group>
+                    <button name="assign" string="Assign" type="object" class='oe_highlight' />
+                </form>
+            </field>
+        </record>
+        <act_window id="action_wizard_mass_binding"
+            multi="True"
+            key2="client_action_multi" name="Mass Magento Binding"
+            res_model="wizard.mass.binding" src_model="product.product"
+            view_mode="form" target="new" view_type="form" />
+    </data>
+</openerp>
