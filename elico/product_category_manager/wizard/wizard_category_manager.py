@@ -45,8 +45,15 @@ class wizard_category_manager(osv.osv_memory):
                 _('Warning!'),
                 _('Please select at least one category'))
         product_pool = self.pool.get('product.product')
+        product_ids = context['active_ids']
+        if wizard.categ_from and wizard.categ_to:
+            product_ids = product_pool.search(
+                cr, uid,
+                [('id', 'in', product_ids),
+                 ('categ_ids', '=', wizard.categ_from.id)]
+            )
         product_pool.write(
-            cr, uid, context['active_ids'],
+            cr, uid, product_ids,
             {'categ_ids': categ_ids})
 
     def remove_all(self, cr, uid, ids, context=None):
