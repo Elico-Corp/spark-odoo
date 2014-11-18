@@ -182,25 +182,27 @@ class wizard_order_split (osv.osv_memory):
                     cr, uid, so_id, {'order_line': [(2, soline.id)]},
                     context=context)
             if not new_so_id:
-                sol_data = sol_pool.copy_data(
-                    cr, uid, soline.id,
-                    default={'product_uom_qty': final_qty,
-                             'final_qty': final_qty,
-                             'order_id': new_so_id,
-                             'ic_pol_id': None,
-                             'ic_sol_id': None}, context=context)
-
-                new_so_data = so_pool.copy_data(
-                    cr, uid, so_id, default={
-                        'name': seq_pool.get(cr, uid, 'sale.order'),
-                        'origin': so['name'],
-                        'order_line': [(0, 0, sol_data)], 
-                        'date_order': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                        'sale_shipment_id': shipment_id,
-                        'purchase_id': None,
-                        'sale_id': None}, context=context)
-                if so['state'] != 'wishlist':
-                    new_so_id = so_pool.create(cr, uid, new_so_data, context=context)
+                try:
+                    sol_data = sol_pool.copy_data(
+                        cr, uid, soline.id,
+                        default={'product_uom_qty': final_qty,
+                                'final_qty': final_qty,
+                                'order_id': new_so_id,
+                        }, context=context)
+		
+                    new_so_data = so_pool.copy_data(
+                        cr, uid, so_id, default={
+                            'name': seq_pool.get(cr, uid, 'sale.order'),
+                            'origin': so['name'],
+                            'order_line': [(0, 0, sol_data)], 
+                            'date_order': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
+                            'sale_shipment_id': shipment_id,
+                            'purchase_id': None,
+                            'sale_id': None}, context=context)
+                    if so['state'] != 'wishlist':
+                        new_so_id = so_pool.create(cr, uid, new_so_data, context=context)
+                except:
+                    pass
                 else:
                     continue
             sol_data = sol_pool.copy_data(
@@ -208,8 +210,7 @@ class wizard_order_split (osv.osv_memory):
                 default={'product_uom_qty': final_qty,
                          'final_qty': final_qty,
                          'order_id': new_so_id,
-                         'ic_pol_id': None,
-                         'ic_sol_id': None}, context=context)
+                        }, context=context)
             sol_pool.create(cr, uid, sol_data, context=context)
 
         domain = [so_id]

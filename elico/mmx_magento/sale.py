@@ -346,13 +346,13 @@ class CartImportMapper(SaleOrderImportMapper):
     @mapping
     def company(self, record):
         sess = self.session
-        binder = self.get_binder_for_model('magento.store')
-        store_id = binder.to_openerp(record['website_id'], unwrap=True)
-        store = sess.pool.get('sale.shop').browse(sess.cr, sess.uid, store_id)
-        if not store:
+        binder = self.get_binder_for_model('magento.res.partner')
+        partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
+        partner = sess.pool.get('res.partner').browse(sess.cr, sess.uid, partner_id)
+        if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
-        return {'company_id': store.company_id.id}
+        return {'company_id': partner.company_id.id}
 
     @mapping
     def payment(self, record):
@@ -812,13 +812,13 @@ class WishlistImportMapper(SaleOrderImportMapper):
     @mapping
     def company(self, record):
         sess = self.session
-        binder = self.get_binder_for_model('magento.store')
-        store_id = binder.to_openerp(record['website_id'], unwrap=True)
-        store = sess.pool.get('sale.shop').browse(sess.cr, sess.uid, store_id)
-        if not store:
+        binder = self.get_binder_for_model('magento.res.partner')
+        partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
+        partner = sess.pool.get('res.partner').browse(sess.cr, sess.uid, partner_id)
+        if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
-        return {'company_id': store.company_id.id}
+        return {'company_id': partner.company_id.id}
 
     @mapping
     def payment(self, record):

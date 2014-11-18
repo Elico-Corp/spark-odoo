@@ -429,8 +429,12 @@ class SaleOrderImport(MagentoImportSynchronizer):
             # deduce it from the store
             store_binder = self.get_binder_for_model('magento.store')
             oe_store_id = store_binder.to_openerp(record['store_id'])
-            store = self.session.browse('magento.store', oe_store_id)
-            oe_website_id = store.website_id.id
+            sess = self.session
+            store_pool = sess.pool.get('magento.store')
+            store_ids = store_pool.search(sess.cr, sess.uid, [])
+            assert store_ids is not None, 'Import the store'
+            store = store_pool.browse(sess.cr, sess.uid, store_ids[0])
+            #oe_website_id = store.website_id.id
             # "fix" the record
             record['website_id'] = store.website_id.magento_id
         return record
@@ -615,7 +619,7 @@ class SaleOrderImportMapper(ImportMapper):
         result = sess.pool['sale.order']._convert_special_fields(sess.cr,
                                                                  sess.uid,
                                                                  result,
-                                                                 result['magento_order_line_ids'],
+                                                                 result.get('magento_order_line_ids', []),
                                                                  sess.context)
         # remove transient fields otherwise OpenERP will raise a warning
         # or even fail to create the record because the fields do not
@@ -626,6 +630,8 @@ class SaleOrderImportMapper(ImportMapper):
         result.pop('gift_certificates_amount', None)
         result.pop('gift_certificates_code', None)
         onchange = self.get_connector_unit_for_model(SaleOrderOnChange)
+        if not 'magento_order_line_ids' in result:
+            return result
         return onchange.play(result, result['magento_order_line_ids'])
 
     @mapping
@@ -638,11 +644,19 @@ class SaleOrderImportMapper(ImportMapper):
 
     @mapping
     def store_id(self, record):
+        sess = self.session 
         binder = self.get_binder_for_model('magento.storeview')
         storeview_id = binder.to_openerp(record['store_id'])
         assert storeview_id is not None, 'cannot import sale orders from non existinge storeview'
-        storeview = self.session.browse('magento.storeview', storeview_id)
-        shop_id = storeview.store_id.openerp_id.id
+        if storeview_id == 1:
+            partner_id = self.customer_id(record)['partner_id']
+            mag_partner_id = sess.pool.get('magento.res.partner').search(
+                sess.cr, sess.uid, [('openerp_id', '=', partner_id), ('backend_id', '=', self.backend_record.id)])
+            mag_partner = sess.pool.get('magento.res.partner').browse(sess.cr, sess.uid, mag_partner_id[0])
+            shop_id = mag_partner.website_id.store_ids[0].openerp_id.id
+        else:    
+            storeview = sess.pool.get('magento.storeview').browse(sess.cr, sess.uid, storeview_id)
+            shop_id = storeview.store_id.openerp_id.id
         return {'shop_id': shop_id}
 
     @mapping
@@ -652,7 +666,12 @@ class SaleOrderImportMapper(ImportMapper):
         assert partner_id is not None, \
                ("customer_id %s should have been imported in "
                 "SaleOrderImport._import_dependencies" % record['customer_id'])
-        return {'partner_id': partner_id}
+        sess = self.session
+        partner = sess.pool.get('res.partner').browse(sess.cr, sess.uid, partner_id)
+        pricelist_id = partner.property_product_pricelist.id if partner.property_product_pricelist else None
+        res = {'partner_id': partner_id, 'pricelist_id': pricelist_id}
+        
+        return res
 
     @mapping
     def payment(self, record):
