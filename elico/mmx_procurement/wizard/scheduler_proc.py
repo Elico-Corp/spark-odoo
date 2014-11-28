@@ -146,7 +146,7 @@ class procurement_order(osv.osv):
         warehouse_obj = self.pool.get('stock.warehouse')
         wf_service = netsvc.LocalService("workflow")
         company_id = self.pool.get(
-            'res.users').browse(cr, 1, uid).company_id.id
+            'res.users').browse(cr, uid, uid).company_id.id
 
         warehouse_ids = warehouse_obj.search(
             cr, uid, [('company_id', '=', company_id)], context=context)
@@ -243,7 +243,6 @@ class procurement_order(osv.osv):
                     wf_service.trg_validate(
                         uid, 'procurement.order', proc_id,
                         'button_check',   cr)
-
         if proc_ids and merge_po:
             proc_ids.append(0)
             # cr.commit()
