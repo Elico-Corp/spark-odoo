@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+        <record id="view_magento_backend_attributs_form" model="ir.ui.view">
+            <field name="name">magento.backend.warehouses.form</field>
+            <field name="model">magento.backend</field>
+            <field name="inherit_id" ref="magentoerpconnect.view_magento_backend_form" />
+            <field name="arch" type="xml" >
+                <xpath expr="//button[@name='import_product_attribute_set']" position='replace'>
+                    <button name="import_product_attribute_set" type="object" string="Import Attribute Set" class="oe_highlight"/>
+                    <label string="Import Attributes and Options"/>
+                    <button name="import_attributes_sets_attrs_options" type="object" string="Import Attributes and Options" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>
