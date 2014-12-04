@@ -1,0 +1,112 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* product_custom_attributes
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-04 08:59+0000\n"
+"PO-Revision-Date: 2013-11-04 17:02+0800\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#. module: product_custom_attributes
+#: code:addons/product_custom_attributes/product.py:104
+#, python-format
+msgid "Information"
+msgstr "Information"
+
+#. module: product_custom_attributes
+#: model:ir.model,name:product_custom_attributes.model_product_product
+#: view:product.product:0
+msgid "Product"
+msgstr "产品"
+
+#. module: product_custom_attributes
+#: view:product.product:0
+msgid "attributes_placeholder"
+msgstr "attributes_placeholder"
+
+#. module: product_custom_attributes
+#: view:product.product:0
+msgid "Open Attributes"
+msgstr "打开属性"
+
+#. module: product_custom_attributes
+#: model:ir.actions.act_window,name:product_custom_attributes.open_product_by_attribute_set
+#: model:ir.ui.menu,name:product_custom_attributes.open_product_wizard
+msgid "Open Product By Attribute Set"
+msgstr "按照属性设置 打开产品"
+
+#. module: product_custom_attributes
+#: view:open.product.by.attribute.set:0
+msgid "Open product by attributes set"
+msgstr "按照属性设置 打开产品"
+
+#. module: product_custom_attributes
+#: model:ir.model.fields,field_description:product_custom_attributes.field_open_product_by_attribute_set_attribute_set_id
+#: model:ir.model.fields,field_description:product_custom_attributes.field_product_product_attribute_set_id
+#: field:open.product.by.attribute.set,attribute_set_id:0
+#: field:product.product,attribute_set_id:0
+msgid "Attribute Set"
+msgstr "属性设置"
+
+#. module: product_custom_attributes
+#: view:open.product.by.attribute.set:0
+msgid "Open Product By attribute"
+msgstr "按照属性打开产品"
+
+#. module: product_custom_attributes
+#: view:product.product:0
+msgid "Save and Close"
+msgstr "保存和关闭"
+
+#. module: product_custom_attributes
+#: model:ir.actions.act_window,name:product_custom_attributes.attribute_set_form_action
+#: model:ir.ui.menu,name:product_custom_attributes.menu_attribute_set_action
+msgid "Product Attribute Sets"
+msgstr "Product Attribute Sets"
+
+#. module: product_custom_attributes
+#: model:ir.model.fields,field_description:product_custom_attributes.field_product_product_attribute_group_ids
+#: field:product.product,attribute_group_ids:0
+msgid "Groups"
+msgstr "Groups"
+
+#. module: product_custom_attributes
+#: code:addons/product_custom_attributes/product.py:102
+#, python-format
+msgid "Custom Attributes"
+msgstr "Custom Attributes"
+
+#. module: product_custom_attributes
+#: view:open.product.by.attribute.set:0 view:product.product:0
+msgid "Cancel"
+msgstr "取消"
+
+#. module: product_custom_attributes
+#: model:ir.ui.menu,name:product_custom_attributes.menu_attribute_in_config_product
+msgid "Attributes"
+msgstr "Attributes"
+
+#. module: product_custom_attributes
+#: model:ir.model,name:product_custom_attributes.model_open_product_by_attribute_set
+msgid "Wizard to open product by attributes set"
+msgstr "Wizard to open product by attributes set"
+
+#. module: product_custom_attributes
+#: model:ir.actions.act_window,name:product_custom_attributes.attribute_attribute_form_action
+#: model:ir.ui.menu,name:product_custom_attributes.menu_attribute_attribute_action
+msgid "Product Attribute"
+msgstr "Product Attribute"
+
+#. module: product_custom_attributes
+#: view:open.product.by.attribute.set:0 view:product.product:0
+msgid "or"
+msgstr "或"

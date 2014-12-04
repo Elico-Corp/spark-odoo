@@ -18,7 +18,13 @@
 			<field name="type">form</field>
 			<field name="priority">0</field>
 			<field name="arch" type="xml">
-				<field name="name"/>
+				<form string="Product Scale" version="7.0">
+					<sheet>
+						<group>
+							<field name="name"/>
+						</group>
+					</sheet>
+				</form>
 			</field>
 		</record>
 		

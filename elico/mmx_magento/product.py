@@ -66,29 +66,80 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
         if record.color_ids:
             attributes['customer_color'] = ', '.join(
                 color.name for color in record.color_ids)
-        if record.driver_ids:
-            attributes['driver'] = ', '.join(
-                driver.name + " " +
-                driver.surname for driver in record.driver_ids)
-        if record.model_id:
-            attributes['custom_manufacturer'] = (
-                record.model_id.manufacturer_id.name
-                if record.model_id.manufacturer_id else '')
-        if record.model_id:
-            attributes['model'] = record.model_id.name
-        if record.race_ed_id:
-            attributes['race_edition'] = (
-                record.race_ed_id.race_id.name if record.race_ed_id else '')
+        # if record.driver_ids:
+        #     attributes['driver'] = ', '.join(
+        #         driver.name + " " +
+        #         driver.surname for driver in record.driver_ids)
+        # if record.model_id:
+        #     attributes['custom_manufacturer'] = (
+        #         record.model_id.manufacturer_id.name
+        #         if record.model_id.manufacturer_id else '')
+        # if record.model_id:
+        #     attributes['model'] = record.model_id.name
+        # if record.race_ed_id:
+        #     attributes['race_edition'] = (
+        #         record.race_ed_id.race_id.name if record.race_ed_id else '')
         if record.rank_id:
             attributes['rank'] = record.rank_id.name
-        if record.scale_id:
-            attributes['scale'] = record.scale_id.name
+        # if record.scale_id:
+            # attributes['scale'] = record.scale_id.name
         if record.year:
             attributes['year'] = record.year
         if record.model_year:
             attributes['model_year'] = record.model_year
-	attributes['can_sell'] = record.do_not_allow_checkout
+	    attributes['can_sell'] = record.do_not_allow_checkout
         return attributes
+
+    @mapping
+    def scale(self, record):
+        scale_obj = record.scale_id
+
+        if scale_obj.magento_bind_ids:
+            scale_option_magento_id = scale_obj.magento_bind_ids[0].magento_id
+
+        magento_attribute = scale_obj.attribute_id
+        if magento_attribute:
+            return {str(magento_attribute.attribute_code): scale_option_magento_id}
+        return False
+
+    @mapping
+    def product_model(self, record):
+        model_obj = record.model_id
+
+        if model_obj.magento_bind_ids:
+            model_option_magento_id = model_obj.magento_bind_ids[0].magento_id
+
+        magento_attribute = model_obj.attribute_id
+        if magento_attribute:
+            return {str(magento_attribute.attribute_code): model_option_magento_id}
+        return False
+
+    @mapping
+    def race_edition(self, record):
+        race_ed_obj = record.race_ed_id
+
+        if race_ed_obj.magento_bind_ids:
+            race_option_magento_id = race_ed_obj.magento_bind_ids[0].magento_id
+
+        magento_attribute = race_ed_obj.attribute_id
+
+        if magento_attribute:
+            return {str(magento_attribute.attribute_code): race_option_magento_id}
+        return False
+
+    @mapping
+    def product_driver(self, record):
+        driver_objs = record.driver_ids
+
+        driver_option_magento_ids = []
+        for driver_obj in driver_objs:
+            if driver_obj.magento_bind_ids:
+                driver_option_magento_id = driver_obj.magento_bind_ids[0].magento_id
+                driver_option_magento_ids.append(str(driver_option_magento_id))
+        magento_attribute = driver_obj.attribute_id
+        if magento_attribute:
+            return {str(magento_attribute.attribute_code): driver_option_magento_ids}
+        return False
 
     @mapping
     def custom_status(self, record):

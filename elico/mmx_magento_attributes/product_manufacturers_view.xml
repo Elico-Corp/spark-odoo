@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_magento_product_manufacturer_form" model="ir.ui.view">
+            <field name="name">magento.product.manufacturer.form</field>
+            <field name="model">product.manufacturer</field>
+            <field name="inherit_id" ref="mmx_product.product_manufacturer_form_view" />
+            <field name="arch" type="xml">
+                <data>  
+                    <field name="name" position="after">
+                        <field name="backend_id"/>
+                        <field name="attribute_id"/>
+                    </field>
+                </data>
+            </field>
+        </record>
+    </data>
+</openerp>
