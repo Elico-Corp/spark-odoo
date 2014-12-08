@@ -131,12 +131,14 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
     def product_driver(self, record):
         driver_objs = record.driver_ids
 
+        magento_attribute = False
+
         driver_option_magento_ids = []
         for driver_obj in driver_objs:
             if driver_obj.magento_bind_ids:
-                driver_option_magento_id = driver_obj.magento_bind_ids[0].magento_id
+                driver_option_magento_id = driver_obj.magento_bind_ids[0].mato_id
                 driver_option_magento_ids.append(str(driver_option_magento_id))
-        magento_attribute = driver_objs[0].attribute_id
+            magento_attribute = driver_obj.attribute_id
         if magento_attribute:
             return {str(magento_attribute.attribute_code): driver_option_magento_ids}
         return False
