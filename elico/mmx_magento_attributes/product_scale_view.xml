@@ -6,10 +6,10 @@
             <field name="model">product.scale</field>
             <field name="inherit_id" ref="mmx_product.product_scale_form_view" />
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/group/field[@name='name']/.." position="after">
-                    <field name="backend_id"/>
-                    <field name="attribute_id"/>
-                </xpath>
+                <field name="name" position="after">
+                    <field name="backend_id" string="Backend"/>
+                    <field name="attribute_id" string="Magento Attribute"/>
+                </field>
             </field>
         </record>
     </data>
