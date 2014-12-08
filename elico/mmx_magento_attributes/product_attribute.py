@@ -80,13 +80,13 @@ Can not inherit the class
 
 
 # @mapping
-def ProductProductExportMapperForSet(self, record):
-    binder = self.get_binder_for_model('magento.attribute.set')
-    set_id = binder.to_backend(record.attribute_set_id.id)
+# def ProductProductExportMapperForSet(self, record):
+#     binder = self.get_binder_for_model('magento.attribute.set')
+#     set_id = binder.to_backend(record.attribute_set_id.id)
 
-    return {'attrset': set_id}
+#     return {'attrset': set_id}
 
-ProductProductExportMapper.set = ProductProductExportMapperForSet
+# ProductProductExportMapper.set = ProductProductExportMapperForSet
 
 # @magento
 # class ProductImportMapperForSet(ProductImportMapper):
