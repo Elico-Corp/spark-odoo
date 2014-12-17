@@ -94,12 +94,15 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
     def scale(self, record):
         scale_obj = record.scale_id
 
-        if scale_obj.magento_bind_ids:
-            scale_option_magento_id = scale_obj.magento_bind_ids[0].magento_id
+        scale_option_magento_id = False
+        for magento_backend in scale_obj.magento_bind_ids:
+            if magento_backend.backend_id == record.backend_id:
+                scale_option_magento_id = magento_backend.magento_id
 
         magento_attribute = scale_obj.attribute_id
         if magento_attribute:
-            return {str(magento_attribute.attribute_code): scale_option_magento_id}
+            return {
+                str(magento_attribute.attribute_code): scale_option_magento_id}
         return False
 
     @mapping

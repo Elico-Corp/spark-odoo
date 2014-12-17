@@ -26,8 +26,14 @@ class MMXProductScale(orm.Model):
     _inherit = 'product.scale'
 
     _columns = {
-        'backend_id': fields.many2one(
-            'magento.backend', 'Magento Backend', required=True),
+        # 'backend_id': fields.many2one(
+        #     'magento.backend', 'Magento Backend', required=True),
+        'backend_ids': fields.many2many(
+            'magento.backend',
+            'scale_magento_backend_rel',
+            'scale_id',
+            'backend_id',
+            'Magento Backend'),
         'attribute_id': fields.many2one(
             'magento.product.attribute', 'Magento Attribute', required=True),
         'magento_bind_ids': fields.one2many(
@@ -38,16 +44,16 @@ class MMXProductScale(orm.Model):
         res_id = super(MMXProductScale, self).create(
             cr, uid, vals, context=context)
 
-        backend_id = vals['backend_id']
-        attribute_id = vals['attribute_id']
-        option_vals = {
-            'name': vals['name'],
-            'backend_id': backend_id,
-            'magento_attribute_id': attribute_id,
-            'value': res_id,
-            'scale_id': res_id,
-        }
-        self.pool.get('magento.attribute.option').create(
-            cr, uid, option_vals, context=context)
+        for backend_id in vals['backend_ids']:
+            attribute_id = vals['attribute_id']
+            option_vals = {
+                'name': vals['name'],
+                'backend_id': backend_id,
+                'magento_attribute_id': attribute_id,
+                'value': res_id,
+                'scale_id': res_id,
+            }
+            self.pool.get('magento.attribute.option').create(
+                cr, uid, option_vals, context=context)
 
         return res_id
