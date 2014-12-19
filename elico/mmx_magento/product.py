@@ -87,7 +87,7 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             attributes['year'] = record.year
         if record.model_year:
             attributes['model_year'] = record.model_year
-	    attributes['can_sell'] = record.do_not_allow_checkout
+        attributes['can_sell'] = record.do_not_allow_checkout
         return attributes
 
     @mapping
@@ -114,7 +114,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
 
         magento_attribute = model_obj.attribute_id
         if magento_attribute:
-            return {str(magento_attribute.attribute_code): model_option_magento_id}
+            return {
+                str(magento_attribute.attribute_code): model_option_magento_id}
         return False
 
     @mapping
@@ -127,7 +128,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
         magento_attribute = race_ed_obj.attribute_id
 
         if magento_attribute:
-            return {str(magento_attribute.attribute_code): race_option_magento_id}
+            return {
+                str(magento_attribute.attribute_code): race_option_magento_id}
         return False
 
     @mapping
@@ -139,11 +141,13 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
         driver_option_magento_ids = []
         for driver_obj in driver_objs:
             if driver_obj.magento_bind_ids:
-                driver_option_magento_id = driver_obj.magento_bind_ids[0].mato_id
+                driver_option_magento_id = \
+                    driver_obj.magento_bind_ids[0].magento_id
                 driver_option_magento_ids.append(str(driver_option_magento_id))
             magento_attribute = driver_obj.attribute_id
         if magento_attribute:
-            return {str(magento_attribute.attribute_code): driver_option_magento_ids}
+            return {
+                str(magento_attribute.attribute_code): driver_option_magento_ids}
         return False
 
     @mapping
