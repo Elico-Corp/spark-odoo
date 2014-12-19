@@ -81,5 +81,5 @@ def _create_magento_attibute_option(socket, session):
 if __name__ == '__main__':
     socket = ServerProxy(SERVER, DADABASE, USER, PASSWORD)
     session = socket.login()
-    # update_driver_data(socket, session)
+    update_driver_data(socket, session)
     _create_magento_attibute_option(socket, session)
