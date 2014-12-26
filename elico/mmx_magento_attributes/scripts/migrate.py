@@ -22,10 +22,16 @@
 from api import ServerProxy
 
 
-SERVER = 'http://127.0.0.1:8069'
-DADABASE = 'mmx_trunk7'
+# SERVER = 'http://127.0.0.1:8069'
+# DADABASE = 'mmx_trunk7'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
+
+# MMX Trunk Environment
+SERVER = 'http://106.186.122.175:6172'
+DADABASE = 'trunk_mmx'
 USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+PASSWORD = 'password'
 
 
 def update_driver_data(socket, session):
@@ -39,11 +45,9 @@ def update_driver_data(socket, session):
 
     attribute_ids = socket.search(
         session, 'magento.product.attribute',
-        [('attribute_code', '=', 'x_q_dirvers')])
+        [('attribute_code', '=', 'x_mmx_driver')])
 
     values = {'backend_id': backend_ids[0], 'attribute_id': attribute_ids[0]}
-    import pdb
-    pdb.set_trace()
     ids = socket.search(session, 'product.driver', [])
     socket.write(session, 'product.driver', ids, values)
 
@@ -81,5 +85,5 @@ def _create_magento_attibute_option(socket, session):
 if __name__ == '__main__':
     socket = ServerProxy(SERVER, DADABASE, USER, PASSWORD)
     session = socket.login()
-    update_driver_data(socket, session)
+    # update_driver_data(socket, session)
     _create_magento_attibute_option(socket, session)

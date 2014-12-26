@@ -147,7 +147,9 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             magento_attribute = driver_obj.attribute_id
         if magento_attribute:
             return {
-                str(magento_attribute.attribute_code): driver_option_magento_ids}
+                str(magento_attribute.attribute_code):
+                driver_option_magento_ids
+            }
         return False
 
     @mapping
