@@ -22,16 +22,16 @@
 from api import ServerProxy
 
 
-SERVER = 'http://127.0.0.1:8069'
-DADABASE = 'mmx_trunk7'
-USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+# SERVER = 'http://127.0.0.1:8069'
+# DADABASE = 'mmx_trunk7'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
-# SERVER = 'http://106.186.122.175:6172'
-# DADABASE = 'trunk_mmx'
-# USER = 'admin'
-# PASSWORD = 'password'
+SERVER = 'http://106.186.122.175:6172'
+DADABASE = 'trunk_mmx'
+USER = 'admin'
+PASSWORD = 'password'
 
 
 def update_driver_data(socket, session):
@@ -45,7 +45,7 @@ def update_driver_data(socket, session):
 
     attribute_ids = socket.search(
         session, 'magento.product.attribute',
-        [('attribute_code', '=', 'x_mmx_drivers')])
+        [('attribute_code', '=', 'x_mmx_driver')])
 
     # values = {'backend_id': backend_ids[0], 'attribute_id': attribute_ids[0]}
     values = {
