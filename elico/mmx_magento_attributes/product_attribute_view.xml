@@ -181,6 +181,7 @@
             <field name="magento_attribute_id"/>
             <field name="name"/>
             <field name="value"/>
+            <field name="backend_id" />
         </tree>
     </field>
 </record>
