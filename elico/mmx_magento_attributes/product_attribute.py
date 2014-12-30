@@ -643,7 +643,7 @@ class AttributeOptionAdapter(GenericAdapter):
     def create(self, data):
         option_id = self._call(
             '%s.addOption' % 'ol_catalog_product_attribute',
-            [data.pop('attribute'), data])
+            [int(data.pop('attribute')), data])
         return option_id
 
     def search_read(self, attribute_id):

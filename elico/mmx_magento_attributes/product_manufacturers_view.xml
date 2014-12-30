@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <data>  
                     <field name="name" position="after">
-                        <field name="backend_id"/>
                         <field name="attribute_id"/>
+                        <field name="backend_ids"/>
                     </field>
                 </data>
             </field>
