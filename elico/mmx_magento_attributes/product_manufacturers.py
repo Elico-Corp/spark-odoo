@@ -26,8 +26,12 @@ class MMXProductManufacturer(orm.Model):
     _inherit = 'product.manufacturer'
     
     _columns = {
-        'backend_id': fields.many2one(
-            'magento.backend', 'Magento Backend', required=True),
+        'backend_ids': fields.many2many(
+            'magento.backend',
+            'manufacturer_magento_backend_rel',
+            'manufacturer_id',
+            'backend_id',
+            'Magento Backend'),
         'attribute_id': fields.many2one(
             'magento.product.attribute', 'Magento Attribute', required=True),
     }
@@ -36,15 +40,15 @@ class MMXProductManufacturer(orm.Model):
         res_id = super(MMXProductManufacturer, self).create(
             cr, uid, vals, context=context)
 
-        backend_id = vals['backend_id']
-        attribute_id = vals['attribute_id']
-        option_vals = {
-            'name': vals['name'],
-            'backend_id': backend_id,
-            'magento_attribute_id': attribute_id,
-            'value': res_id,
-        }
-        self.pool.get('magento.attribute.option').create(
-            cr, uid, option_vals, context=context)
+        for backend_id in vals['backend_ids']:
+            attribute_id = vals['attribute_id']
+            option_vals = {
+                'name': vals['name'],
+                'backend_id': backend_id,
+                'magento_attribute_id': attribute_id,
+                'value': res_id,
+            }
+            self.pool.get('magento.attribute.option').create(
+                cr, uid, option_vals, context=context)
 
         return res_id

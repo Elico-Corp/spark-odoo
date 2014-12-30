@@ -93,63 +93,63 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
     @mapping
     def scale(self, record):
         scale_obj = record.scale_id
+        if scale_obj:
+            scale_option_magento_id = False
+            for magento_backend in scale_obj.magento_bind_ids:
+                if magento_backend.backend_id == record.backend_id:
+                    scale_option_magento_id = magento_backend.magento_id
 
-        scale_option_magento_id = False
-        for magento_backend in scale_obj.magento_bind_ids:
-            if magento_backend.backend_id == record.backend_id:
-                scale_option_magento_id = magento_backend.magento_id
-
-        magento_attribute = scale_obj.attribute_id
-        if magento_attribute:
-            return {
-                str(magento_attribute.attribute_code): scale_option_magento_id}
+            magento_attribute = scale_obj.attribute_id
+            if magento_attribute:
+                return {str(magento_attribute.attribute_code): scale_option_magento_id}
         return False
 
     @mapping
     def product_model(self, record):
         model_obj = record.model_id
 
-        if model_obj.magento_bind_ids:
+        if model_obj and model_obj.magento_bind_ids:
             model_option_magento_id = model_obj.magento_bind_ids[0].magento_id
 
-        magento_attribute = model_obj.attribute_id
-        if magento_attribute:
-            return {
-                str(magento_attribute.attribute_code): model_option_magento_id}
+            magento_attribute = model_obj.attribute_id
+            if magento_attribute:
+                return {
+                    str(magento_attribute.attribute_code): model_option_magento_id}
         return False
 
     @mapping
     def race_edition(self, record):
         race_ed_obj = record.race_ed_id
 
-        if race_ed_obj.magento_bind_ids:
+        if race_ed_obj and race_ed_obj.magento_bind_ids:
             race_option_magento_id = race_ed_obj.magento_bind_ids[0].magento_id
 
-        magento_attribute = race_ed_obj.attribute_id
+            magento_attribute = race_ed_obj.attribute_id
 
-        if magento_attribute:
-            return {
-                str(magento_attribute.attribute_code): race_option_magento_id}
+            if magento_attribute:
+                return {
+                    str(magento_attribute.attribute_code): race_option_magento_id}
         return False
 
     @mapping
     def product_driver(self, record):
         driver_objs = record.driver_ids
 
-        magento_attribute = False
+        if driver_objs:
+            magento_attribute = False
 
-        driver_option_magento_ids = []
-        for driver_obj in driver_objs:
-            if driver_obj.magento_bind_ids:
-                driver_option_magento_id = \
-                    driver_obj.magento_bind_ids[0].magento_id
-                driver_option_magento_ids.append(str(driver_option_magento_id))
-            magento_attribute = driver_obj.attribute_id
-        if magento_attribute:
-            return {
-                str(magento_attribute.attribute_code):
-                driver_option_magento_ids
-            }
+            driver_option_magento_ids = []
+            for driver_obj in driver_objs:
+                if driver_obj.magento_bind_ids:
+                    driver_option_magento_id = \
+                        driver_obj.magento_bind_ids[0].magento_id
+                    driver_option_magento_ids.append(str(driver_option_magento_id))
+                magento_attribute = driver_obj.attribute_id
+            if magento_attribute:
+                return {
+                    str(magento_attribute.attribute_code):
+                    driver_option_magento_ids
+                }
         return False
 
     @mapping
