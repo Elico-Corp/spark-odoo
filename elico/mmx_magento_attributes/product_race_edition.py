@@ -44,11 +44,12 @@ class MMXProductRaceEdition(orm.Model):
 
         for backend_id in vals['backend_ids']:
             attribute_id = vals['attribute_id']
+            attr_name = self.browse(cr, uid, res_id).name
             option_vals = {
-                'name': self.browse(cr, uid, res_id).name,
+                'name': attr_name,
                 'backend_id': backend_id,
                 'magento_attribute_id': attribute_id,
-                'value': res_id,
+                'value': attr_name,
                 'race_edition_id': res_id,
             }
             self.pool.get('magento.attribute.option').create(

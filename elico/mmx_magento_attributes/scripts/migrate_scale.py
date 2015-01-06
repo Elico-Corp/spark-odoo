@@ -56,7 +56,7 @@ def _create_magento_scale_option(socket, session):
                 'name': scale['name'],
                 'backend_id': backend,
                 'magento_attribute_id': scale['attribute_id'][0],
-                'value': scale['id'],
+                'value': scale['name'],
                 'scale_id': scale['id'],
             }
 

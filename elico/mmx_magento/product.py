@@ -66,23 +66,23 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
         if record.color_ids:
             attributes['customer_color'] = ', '.join(
                 color.name for color in record.color_ids)
-        if record.driver_ids:
-            attributes['driver'] = ', '.join(
-                driver.name + " " +
-                driver.surname for driver in record.driver_ids)
+        # if record.driver_ids:
+        #     attributes['driver'] = ', '.join(
+        #         driver.name + " " +
+        #         driver.surname for driver in record.driver_ids)
         if record.model_id:
             attributes['custom_manufacturer'] = (
                 record.model_id.manufacturer_id.name
                 if record.model_id.manufacturer_id else '')
-        if record.model_id:
-            attributes['model'] = record.model_id.name
-        if record.race_ed_id:
-            attributes['race_edition'] = (
-                record.race_ed_id.race_id.name if record.race_ed_id else '')
+        # if record.model_id:
+        #     attributes['model'] = record.model_id.name
+        # if record.race_ed_id:
+        #     attributes['race_edition'] = (
+        #         record.race_ed_id.race_id.name if record.race_ed_id else '')
         if record.rank_id:
             attributes['rank'] = record.rank_id.name
-        if record.scale_id:
-            attributes['scale'] = record.scale_id.name
+        # if record.scale_id:
+        #     attributes['scale'] = record.scale_id.name
         if record.year:
             attributes['year'] = record.year
         if record.model_year:
