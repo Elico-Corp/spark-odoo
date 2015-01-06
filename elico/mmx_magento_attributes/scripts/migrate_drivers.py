@@ -28,10 +28,17 @@ from api import ServerProxy
 # PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
-SERVER = 'http://106.186.122.175:6172'
-DADABASE = 'trunk_mmx'
+# SERVER = 'http://106.186.122.175:6172'
+# DADABASE = 'trunk_mmx'
+# USER = 'admin'
+# PASSWORD = 'password'
+
+
+#MMX Stable Environment
+SERVER = 'http://106.186.122.175:6162'
+DADABASE = 'stable_mmx'
 USER = 'admin'
-PASSWORD = 'password'
+PASSWORD = 'MMX3licoC0rp'
 
 
 def update_driver_data(socket, session):
@@ -59,7 +66,7 @@ def update_driver_data(socket, session):
 def _get_driver_data(socket, session):
     result = socket.read(
         session, 'product.driver',
-        [], ('surname', 'name', 'backend_ids', 'attribute_id'))
+        [], ('surname', 'name', 'fullname', 'backend_ids', 'attribute_id'))
 
     return result
 
@@ -74,13 +81,13 @@ def _create_magento_attibute_option(socket, session):
                 'name': option_name,
                 'backend_id': backend,
                 'magento_attribute_id': driver_info['attribute_id'][0],
-                'value': driver_info['id'],
+                'value': driver_info['fullname'],
                 'driver_id': driver_info['id'],
             }
             option_ids = socket.search(
                 session,
                 'magento.attribute.option',
-                [('name', '=', option_name)])
+                [('name', '=', option_name),('backend_id', '=', backend)])
             if not option_ids:
                 op_id = socket.create(
                     session, 'magento.attribute.option', vals)

@@ -143,7 +143,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
                 if driver_obj.magento_bind_ids:
                     driver_option_magento_id = \
                         driver_obj.magento_bind_ids[0].magento_id
-                    driver_option_magento_ids.append(str(driver_option_magento_id))
+                    driver_option_magento_ids.append(
+                        str(driver_option_magento_id))
                 magento_attribute = driver_obj.attribute_id
             if magento_attribute:
                 return {

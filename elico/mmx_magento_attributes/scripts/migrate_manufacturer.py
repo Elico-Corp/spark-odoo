@@ -22,16 +22,22 @@
 from api import ServerProxy
 
 
-SERVER = 'http://127.0.0.1:8069'
-DADABASE = 'mmx_trunk7'
-USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+# SERVER = 'http://127.0.0.1:8069'
+# DADABASE = 'mmx_trunk7'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
 # SERVER = 'http://106.186.122.175:6172'
 # DADABASE = 'trunk_mmx'
 # USER = 'admin'
 # PASSWORD = 'password'
+
+#MMX Stable Environment
+SERVER = 'http://106.186.122.175:6162'
+DADABASE = 'stable_mmx'
+USER = 'admin'
+PASSWORD = 'MMX3licoC0rp'
 
 
 def _create_magento_manufacturer_option(socket, session):

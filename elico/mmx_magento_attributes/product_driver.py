@@ -42,13 +42,15 @@ class MMXProductDriver(orm.Model):
         res_id = super(MMXProductDriver, self).create(
             cr, uid, vals, context=context)
 
+        drvier_obj = self.browse(cr, uid, res_id, context=context)
+
         for backend_id in vals['backend_ids']:
             attribute_id = vals['attribute_id']
             option_vals = {
                 'name': vals['name'],
                 'backend_id': backend_id,
                 'magento_attribute_id': attribute_id,
-                'value': res_id,
+                'value': drvier_obj.fullname,
                 'driver_id': res_id,
             }
             self.pool.get('magento.attribute.option').create(
