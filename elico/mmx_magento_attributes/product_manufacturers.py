@@ -46,7 +46,7 @@ class MMXProductManufacturer(orm.Model):
                 'name': vals['name'],
                 'backend_id': backend_id,
                 'magento_attribute_id': attribute_id,
-                'value': res_id,
+                'value': vals['name'],
             }
             self.pool.get('magento.attribute.option').create(
                 cr, uid, option_vals, context=context)

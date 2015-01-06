@@ -55,7 +55,7 @@ def _create_magento_manufacturer_option(socket, session):
                 'name': obj['name'],
                 'backend_id': backend,
                 'magento_attribute_id': obj['attribute_id'][0],
-                'value': obj['id'],
+                'value': obj['name'],
                 'manufacturer_id': obj['id'],
             }
 

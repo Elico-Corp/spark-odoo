@@ -28,17 +28,17 @@ from api import ServerProxy
 # PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
-# SERVER = 'http://106.186.122.175:6172'
-# DADABASE = 'trunk_mmx'
-# USER = 'admin'
-# PASSWORD = 'password'
+SERVER = 'http://106.186.122.175:6172'
+DADABASE = 'trunk_mmx'
+USER = 'admin'
+PASSWORD = 'password'
 
 
 #MMX Stable Environment
-SERVER = 'http://106.186.122.175:6162'
-DADABASE = 'stable_mmx'
-USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+# SERVER = 'http://106.186.122.175:6162'
+# DADABASE = 'stable_mmx'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
 
 
 def update_driver_data(socket, session):
@@ -113,5 +113,5 @@ if __name__ == '__main__':
     socket = ServerProxy(SERVER, DADABASE, USER, PASSWORD)
     session = socket.login()
     # update_driver_data(socket, session)
-    # _create_magento_attibute_option(socket, session)
-    export_all_product_scale(socket, session)
+    _create_magento_attibute_option(socket, session)
+    # export_all_product_scale(socket, session)
