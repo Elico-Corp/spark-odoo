@@ -22,16 +22,23 @@
 from api import ServerProxy
 
 
-SERVER = 'http://127.0.0.1:8069'
-DADABASE = 'mmx_trunk7'
-USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+# SERVER = 'http://127.0.0.1:8069'
+# DADABASE = 'mmx_trunk7'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
 # SERVER = 'http://106.186.122.175:6172'
 # DADABASE = 'trunk_mmx'
 # USER = 'admin'
 # PASSWORD = 'password'
+
+#MMX Stable Environment
+
+SERVER = 'http://106.186.122.175:6162'
+DADABASE = 'stable_mmx'
+USER = 'admin'
+PASSWORD = 'MMX3licoC0rp'
 
 
 def _create_magento_model_option(socket, session):
@@ -52,8 +59,18 @@ def _create_magento_model_option(socket, session):
                 'value': obj['id'],
                 'model_id': obj['id'],
             }
-
-            socket.create(session, 'magento.attribute.option', option_vals)
+            option_ids = socket.search(
+                session,
+                'magento.attribute.option',
+                [('name', '=', obj['name']), ('backend_id', '=', backend)])
+            option_name = obj['name']
+            if not option_ids:
+                opt_id = socket.create(
+                    session, 'magento.attribute.option', option_vals)
+                print "Magento Attribute Option: %s with ID: %s , is created" % (
+                    option_name, opt_id)
+            else:
+                print "Magento Attribute Option: %s is exist" % (option_name,)
 
 
 def export_all_product_model(socket, session):

@@ -670,7 +670,8 @@ class AttributeOptionExportMapper(ExportMapper):
 
     @mapping
     def label(self, record):
-        return {'label': [{
+        return {
+            'label': [{
                 'store_id': ['0'],
                 'value': record.value,
             }]

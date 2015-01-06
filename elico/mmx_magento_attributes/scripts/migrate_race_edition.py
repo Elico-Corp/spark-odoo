@@ -41,16 +41,17 @@ def _create_magento_race_edition_option(socket, session):
     """
     result = socket.read(
         session, 'product.race.ed',
-        [], ('name', 'backend_id', 'attribute_id'))
+        [], ('name', 'backend_ids', 'attribute_id'))
 
     for obj in result:
-        option_vals = {
-            'name': obj['name'],
-            'backend_id': obj['backend_id'],
-            'magento_attribute_id': obj['attribute_id'][0],
-            'value': obj['id'],
-            'model_id': obj['id'],
-        }
+        for backend in obj['backend_ids']:
+            option_vals = {
+                'name': obj['name'],
+                'backend_id': backend,
+                'magento_attribute_id': obj['attribute_id'][0],
+                'value': obj['id'],
+                'model_id': obj['id'],
+            }
 
         socket.create(session, 'magento.attribute.option', option_vals)
 
