@@ -44,11 +44,14 @@ class MMXProductDriver(orm.Model):
 
         drvier_obj = self.browse(cr, uid, res_id, context=context)
 
-        for backend_id in vals['backend_ids']:
+        backend_ids = self.resolve_2many_commands(
+            cr, uid, 'backend_ids', vals['backend_ids'], ['id'], context)
+
+        for backend_id in backend_ids:
             attribute_id = vals['attribute_id']
             option_vals = {
                 'name': vals['name'],
-                'backend_id': backend_id,
+                'backend_id': backend_id.get('id'),
                 'magento_attribute_id': attribute_id,
                 'value': drvier_obj.fullname,
                 'driver_id': res_id,

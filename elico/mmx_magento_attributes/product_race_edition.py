@@ -42,12 +42,15 @@ class MMXProductRaceEdition(orm.Model):
         res_id = super(MMXProductRaceEdition, self).create(
             cr, uid, vals, context=context)
 
-        for backend_id in vals['backend_ids']:
+        backend_ids = self.resolve_2many_commands(
+            cr, uid, 'backend_ids', vals['backend_ids'], ['id'], context)
+
+        for backend_id in backend_ids:
             attribute_id = vals['attribute_id']
             attr_name = self.browse(cr, uid, res_id).name
             option_vals = {
                 'name': attr_name,
-                'backend_id': backend_id,
+                'backend_id': backend_id.get('id'),
                 'magento_attribute_id': attribute_id,
                 'value': attr_name,
                 'race_edition_id': res_id,

@@ -106,7 +106,7 @@ if __name__ == '__main__':
     #First We should Update all the old data
     # update_scale_data(socket, session)
     #Second We need to create one option for one scale data
-    # _create_magento_scale_option(socket, session)
+    _create_magento_scale_option(socket, session)
     #Before this step we need to bind the new attribute
     #with attibute set in magento
-    export_all_product_scale(socket, session)
+    # export_all_product_scale(socket, session)

@@ -24,7 +24,7 @@ import consumer
 import product_attribute
 import magento_model
 import product_scale
-import product_manufacturers
+# import product_manufacturers
 import product_model
 import product_race_edition
 import product_driver

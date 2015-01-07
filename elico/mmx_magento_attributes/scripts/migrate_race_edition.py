@@ -22,16 +22,23 @@
 from api import ServerProxy
 
 
-SERVER = 'http://127.0.0.1:8069'
-DADABASE = 'mmx_trunk7'
-USER = 'admin'
-PASSWORD = 'MMX3licoC0rp'
+# SERVER = 'http://127.0.0.1:8069'
+# DADABASE = 'mmx_trunk7'
+# USER = 'admin'
+# PASSWORD = 'MMX3licoC0rp'
 
 # MMX Trunk Environment
 # SERVER = 'http://106.186.122.175:6172'
 # DADABASE = 'trunk_mmx'
 # USER = 'admin'
 # PASSWORD = 'password'
+
+#MMX Stable Environment
+
+SERVER = 'http://106.186.122.175:6162'
+DADABASE = 'stable_mmx'
+USER = 'admin'
+PASSWORD = 'MMX3licoC0rp'
 
 
 def _create_magento_race_edition_option(socket, session):
@@ -50,10 +57,20 @@ def _create_magento_race_edition_option(socket, session):
                 'backend_id': backend,
                 'magento_attribute_id': obj['attribute_id'][0],
                 'value': obj['name'],
-                'model_id': obj['id'],
+                'race_edition_id': obj['id'],
             }
 
-        socket.create(session, 'magento.attribute.option', option_vals)
+            option_ids = socket.search(
+                session,
+                'magento.attribute.option',
+                [('name', '=', obj['name']), ('backend_id', '=', backend)])
+            if not option_ids:
+                opt_id = socket.create(
+                    session, 'magento.attribute.option', option_vals)
+                print "Magento Attribute Option: %s with ID: %s , is created" % (
+                    obj['name'], opt_id)
+            else:
+                print "Magento Attribute Option: %s is exist" % (obj['name'],)
 
 
 def export_all_product_model(socket, session):
@@ -97,9 +114,9 @@ if __name__ == '__main__':
     socket = ServerProxy(SERVER, DADABASE, USER, PASSWORD)
     session = socket.login()
     #First We should Update all the old data
-    update_race_editon_data(socket, session)
+    # update_race_editon_data(socket, session)
     #Second We need to create one option for one scale data
-    # _create_magento_race_edition_option(socket, session)
+    _create_magento_race_edition_option(socket, session)
     #Before this step we need to bind the new attribute
     #with attibute set in magento
     # export_all_product_model(socket, session)
