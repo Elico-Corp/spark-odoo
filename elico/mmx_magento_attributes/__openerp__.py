@@ -55,7 +55,7 @@ Extension for **Magento Connector**, add management of the product's catalog:
         'product_scale_view.xml',
         # 'product_manufacturers_view.xml',
         'product_model_view.xml',
-        'product_race_edition_view.xml',
+        'product_race_view.xml',
         'product_driver_view.xml',
     ],
     'installable': True,

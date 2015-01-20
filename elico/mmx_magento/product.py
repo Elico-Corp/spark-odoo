@@ -119,17 +119,21 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
 
     @mapping
     def race_edition(self, record):
+        res = {}
         race_ed_obj = record.race_ed_id
 
-        if race_ed_obj and race_ed_obj.magento_bind_ids:
-            race_option_magento_id = race_ed_obj.magento_bind_ids[0].magento_id
+        if race_ed_obj and race_ed_obj.race_id:
+            race_id = race_ed_obj.race_id
+            if race_id.magento_bind_ids:
+                race_option_magento_id = race_id.magento_bind_ids[0].magento_id
 
-            magento_attribute = race_ed_obj.attribute_id
+                magento_attribute = race_id.attribute_id
 
-            if magento_attribute:
-                return {
-                    str(magento_attribute.attribute_code): race_option_magento_id}
-        return False
+                if magento_attribute:
+                    res[magento_attribute.attribute_code] = race_option_magento_id
+        if race_ed_obj and race_ed_obj.year:
+                res['race_edition_year'] = race_ed_obj.year
+        return res
 
     @mapping
     def product_driver(self, record):

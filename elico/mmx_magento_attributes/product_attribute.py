@@ -624,8 +624,8 @@ class MagentoAttributeOption(orm.Model):
             'product.scale', 'Product Scale'),
         'model_id': fields.many2one(
             'product.model', 'Product Model'),
-        'race_edition_id': fields.many2one(
-            'product.race.ed', 'Product Race Edition'),
+        'race_id': fields.many2one(
+            'product.race', 'Product Race Edition'),
         'driver_id': fields.many2one(
             'product.driver', 'Product Driver'),
     }
