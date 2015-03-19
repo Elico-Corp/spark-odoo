@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
 #    Author: Andy Lu <andy.lu@elico-corp.com>
+#            Alex Duan<alex.duan@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,6 +21,6 @@
 #
 ##############################################################################
 
-import stock
+from . import stock
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

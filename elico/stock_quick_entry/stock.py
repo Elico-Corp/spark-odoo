@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
 #    Author: Andy Lu <andy.lu@elico-corp.com>
+#            Alex Duan<alex.duan@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,40 +21,45 @@
 #
 ##############################################################################
 
-from osv import osv, fields
+from openerp.osv import orm, fields
 import time
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
-class StockMove(osv.osv):
+class StockMove(orm.Model):
     _inherit = 'stock.move'
 
     def product_id_change(self, cr, uid, ids, product, location_id,
                           location_dest_id, date_expected, context=None):
+        '''This method if only used in the quick internal move creation form
+        when the field product_id changes.
+
+        The standard method is not overwritten.
+        '''
         context = context or {}
         result = {}
-
-        product_obj = self.pool.get('product.product').browse(
-            cr, uid, product, context=context)
-        if product_obj and product_obj.uom_id:
-            result['product_uom'] = product_obj.uom_id.id
-        result['name'] = product_obj.name
-        result['location_id'] = location_id
-        result['location_dest_id'] = location_dest_id
-        result['date_expected'] = date_expected
+        if product:
+            product_obj = self.pool['product.product'].browse(
+                cr, uid, product, context=context)
+            result = {
+                'name': product_obj.name,
+                'location_id': location_id,
+                'location_dest_id': location_dest_id,
+                'date_expected': date_expected
+            }
+            if product_obj.uom_id:
+                result['product_uom'] = product_obj.uom_id.id
         return {'value': result}
 
-StockMove()
 
-
-class stock_picking(osv.osv):
+class StockPicking(orm.Model):
     _inherit = 'stock.picking'
     _columns = {
         'min_date': fields.datetime('Min date'),
     }
 
     _defaults = {
-        'min_date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
+        'min_date': lambda *a: time.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
     }
-stock_picking()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
