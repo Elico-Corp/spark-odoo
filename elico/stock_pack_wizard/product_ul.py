@@ -2,8 +2,9 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#     Jon Chow <jon.chow@elico-corp.com>
+#    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
+#    Alex Duan <alex.duan@elico-corp.com>
+#    Jon Chow <jon.chow@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,24 +22,32 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+import openerp.addons.decimal_precision as dp
 
 
-class product_ul(osv.osv):
+class ProductUl(osv.osv):
     _inherit = 'product.ul'
-    def _get_cbm(self, cr, uid, ids, fields, arg=None,  context=None):
+
+    def _get_cbm(self, cr, uid, ids, fields, arg=None, context=None):
         res = {}
         for ul in self.browse(cr, uid, ids, context=context):
-            cbm = ul.high * ul.width * ul.long 
-            cbm = cbm != 0 and cbm/1000000 
+            cbm = ul.high * ul.width * ul.long
+            cbm = cbm != 0 and cbm / 1000000
             res[ul.id] = cbm
-            
         return res
+
     _columns = {
         'name': fields.char('name', size=32),
-        'high': fields.float('H (cm)', digits=(3,3)),
-        'width':fields.float('W (cm)', digits=(3,3)),
-        'long': fields.float('L (cm)', digits=(3,3)),
-        'cbm': fields.function(_get_cbm, arg=None, type='float', digits=(3,3), string='CBM'),
+        'high': fields.float(
+            'H (cm)', digits_compute=dp.get_precision('Pack Height')),
+        'width': fields.float(
+            'W (cm)', digits_compute=dp.get_precision('Pack Height')),
+        'long': fields.float(
+            'L (cm)', digits_compute=dp.get_precision('Pack Height')),
+        'cbm': fields.function(
+            _get_cbm, arg=None, type='float',
+            string='CBM',
+            digits_compute=dp.get_precision('Pack Height')),
     }
 
- # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

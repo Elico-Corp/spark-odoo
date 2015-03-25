@@ -51,7 +51,7 @@
                                     <field name="product_uos" groups="product.group_uos" invisible="1"/>
                                     <field name="scrapped" invisible="1"/>
                                     <field name="prodlot_id" groups="stock.group_production_lot" invisible="1"/>
-                                    <field groups="stock.group_tracking_lot" name="tracking_id" invisible="1"/>
+                                    <field groups="stock.group_tracking_lot" name="tracking_id"/>
                                     <field name="name" invisible="1"/>                                    
                                 </tree>
                             </field>
