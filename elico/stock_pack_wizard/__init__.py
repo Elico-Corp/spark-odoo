@@ -2,8 +2,9 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#    Author: Jon Chow <jon.chow@elico-corp.com>
+#    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
+#    Alex Duan <alex.duan@elico-corp.com>
+#    Jon Chow <jon.chow@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
