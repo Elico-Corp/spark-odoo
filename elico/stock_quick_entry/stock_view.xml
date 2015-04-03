@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-        
         <!-- Stock Picking -->        
         <record id="picking_quick_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
@@ -90,17 +89,7 @@
             <field name="view_id" ref="picking_quick_form"/>
             <field name="act_window_id" ref="action_picking_quick"/>
         </record>
-        <menuitem action="action_picking_quick" id="menu_action_picking_quick" parent="stock.menu_stock_warehouse_mgmt" sequence="2"/>
-        
-        <!--? why cant set gourps ,    del muenu internal move of standard OE   jon.chow#elico-corp.com Jun 20, 2013-->
-        <record id="stock.menu_action_picking_tree6" model="ir.ui.menu">
-        	<field name='groups_id' eval="[(6,0,[ref('base.group_user'),])]"/>
-        </record>
-   
-        <!--  
-        <menuitem action="action_picking_tree6" id="menu_action_picking_tree6" parent="menu_stock_warehouse_mgmt" sequence="2" groups="stock.group_locations"/>
-        -->
-        
+        <menuitem string="Quick Internal Move" action="action_picking_quick" id="menu_action_picking_quick" parent="stock.menu_stock_warehouse_mgmt" sequence="12"/>
         
     </data>
 </openerp>
