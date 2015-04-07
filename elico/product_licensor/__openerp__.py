@@ -48,6 +48,7 @@ Product licensor manager to setup the licensors.
  'demo': [],
  'data': [
      'security/product_licensor_security.xml',
+     'security/ir.model.access.csv',
      'licensor_view.xml',
      'product_view.xml',
      'report/product_licensor_report_view.xml'],

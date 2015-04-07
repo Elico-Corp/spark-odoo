@@ -34,6 +34,7 @@ class ProductLicensorReport(orm.Model):
         'product_uom': fields.many2one(
             'product.uom', 'Reference Unit of Measure', required=True),
         'purchased_qty': fields.integer('Purchased quantity'),
+        'company_id': fields.many2one('res.company', 'Company', readonly=True),
     }
 
     # TODO
@@ -50,7 +51,8 @@ class ProductLicensorReport(orm.Model):
                     pl.licensor_id as licensor_id,
                     l.product_id as product_id,
                     sum(l.product_qty/u.factor*u2.factor) as purchased_qty,
-                    t.uom_id as product_uom
+                    t.uom_id as product_uom,
+                    l.company_id as company_id
                 from purchase_order_line l
                     left join product_licensor_rel pl on (
                         pl.product_id = l.product_id)
@@ -65,6 +67,7 @@ class ProductLicensorReport(orm.Model):
                     pl.licensor_id,
                     t.uom_id,
                     l.id,
+                    l.company_id,
                     l.product_qty)
             """)
 

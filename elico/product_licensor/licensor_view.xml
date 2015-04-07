@@ -43,6 +43,7 @@
                                 <field name="contract_number" />
                                 <field name="number_of_samples" />
                                 <field name="field_percentage" />
+                                <field name="licensed_product_ids" />
                             </group>
                         </group>
                     </page>

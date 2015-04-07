@@ -42,7 +42,7 @@
         <field name="help">Product Licensor Analysis allows you to easily check and analyse different licensors' purchased product quantity.</field>
     </record>
 
-    <menuitem action="action_product_licensor_report_all" id="product_licensor.menu_product_licensor_report" parent="base.next_id_73" sequence="4"/>
+    <menuitem action="action_product_licensor_report_all" id="product_licensor.menu_product_licensor_report" parent="base.next_id_73" sequence="4" groups="group_licensor_manager"/>
 
     </data>
 </openerp>
