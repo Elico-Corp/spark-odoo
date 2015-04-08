@@ -1,0 +1,10 @@
+-
+  Set the default partner ref field for the model.
+-
+  !python {model: res.partner}: |
+    partner_ids = self.search(cr, uid, [('ref','in',(False, None))], order='id asc')
+    sequence_obj = self.pool['ir.sequence']
+    for id in partner_ids:
+      if self._needs_ref(cr, uid, id):
+        ref = sequence_obj.next_by_code(cr, uid, 'res.partner', context)
+        self.write(cr, uid, id, {'ref': ref})
