@@ -10,7 +10,7 @@
                 <xpath expr="//field[@name='move_lines']" position="before">
                     <button string="New Pack" name="%(action_wizard_picking_tracking)d"
                             type="action"
-                            groups="stock.group_tracking_lot"
+                            groups="product.group_stock_packaging"
                             states='draft,assigned,auto,confirmed'
                             icon="terp-accessories-archiver"/>
                 </xpath>
