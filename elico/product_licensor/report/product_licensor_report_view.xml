@@ -10,6 +10,7 @@
                     <field name="product_id" />
                     <field name="purchased_qty" />
                     <field name="product_uom" />
+                    <field name="date" />
                 </tree>
             </field>
         </record>
@@ -25,6 +26,9 @@
                 <group expand="1" string="Group By...">
                     <filter name="group_licensor_id" string="Licensor" icon="terp-accessories-archiver" context="{'group_by':'licensor_id'}"/>
                     <filter string="Product" name="group_product_id" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
+                    <filter string="Year" name="group_year" icon="terp-accessories-archiver" context="{'group_by':'year'}"/>
+                    <filter string="Month" name="group_month" icon="terp-accessories-archiver" context="{'group_by':'month'}"/>
+                    <filter string="Day" name="group_day" icon="terp-accessories-archiver" context="{'group_by':'day'}"/>
                 </group>
             </search>
         </field>

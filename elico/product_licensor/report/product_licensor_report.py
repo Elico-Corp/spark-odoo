@@ -35,6 +35,15 @@ class ProductLicensorReport(orm.Model):
             'product.uom', 'Reference Unit of Measure', required=True),
         'purchased_qty': fields.integer('Purchased quantity'),
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
+        'date': fields.date('Receipt Date', readonly=True),
+        'year': fields.char('Year', size=64, required=False, readonly=True),
+        'day': fields.char('Day', size=128, readonly=True),
+        'month': fields.selection(
+            [('01', 'January'), ('02', 'February'), ('03', 'March'),
+                ('04', 'April'), ('05', 'May'), ('06', 'June'),
+                ('07', 'July'), ('08', 'August'), ('09', 'September'),
+                ('10', 'October'), ('11', 'November'), ('12', 'December')],
+            'Month', readonly=True),
     }
 
     # TODO
@@ -42,6 +51,7 @@ class ProductLicensorReport(orm.Model):
 
     def init(self, cr):
         # deal with uom conversion
+        # set up the ID for this model.
         tools.sql.drop_view_if_exists(cr, 'product_licensor_report')
         cr.execute("""
             create or replace view product_licensor_report
@@ -52,8 +62,14 @@ class ProductLicensorReport(orm.Model):
                     l.product_id as product_id,
                     sum(l.product_qty/u.factor*u2.factor) as purchased_qty,
                     t.uom_id as product_uom,
-                    l.company_id as company_id
-                from purchase_order_line l
+                    l.company_id as company_id,
+                    l.date as date,
+                    to_char(l.date, 'YYYY') as year,
+                    to_char(l.date, 'MM') as month,
+                    to_char(l.date, 'YYYY-MM-DD') as day
+                from stock_move l
+                    left join stock_picking sp on (
+                        l.picking_id = sp.id)
                     left join product_licensor_rel pl on (
                         pl.product_id = l.product_id)
                     left join product_template t on (pl.product_id = t.id)
@@ -62,13 +78,18 @@ class ProductLicensorReport(orm.Model):
                 where
                     l.product_id in (
                         select distinct product_id from product_licensor_rel)
+                    and
+                        sp.type = 'in'
+                    and
+                        l.state = 'done'
                 group by
                     l.product_id,
                     pl.licensor_id,
                     t.uom_id,
                     l.id,
                     l.company_id,
-                    l.product_qty)
+                    l.product_qty,
+                    l.date)
             """)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
