@@ -8,7 +8,7 @@
                 <tree string="Product Licensor Statistics" create="false">
                     <field name="licensor_id" />
                     <field name="product_id" />
-                    <field name="purchased_qty" />
+                    <field name="qty" />
                     <field name="product_uom" />
                     <field name="date" />
                 </tree>
@@ -43,7 +43,7 @@
         <field name="view_id" ref="view_product_licensor_report_tree"></field>
         <field name="search_view_id" ref="view_product_licensor_report_search"/>
         <field name="context">{'search_default_group_licensor_id': True,'search_default_group_product_id': 1}</field>
-        <field name="help">Product Licensor Analysis allows you to easily check and analyse different licensors' purchased product quantity.</field>
+        <field name="help">Product Licensor Analysis allows you to easily check and analyse different licensors' received product quantity.</field>
     </record>
 
     <menuitem action="action_product_licensor_report_all" id="product_licensor.menu_product_licensor_report" parent="base.next_id_73" sequence="4" groups="group_licensor_manager"/>

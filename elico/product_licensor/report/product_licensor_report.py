@@ -33,7 +33,7 @@ class ProductLicensorReport(orm.Model):
         'product_id': fields.many2one('product.product', 'Product'),
         'product_uom': fields.many2one(
             'product.uom', 'Reference Unit of Measure', required=True),
-        'purchased_qty': fields.integer('Purchased quantity'),
+        'qty': fields.integer('Received quantity'),
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
         'date': fields.date('Receipt Date', readonly=True),
         'year': fields.char('Year', size=64, required=False, readonly=True),
@@ -60,7 +60,7 @@ class ProductLicensorReport(orm.Model):
                     (concat(l.id, pl.licensor_id))::integer as id,
                     pl.licensor_id as licensor_id,
                     l.product_id as product_id,
-                    sum(l.product_qty/u.factor*u2.factor) as purchased_qty,
+                    sum(l.product_qty/u.factor*u2.factor) as qty,
                     t.uom_id as product_uom,
                     l.company_id as company_id,
                     l.date as date,
