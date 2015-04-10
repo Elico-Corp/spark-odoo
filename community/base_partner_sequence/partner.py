@@ -62,10 +62,22 @@ class ResPartner(orm.Model):
         """
         return True
 
+    def _get_default_ref(self, cr, uid, context=None):
+        sequence_obj = self.pool['ir.sequence']
+        if self._needs_ref(cr, uid, context=context):
+            return sequence_obj.next_by_code(
+                cr, uid, 'res.partner', context=context)
+        return ''
+
     _columns = {
         'ref': fields.char(
             'Reference', size=64, readonly=True, required=True),
     }
+
+    _defaults = {
+        'ref': _get_default_ref
+    }
+
     _sql_constraints = [
         ('ref_unique', 'unique(ref)',
             _('The partner reference should be unique!'))]
