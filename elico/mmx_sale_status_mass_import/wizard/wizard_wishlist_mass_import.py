@@ -151,14 +151,14 @@ class CSVMassImportParser(CSVParser):
         self._check_partner_exist(context=context)
 
         # check required fields
-        import pdb
-        pdb.set_trace()
         parsed_cols = self.result_row_list[0].keys()
         for f in self.required_fields:
             if f not in parsed_cols:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('Please make sure the columns names are correct!'))
+                    _('Please make sure the columns names are correct!\n'
+                        'You must have a this fields:%s') % str(
+                            self.required_fields))
         # TODO: more format and field type checkings.
         return True
 

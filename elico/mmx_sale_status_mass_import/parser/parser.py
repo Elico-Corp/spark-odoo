@@ -36,8 +36,6 @@ def unicode_dict_reader(utf8_data, **kwargs):
     dialect.quotechar = '"'
     try:
         csv_reader = csv.DictReader(utf8_data, dialect=dialect, **kwargs)
-        import pdb
-        pdb.set_trace()
         if sniffer.has_header(sample_data):
             next(csv_reader, None)
         for row in csv_reader:
