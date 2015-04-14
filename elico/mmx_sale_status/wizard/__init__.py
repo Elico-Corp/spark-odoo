@@ -20,9 +20,9 @@
 #
 ##############################################################################
 
-import wizard_order_split
-import wizard_sol_split
-import wizard_assign_shipment
+from . import wizard_order_split
+from . import wizard_sol_split
+from . import wizard_assign_shipment
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
