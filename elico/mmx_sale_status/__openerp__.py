@@ -42,10 +42,13 @@
     1-    Move SOL to a new SO
     2-    Move SOL to another existing SO (of the same partner)
     3-    Move SOL back to the SO-0 [Cart] Order
+
+    update on 2015/3/30 alex.duan@elico-corp.com
+    Inherit sale.report and add the filter wishlist.
     """,
-    'depends': ['base', 'product', 'sale', 'mmx_magento', 'sale_order_line',
+    'depends': ['mmx_magento', 'sale_order_line',
                 'purchase_order_line', 'mmx_product_advance', 'sale_shipment',
-                'sale_exceptions', 'base_intercompany'],
+                'sale_exceptions', 'base_intercompany', 'sale_stock'],
     'category': '',
     'sequence': 10,
     'demo': [],
@@ -55,7 +58,10 @@
         'wizard/wizard_assign_shipment_view.xml',
         'sale_view.xml',
         'purchase_view.xml',
-        'sale_wkf.xml'],
+        'sale_wkf.xml',
+        'security/ir_rule_data.xml',
+        'report/sale_report_view.xml'
+    ],
     'test': [],
     'installable': True,
     'application': False,
