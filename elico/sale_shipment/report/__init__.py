@@ -19,5 +19,5 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import sale_shipment
-import sale_shipment_move_available_done
+from . import sale_shipment
+from . import sale_shipment_move_available_done
