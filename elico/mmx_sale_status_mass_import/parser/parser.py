@@ -36,8 +36,6 @@ def unicode_dict_reader(utf8_data, **kwargs):
     dialect.quotechar = '"'
     try:
         csv_reader = csv.DictReader(utf8_data, dialect=dialect, **kwargs)
-        if sniffer.has_header(sample_data):
-            next(csv_reader, None)
         for row in csv_reader:
             yield dict(
                 [(key, unicode(value, 'utf-8'))
@@ -93,11 +91,16 @@ class FileParser(object):
         base_name = '_parse_'
         try:
             res = getattr(self, base_name + self.ftype)()
-        except:
+        except AttributeError:
             raise orm.except_orm(
                 _('Warning'),
                 _('There is no parse method for this format %s,'
                     'Please make sure you have defined one!') % self.ftype)
+        except:
+            # TODO how to handle this is a user error.
+            raise orm.except_orm(
+                _('Warning'),
+                _('There is error when parsing this file.'))
         self.result_row_list = res
         return True
 
@@ -125,20 +128,5 @@ class FileParser(object):
             self.filebuffer = filebuffer
         else:
             raise Exception(_('No buffer file given.'))
-        self._format(*args, **kwargs)
-        self._pre(*args, **kwargs)
         self._parse(*args, **kwargs)
-        self._validate(*args, **kwargs)
-        self._post(*args, **kwargs)
         return self.result_row_list
-
-    def _cast_rows(self, *args, **kwargs):
-        """
-        Convert the self.result_row_list using
-        the self.conversion_dict providen.
-        We call here _from_xls or _from_csv
-        depending on the self.ftype variable.
-        """
-        func = getattr(self, '_from_%s' % self.ftype)
-        res = func(self.result_row_list, self.conversion_dict)
-        return res

@@ -162,6 +162,23 @@ class CSVMassImportParser(CSVParser):
         # TODO: more format and field type checkings.
         return True
 
+    def parse(self, filebuffer, *args, **kwargs):
+        """
+        This will be the method that will be called by wizard, button and so
+        to parse a filebuffer by calling successively all the private method
+        that need to be define for each parser.
+        Return:
+             [] of rows as {'key':value}
+
+        """
+        if filebuffer:
+            self.filebuffer = filebuffer
+        else:
+            raise Exception(_('No buffer file given.'))
+        self._parse(*args, **kwargs)
+        self._validate(*args, **kwargs)
+        return self.result_row_list
+
 
 class WizardWishlistMassImport(orm.TransientModel):
     _name = 'wizard.wishlist.mass.import'
@@ -229,7 +246,9 @@ class WizardWishlistMassImport(orm.TransientModel):
         for r in parser.result_row_list:
             # pass the invalid ones, this var is initilized when parse
             # this file.
-            if 'valid' in r and not r['valid']:
+            assert 'valid' in r, \
+                'The "valid" should be in the result_row_list!'
+            if not r['valid']:
                 continue
 
             # get address reference
@@ -337,16 +356,19 @@ class WizardWishlistMassImport(orm.TransientModel):
         # write back the log msg
         wizard.write(
             {'log_message': msg}, context=context)
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Wishlist Mass Import',
-            'res_model': 'wizard.wishlist.mass.import',
-            'context': {
-                'log_message': msg},
-            'res_id': wizard_id,
-            'target': 'new',
-            'view_mode': 'form'
-        }
+        if msg:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Wishlist Mass Import',
+                'res_model': 'wizard.wishlist.mass.import',
+                'context': {
+                    'log_message': msg},
+                'res_id': wizard_id,
+                'target': 'new',
+                'view_mode': 'form'
+            }
+        else:
+            return True
 
     def prepare_wishlist_vals(
             self, cr, uid, partner_id, address_id,
@@ -359,7 +381,6 @@ class WizardWishlistMassImport(orm.TransientModel):
             'partner_id': partner_id,
             'partner_invoice_id': partner_id,
             'partner_shipping_id': address_id,
-            'partner_invoice_id': partner_id,
             'state': 'wishlist'
         })
         if shop_id:
@@ -378,6 +399,19 @@ class WizardWishlistMassImport(orm.TransientModel):
             cr, uid, partner_id, address_id, shop_id=shop_id,
             date=date, context=context)
         so_id = so_obj.create(cr, uid, vals, context=context)
+        return so_id
+
+    def update_wishlist(
+            self, cr, uid, so_id, partner_id, address_id,
+            shop_id=False, date=None, context=None):
+        '''update existing wishlist'''
+        assert so_id, 'Must have a sale order to be updated.'
+        so_obj = self.pool['sale.order']
+        vals = self.prepare_wishlist_vals(
+            cr, uid, partner_id, address_id, shop_id=shop_id,
+            date=date, context=context)
+
+        so_id = so_obj.write(cr, uid, so_id, vals, context=context)
         return so_id
 
     def prepare_wishlist_line_vals(
