@@ -41,8 +41,9 @@ class wizard_sol_split_line(osv.osv_memory):
         'product_qty': fields.related('sol_id', 'product_uom_qty',
                                       type='float', string='Quantity',
                                       readonly=True),
-        'so_id':fields.related('sol_id', 'order_id', type='many2one',
-                               relation='sale.order', string='Sale Order', readonly=True),
+        'so_id': fields.related(
+            'sol_id', 'order_id', type='many2one',
+            relation='sale.order', string='Sale Order', readonly=True),
         'product_state': fields.related('product_id', 'state', type='char',
                                         string='State', readonly=True),
         'final_qty': fields.float(
@@ -52,7 +53,7 @@ class wizard_sol_split_line(osv.osv_memory):
 
 class wizard_sol_split(osv.osv_memory):
     _name = 'wizard.sol.split'
- 
+
     def _get_lines(self, cr, uid, context=None):
         sol_pool = self.pool.get('sale.order.line')
         data = []
@@ -80,8 +81,9 @@ class wizard_sol_split(osv.osv_memory):
     _columns = {
         'name': fields.char('Name', required=False, size=32),
         'date': fields.date('Date', required=True),
-        'shipment_id':fields.many2one('sale.shipment', "Shipment"),
-        'lines': fields.one2many('wizard.sol.split.line', 'wizard_id', 'SO Lines'),
+        'shipment_id': fields.many2one('sale.shipment', "Shipment"),
+        'lines': fields.one2many(
+            'wizard.sol.split.line', 'wizard_id', 'SO Lines'),
         'confirm_orgin': fields.boolean('Confirm Both'),
     }
 
@@ -148,7 +150,7 @@ class wizard_sol_split(osv.osv_memory):
             wizard_lines = dic[so]
             
             #if want to split SOL,qty == whole SO, directly confirm this SO
-            if self._check_confirm_all(so,wizard_lines):
+            if self._check_confirm_all(so, wizard_lines):
                 for soline in so.order_line:
                     sol_pool.write(
                         cr, uid, soline.id,
@@ -194,18 +196,17 @@ class wizard_sol_split(osv.osv_memory):
                     pass
                 sol_id = sol_pool.create(cr, uid, sol_data, context=context)
                 new_soline_ids.append(sol_id)
-                
-                #TODO if Confirm Orgin
-                #If only reserve one SOL, comfirm this SO. 
-                #else split A another new SO, and 
-                
 
-        #confirm new SO
+                # TODO if Confirm Orgin
+                # If only reserve one SOL, comfirm this SO. 
+                # else split A another new SO, and 
+
+        # confirm new SO
         for so_id in new_so_ids:
             context['sale_shipment_id'] = shipment_id
             so_pool.action_button_confirm(cr, uid, [so_id,], context=context)
-        
-        #return old+new SOL 
+
+        # return old+new SOL
         old_soline_ids = [x.sol_id.id  for x in wizard.lines]
         return {
             'name': _('Split Sale Order lines'),

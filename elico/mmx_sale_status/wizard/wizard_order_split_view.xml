@@ -29,7 +29,7 @@
                     	</field>
                     </group>
                     <footer>
-                    	<button name="split_new_order" string="Confirm order" 		type="object" class="oe_highlight"/>
+                    	<button name="split_new_order" string="Confirm order" type="object" class="oe_highlight"/>
                         <!--
                         <button name="move_order_line" string="Move To Other Order" type="object" class="oe_highlight"/>  
                         <button name="back_order_line" string="Back TO Orign" 		type="object" class="oe_highlight"/>
