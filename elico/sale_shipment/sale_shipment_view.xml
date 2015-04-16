@@ -105,5 +105,36 @@
     </field>
 </record>
 
+<!-- add the stock move -->
+<record id="inherit_view_move_tree" model="ir.ui.view">
+            <field name="name">inherit_view_move_tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <data>
+                    <field name="tracking_id" position="before">
+                        <field name="sale_shipment_id" />
+                    </field>
+                </data>
+            </field>
+        </record>
+
+<!-- add sale_shipment in the search view. -->
+<record model="ir.ui.view" id="view_move_search_inherit">
+            <field name="name">view.move.search.inherit</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/>
+            <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="sale_shipment_id"/>
+                </xpath>
+                <filter name="groupby_location_id" position="after">
+                    <filter string="Shipment" name="groupby_sale_shipment_id" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'sale_shipment_id'}"/>
+                </filter>
+            </data>
+            </field>
+        </record>
 </data>
 </openerp>
