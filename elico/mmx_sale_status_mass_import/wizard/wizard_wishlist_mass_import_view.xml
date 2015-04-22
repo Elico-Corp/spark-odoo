@@ -19,7 +19,6 @@
             <field name="log_message" readonly="1"/>
           </group>
           <footer>
-            <button name="check_import_valid" string="Check Import Valid" type="object" class="oe_highlight"/>
             <button name="force_import" string="Import" type="object" class="oe_highlight"/>
               or
             <button string="Cancel" class="oe_link" special="cancel"/>
