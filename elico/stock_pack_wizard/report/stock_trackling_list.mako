@@ -141,7 +141,7 @@ cols=[
 <table  border="1"   width="100%" class=table_horizontal_border >
 	%for tracking in objects :
 		<tr>
-			<td width="10%" vAlign="top">${tracking.fullname}</td>
+			<td width="10%" vAlign="top">${tracking.name}</td>
 			<td width="40%">
 				<table  border="1" class=table_top_border >
 					<tr height="20" class=table_top_border>

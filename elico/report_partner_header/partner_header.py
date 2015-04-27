@@ -25,6 +25,7 @@ from openerp.osv import fields, osv
 from openerp.report.report_sxw import report_sxw
 import openerp.pooler as pooler
 from openerp.tools.translate import _
+from openerp import tools
 
 
 class res_partner(osv.osv):

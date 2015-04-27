@@ -2,8 +2,8 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
-#    Author: Jon chow <jon.chow@elico-corp.com>
+#    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
+#    Alex Duan <alex.duan@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -27,9 +27,11 @@
     'website': 'http://www.elico-corp.com',
     'summary': '',
     'description': """
-        manage of sale and shipment
+    TODO: complete this description
+    and ask Yaxi to provide the related documentation.
+    TODO: replace mmx related information in data.xml
     """,
-    'depends': ['base', 'sale', 'stock', 'sale_order_line', 'sale_menu'],
+    'depends': ['stock', 'sale_order_line', 'sale_menu'],
     'category': '',
     'sequence': 10,
     'demo': [],
@@ -38,6 +40,7 @@
         'sale_shipment_view.xml',
         'security/ir.model.access.csv',
         'sale_shipment_data.xml',
+        'wizard/replenishment_transfer_view.xml'
     ],
     'test': [],
     'installable': True,

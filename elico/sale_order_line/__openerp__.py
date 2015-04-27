@@ -44,23 +44,21 @@
     - Product State
     - Product Type
     According to Product State, lines will have different colors:
-    - Red: Catalogue, 
+    - Red: Catalogue,
     - Yellow (orange for viewing purposes): Preorder
     - Green: Order
     """,
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'images': [],
-    'depends': ['product', 'purchase', 'warning', 'mmx_product_advance', 'sale_menu'],
+    'depends': ['purchase', 'warning', 'mmx_product_advance', 'sale_menu'],
     'data': [
         'security/ir.model.access.csv',
         'sale_view.xml',
-        #'wizard/wizard_update_qty_store_view.xml',
     ],
     'test': [],
     'demo': [],
     'css': ['static/src/css/sale_order_line.css', ],
-    #'js':['static/src/js/sale_order_line.js',],
     'installable': True,
     'auto_install': False,
     'application': False,
