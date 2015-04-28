@@ -31,7 +31,7 @@
     			<page string='Delivery Orders'>
     				<field name='picking_ids' nolabel='1'/>
     			</page>
-                <page string="Stock Moves Internal">
+                <page string="Stock Moves">
                     <field name="stock_move_ids" nolabel="1">
                         <tree colors="grey:state == 'cancel';red:(state not in ('cancel','done')) and date > current_date" string="Moves">
                             <field name="name"/>
