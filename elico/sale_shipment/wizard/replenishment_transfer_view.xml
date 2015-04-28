@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_replenishment_transfer_view" model="ir.ui.view">
+            <field name="name">replenishment.transfer.wizard.form</field>
+            <field name="model">wizard.replenishment.transfer</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml" >
+                <form string="Replenishment Transfer Wizard" version="7.0">
+                    <group>
+                        <field name="src_location_id" />
+                        <field name="dest_location_id" />
+                    </group>
+                    <footer>
+                        <button name="print_report" string="_Print" type="object" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_wizard_print_replenishment" 
+            name="Print Replenishment Transfer Report" 
+            key2="client_action_multi" 
+            res_model="wizard.replenishment.transfer" 
+            src_model="sale.shipment" 
+            view_id="view_replenishment_transfer_view" 
+            view_mode="form" 
+            target="new"/>
+    </data>
+</openerp>

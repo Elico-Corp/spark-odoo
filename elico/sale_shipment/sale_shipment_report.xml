@@ -6,24 +6,17 @@
                 auto="True" 
                 model="sale.shipment" 
                 file="sale_shipment/report/sale_shipment.mako"  
-                string="Shipment"
+                string="Packing Slip"
                 report_type="webkit"/>
 
-        <report id="sale_shipment_move_done_webkit_report" 
-                name="sale_shipment_move_done_webkit" 
-                auto="True" 
-                model="sale.shipment" 
-                file="sale_shipment/report/sale_shipment_move_done.mako"  
-                string="Shipment Done Moves"
-                report_type="webkit"/>
+        <report id="sale_shipment_replenishment_transfer_webkit_report" 
+            name="sale_shipment_replenishment_transfer_webkit" 
+            auto="True" 
+            model="wizard.replenishment.transfer" 
+            file="sale_shipment/report/replenishment_transfer.mako"  
+            string="Replenshiment Transfer" 
+            report_type="webkit"/>
 
-        <report id="sale_shipment_move_available_webkit_report" 
-                name="sale_shipment_move_available_webkit" 
-                auto="True" 
-                model="sale.shipment" 
-                file="sale_shipment/report/sale_shipment_move_available.mako"  
-                string="Shipment Available Moves"
-                report_type="webkit"/>
     </data>
 </openerp>
 

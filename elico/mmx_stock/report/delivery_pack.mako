@@ -209,7 +209,7 @@
 		
 			<tr>
 																		
-				<td width="10%" class=td_all_border vAlign="top">${tracking and tracking.fullname or 'No tracking'}</td>
+				<td width="10%" class=td_all_border vAlign="top">${tracking and tracking.name or 'No tracking'}</td>
 				
 				
 				

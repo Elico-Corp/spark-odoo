@@ -24,19 +24,19 @@ from openerp.report import report_sxw
 
 
 class sale_shipment(report_sxw.rml_parse):
- 
+
     def __init__(self, cr, uid, name, context):
         super(sale_shipment, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
-            'time':            time,
-            'cr':              cr,
-            'uid':             uid,
-            'so_pool': self.pool.get('sale.order'),
+            'time': time,
+            'cr': cr,
+            'uid': uid,
+            'move_pool': self.pool.get('stock.move'),
             'so_line_pool': self.pool.get('sale.order.line'),
             'get_sum_of_product_qty': self._get_sum_of_product_qty,
             'int': int
         })
-    
+
     def _get_sum_of_product_qty(self, cr, uid, group_domain):
         '''
             [param]:group_domain: the domain used in the orm method: read_group
@@ -47,12 +47,11 @@ class sale_shipment(report_sxw.rml_parse):
         if group_domain:
             line_ids = so_line_pool.search(cr, uid, group_domain)
             if line_ids:
-                for d in so_line_pool.read(cr, uid, line_ids, fields=['product_uom_qty']):
+                for d in so_line_pool.read(
+                        cr, uid, line_ids, fields=['product_uom_qty']):
                     sum_of_qty += d.get('product_uom_qty', 0.0)
             return sum_of_qty
-       
-        
-        
+
 report_sxw.report_sxw(
     'report.sale_shipment_webkit',
     'sale.shipment',
