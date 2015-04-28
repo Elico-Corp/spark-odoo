@@ -27,8 +27,17 @@ from openerp.tools.translate import _
 class res_partner(osv.osv):
     _inherit = 'res.partner'
     _columns = {
-        'is_company': fields.boolean('Is a Company', help="Check if the contact is a company, otherwise it is a person"),
-        'invoice_message': fields.text('Invoice message',help="Type in the message that will appear for this partner in all invoices"),
+        'is_company': fields.boolean(
+            'Is a Company',
+            help="Check if the contact is a company,"
+            " otherwise it is a person"),
+        'invoice_message': fields.text(
+            'Invoice message',
+            help="Type in the message that will appear"
+            " for this partner in all invoices"),
+        'customer_account_number': fields.char(
+            size=125,
+            string='Customer Account Number')
     }
     _defaults = {
         'is_company': lambda *a: True,
@@ -41,7 +50,7 @@ Improve the invoice with Partner message:
     Name: "Invoice message"
     Help: "Type in the message that will appear for this partner in all invoices".
     Not Mandatory
-    
+
 In the invoice sxw/rml file, add the field below the comment field.
 """
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
