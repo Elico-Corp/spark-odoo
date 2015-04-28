@@ -26,18 +26,17 @@
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
-    'description' : """
+    'description': """
     MMX Partner Module. .
     """,
-    'depends': ['base','purchase','stock','sale','product' ],
+    'depends': ['purchase', 'stock', 'sale', 'product', 'account'],
     'category': '',
     'sequence': 10,
     'demo': [],
     'data': [
         'partner_view.xml',
         'report/print_invoice.xml',
-#        'partner_access.xml',
-        ],
+    ],
     'test': [],
     'installable': True,
     'application': False,
