@@ -17,7 +17,7 @@
             </field>
         </record>
 
-        <act_window id="action_wizard_sol_split" 
+        <act_window id="action_wizard_announcement_report" 
             name="Print" 
             key2="client_action_multi" 
             res_model="sale.announcement.report.wizard" 

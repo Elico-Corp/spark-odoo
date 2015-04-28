@@ -77,7 +77,8 @@ class sale_order(orm.Model):
             cr, uid, id, default=default, context=context)
 
     def _prepare_order_picking(self, cr, uid, order, context=None):
-        ''' pass the sale_shipment_id onto delivery order model.'''
+        ''' pass the sale_shipment_id from sale order
+        to delivery order model.'''
         res = super(sale_order, self)._prepare_order_picking(
             cr, uid, order, context=context)
         sale_shipment_id = order.sale_shipment_id and \
@@ -116,13 +117,13 @@ class sale_order_line(orm.Model):
             'State', select=True, readonly=True)
     }
 
-    # def copy(self, cr, uid, id, default=None, context=None):
-    #     ''' Don't copy shipment during duplication.'''
-    #     if default is None:
-    #         default = {}
-    #     default.update({'sale_shipment_id': False})
-    #     return super(sale_order_line, self).copy(
-    #         cr, uid, id, default=default, context=context)
+    def copy(self, cr, uid, id, default=None, context=None):
+        ''' Don't copy shipment during duplication.'''
+        if default is None:
+            default = {}
+        default.update({'sale_shipment_id': False})
+        return super(sale_order_line, self).copy(
+            cr, uid, id, default=default, context=context)
 
 
 class stock_move(orm.Model):
