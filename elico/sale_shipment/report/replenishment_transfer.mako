@@ -19,23 +19,31 @@
                 display: block;
                 padding: 3px;
             }
-            .product_div {
-                margin-bottom: 25px;
-            }
             h1, h2, tr, li {
                 page-break-inside: avoid;
             }
-            .product_name {
-                text-align: left;
-                width: 80%;
+            table {
+                width:100%;
+                height: 100%;
+                border: 1px solid #000;
+                border-spacing: inherit;
+                border-collapse: collapse;
             }
-            .sum_of_qty {
-                text-align: right;
-                width: 10%;
+
+            th {
+                text-align: center;
+                border:1px solid black;
+                padding: 3px;
             }
-            .shipment_name {
-                border-bottom: double black;
-                width: 30%;
+
+            td {
+                border: 1px solid black;
+                padding: 3px;
+            }
+            .shipment_name{
+                border-bottom: 1px double black;
+                width: 45%;
+                font-size: 22px;
             }
         </style>
     </head>
@@ -43,19 +51,23 @@
         %for obj in objects:
             %for shipment in get_sale_shipments(cr, uid, context):
             <h1 class="shipment_name">${shipment.name or 'No Shipment'}</h1>
-            <div class="product_div">
-                <ul>
-                    <li class="product_name">Product Name</li>
-                    <li class="sum_of_qty">Quantity</li>
-                </tr>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                       <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
                     %for group in get_res(cr, uid, obj.src_location_id, obj.dest_location_id, shipment.id, context=context):
                         <tr>
-                            <li class="product_name">${group.get('product_id') and group.get('product_id')[1] or "No Product Name"}</li>
-                            <li class="sum_of_qty">${group.get('product_qty')}</li>
+                            <td>${group.get('product_id') and group.get('product_id')[1] or "No "}</td>
+                            <td>${group.get('product_qty')}</td>
                         </tr>
                     %endfor
                 %endfor
-            </div>
+                </tbody>
+            </table>
             %endfor
     </body>
 </html>

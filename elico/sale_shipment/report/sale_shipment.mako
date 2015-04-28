@@ -4,58 +4,61 @@
     <title></title>
     <style type="text/css">
         body {
-            vertical-align: top;
-            margin-bottom: 50px;
-        }
-        ul {
-            padding: 0;
-            display: block;
-        }
-        li {
-            border: 1px solid black;
-            float: left;
-            display: block;
-            padding: 3px;
-        }
-        .product_div {
-            margin-bottom: 80px;
-        }
-        .shipment_name {
-            border-bottom: double black;
-            width: 30%;
-        }
-        h1, h2, ul, li {
-            page-break-inside: avoid;
-        }
-        .sum_of_qty {
-            text-align: right;
-            width: 10%;
-        }
-        .product_name {
-            text-align: left;
-            width: 80%;
-        }
-        .sum_of_qty {
-            text-align: left;
-            width: 10%;
-        }
-        .col_name {
-            width: 15%;
-            border: none;
-            font-weight: bold;
-            font-size: 15px;
-            vertical-align: bottom;
-        }
-        .col_content {
-            width: 30%;
-            text-align: left;
-            border: none;
-            font-size: 15px;
-            vertical-align: bottom;
-        }
-        .info_div {
-            width: 100%;
-        }
+                vertical-align: top;
+                margin-bottom: 50px;
+            }
+            ul {
+                padding: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+                display: block;
+            }
+            li {
+                border: 1px solid black;
+                float: left;
+                display: block;
+                padding: 3px;
+            }
+            h1, h2, tr, li {
+                page-break-inside: avoid;
+            }
+            table {
+                width:100%;
+                height: 100%;
+                border: 1px solid #000;
+                border-spacing: inherit;
+                border-collapse: collapse;
+            }
+
+            th {
+                text-align: center;
+                border:1px solid black;
+                padding: 3px;
+            }
+
+            td {
+                border: 1px solid black;
+                padding: 3px;
+            }
+            .table1 td, .table1 tr{
+                border: none;
+            }
+            .table1{
+                border: none;
+            }
+            .col_name {
+                font-weight: bold;
+                font-size: 15px;
+                vertical-align: bottom;
+            }
+            .shipment_name{
+                border-bottom: 1px double black;
+                width: 45%;
+                font-size: 22px;
+            }
+            table.table2{
+                margin-bottom: 10px;
+            }
     </style>
 </head>
 <body>
@@ -66,28 +69,32 @@
             <% move_ids = move_pool.search(cr, uid, group['__domain']) %>
 
                 %for pack_move_group in move_pool.read_group(cr, uid, [('id', 'in', move_ids)], ['tracking_id'], ['tracking_id']):
-                    <div class="info_div">
-                        <ul>
-                            <li class="col_name">Customer:</li>
-                            <li class="col_content">${group.get('partner_id', '') and group.get('partner_id')[1]}</li>
-                            <li class="col_name">Package:</li>
-                            <li class="col_content">${pack_move_group.get('tracking_id', '') and pack_move_group.get('tracking_id', '')[1] or 'No Package'}</li>
-                        </ul>
-                    </div>
-                    <div class="product_div">
-                        <ul>
-                            <li class="product_name">Product Name</li>
-                            <li class="sum_of_qty">Quantity</li>
-                        </ul>
+                    <table class="table1">
+                        <tr>
+                            <td class="col_name">Customer:</td>
+                            <td>${group.get('partner_id', '') and group.get('partner_id')[1]}</td>
+                            <td class="col_name">Package:</td>
+                            <td>${pack_move_group.get('tracking_id', '') and pack_move_group.get('tracking_id', '')[1] or 'No Package'}</td>
+                        </tr>
+                    </table>
+                    <table class="table2">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
                         <% pack_move_ids = move_pool.search(cr, uid, pack_move_group['__domain']) %>
                         <% move_lines = move_pool.read_group(cr, uid, [('id', 'in', pack_move_ids)], ['product_id', 'product_qty'], ['product_id']) %>
+                            <tbody>
                             %for product_line in move_lines:
-                                <ul class="content_tr">
-                                    <li class="product_name">${product_line['product_id'][1]}</li>
-                                    <li class="sum_of_qty">${ product_line.get('product_qty') }</li>
-                                </ul>
+                                <tr>
+                                    <td>${product_line['product_id'][1]}</td>
+                                    <td>${ product_line.get('product_qty') }</td>
+                                </tr>
                             %endfor
-                    </div>
+                            </tbody>
+                    </table>
                     %endfor
         %endfor
     %endfor
