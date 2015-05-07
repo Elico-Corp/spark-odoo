@@ -50,8 +50,8 @@ class product_base_price(orm.Model):
 
             return res
 
-    _columns = {'base_price1': fields.float('Base Price 1 (USD)', digits=(12, 6)),
-                'base_price2': fields.float('Base Price 2 (USD)', digits=(12, 6)),
+    _columns = {'base_price1': fields.float('Base Price 1 (USD)', digits=(12, 2)),
+                'base_price2': fields.float('Base Price 2 (USD)', digits=(12, 2)),
                 'user_permission': fields.function(_check_permissions,
                                                    type='char', readonly=True)
                 }
