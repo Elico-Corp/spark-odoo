@@ -73,10 +73,11 @@ class wizard_sol_split(osv.osv_memory):
     def _get_shipment_id(self, cr, uid, context=None):
         sol_pool = self.pool.get('sale.order.line')
         sol_ids = context.get('active_ids', False)
-        for sol in sol_pool.browse(cr, uid, sol_ids):
-            if sol.sale_shipment_id:
-                return sol.sale_shipment_id.id
-        return None
+        if sol_ids:
+            for sol in sol_pool.browse(cr, uid, sol_ids):
+                if sol.sale_shipment_id:
+                    return sol.sale_shipment_id.id
+        return False
 
     _columns = {
         'name': fields.char('Name', required=False, size=32),
@@ -90,9 +91,11 @@ class wizard_sol_split(osv.osv_memory):
     _defaults = {
         'date': fields.date.context_today,
         'lines': lambda self, cr, uid, c: self._get_lines(cr, uid, context=c),
-        'shipment_id': lambda self, cr, uid, c: self._get_shipment_id(cr, uid, context=c)
+        'shipment_id': lambda self, cr, uid, c: self._get_shipment_id(
+            cr, uid, context=c)
     }
-    def _check_confirm_all(self,so, wizard_lines):
+
+    def _check_confirm_all(self, so, wizard_lines):
         sol_dic = {}
         split_dic = {}
         [sol_dic.update({x.id: x.product_uom_qty}) for x in so.order_line]

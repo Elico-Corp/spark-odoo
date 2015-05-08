@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="wizard_shipment_allocation_sol_confirm_from_view" model="ir.ui.view">
+            <field name="name">Shipment allocation form view - confirm the sale order line</field>
+            <field name="model">wizard.shipment.allocation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Sale shipment allocation" version="7.0">
+                    <group>
+                        <label string="Confirm the sale order line."/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="shipment_id" />
+                        <field name="lines" colspan="4" nolabel="1">
+                            <tree create="0" editable='1'>  
+                                <field name="sol_id" invisible="1" widget="selection"/>
+                                <field name="so_id"/>
+                                <field name="partner_id" />
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name='final_qty' readonly="1" />
+                                <field name="remaining_qty" />
+                                <field name="max_qty" />
+                                <field name="state" />
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="split_sol" string="Confirm" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_shipment_allocation_qty_assign_from_view" model="ir.ui.view">
+            <field name="name">shipment allocation wizard form view - assign the final quantity</field>
+            <field name="model">wizard.shipment.allocation</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="SOL assigning final quantity" version="7.0">
+                    <group>
+                        <label string="Assigning the final quantity per shipment."/>
+                    </group>
+                    <group>
+                        <field name="date"/>
+                        <field name="shipment_id" />
+                        <field name="lines" colspan="4" nolabel="1">
+                            <tree create="0" editable='1'>  
+                                <field name="sol_id" invisible="1" widget="selection"/>
+                                <field name="so_id"/>
+                                <field name="partner_id" />
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name='final_qty'/>
+                                <field name="remaining_qty" />
+                                <field name="max_qty" />
+                                <field name="state" />
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="update_remaining_qty" string="Update Remaining Quantity" type="object"/>
+                        <button name="confirm_final_qty" string="Assign Final Quantity" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <act_window id="action_shipment_allocation_wizard_qty_assign" 
+            name="Assign Final Quantity" 
+             multi="False" 
+            res_model="wizard.shipment.allocation" 
+            src_model="sale.shipment" 
+            view_id="wizard_shipment_allocation_qty_assign_from_view" 
+            view_mode="form" 
+            target="new"/>
+        
+        <act_window id="action_shipment_allocation_wizard_sol_confirm" 
+            name="Confirm Order Line" 
+             multi="False" 
+            res_model="wizard.shipment.allocation" 
+            src_model="sale.shipment" 
+            view_id="wizard_shipment_allocation_sol_confirm_from_view" 
+            view_mode="form" 
+            target="new"/>
+        
+    </data>
+</openerp>

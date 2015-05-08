@@ -59,8 +59,7 @@
         'sale_view.xml',
         'purchase_view.xml',
         'sale_wkf.xml',
-        'security/ir_rule_data.xml',
-        'report/sale_report_view.xml'
+        'report/sale_report_view.xml',
     ],
     'test': [],
     'installable': True,

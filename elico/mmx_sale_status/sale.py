@@ -53,8 +53,8 @@ class sale_order(osv.osv):
         open wizard, split the order,
         in the wizard,you can split order and comfirm
         """
-        #sale_order = self.browse(cr, uid, ids[0])
-        #states = [line.product_id.state for line in sale_order.order_line]
+        # sale_order = self.browse(cr, uid, ids[0])
+        # states = [line.product_id.state for line in sale_order.order_line]
         need_wizard = True
         # alwansy pop the wizard
 
@@ -68,7 +68,7 @@ class sale_order(osv.osv):
                 'target': 'new',
                 'nodestroy': True,
             }
-        #else:
+        # else:
         #    return self.action_button_confirm(cr, uid, ids, context=context)
 
 sale_order()
@@ -94,8 +94,19 @@ class sale_order_line(osv.osv):
         return self.pool.get('sale.order.line').search(
             cr, uid, [('product_id', 'in', ids)])
 
+    def _get_sale_order_lines(self, cr, uid, ids, context=None):
+        so_pool = self.pool['sale.order']
+        res = []
+        for so in so_pool.browse(cr, uid, ids, context=context):
+            res.extend([line.id for line in so.order_line])
+        return res
+
+    def _get_so_state_selection(self, cr, uid, context=None):
+        return self.pool['sale.order']._columns.get('state').selection
+
     _columns = {
-         #TODO, fix the function field, use relation and store and keep the state ==== product_state
+        # TODO, fix the function field, use relation
+        # and store and keep the state ==== product_state
         'product_state': fields.function(
             _get_product_state,
             arg=None,
@@ -111,36 +122,33 @@ class sale_order_line(osv.osv):
             'Product',
             domain=[('sale_ok', '=', True),
                     ('state', 'in', ['private', 'catalogue',
-                                     'preorder', 'order',])],
+                                     'preorder', 'order'])],
             change_default=True),
         'final_qty': fields.float(
             'Final QTY',
             digits_compute=dp.get_precision('Product UoS'),
             readonly=True,
-            states={'draft': [('readonly', False)]}),
+            states={
+                'draft': [('readonly', False)],
+                'wishlist': [('readonly', False)]}),
         'is_final_confirm': fields.boolean('F QTY Confirmed'),
         'is_process': fields.boolean('Processed'),
-        'so_state': fields.selection([
-            ('draft', 'Draft'),
-            ('wishlist', 'Wishlist'),
-            ], 'SO Status', track_visibility='onchange',
-            help="", select=True),
+        'so_state': fields.related(
+            'order_id', 'state', string="SO Status",
+            selection=_get_so_state_selection,
+            type="selection", store={
+                'sale.order': (_get_sale_order_lines, ['state'], 10)
+            }),
     }
 
     _defaults = {
         'so_state': 'draft'
     }
 
-    # def _auto_init(self, cr, context=None):
-    #     super(sale_order_line, self)._auto_init(cr, context)
-    #     # init product_state for old record
-    #     sol_ids = self.search(cr, 1, [])
-    #     dic = self._get_product_state(cr, 1, sol_ids, 'product_state')
-    #     for sol_id in dic:
-    #         cr.execute("""
-    #         UPDATE sale_order_line SET product_state='%s' WHERE id=%s
-    #         """ % (dic[sol_id], sol_id))
-
-sale_order_line()
+    _sql_constraints = {
+        ('final_qty_valid', 'CHECK (final_qty<=product_uom_qty)',
+            'Final quantity should be smaller '
+            'than the quantity on sale order line!')
+    }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -36,11 +36,14 @@
     'sequence': 10,
     'demo': [],
     'data': [
+        'wizard/wizard_shipment_allocation_view.xml',
+        'wizard/wizard_shipment_assign_sol_view.xml',
         'sale_shipment_report.xml',
         'sale_shipment_view.xml',
         'security/ir.model.access.csv',
         'sale_shipment_data.xml',
-        'wizard/replenishment_transfer_view.xml'
+        'wizard/replenishment_transfer_view.xml',
+        'sale_shipment_wkf.xml'
     ],
     'test': [],
     'installable': True,
