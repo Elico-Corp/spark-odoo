@@ -70,7 +70,7 @@ class ProductProductExportMapper(ExportMapper):
 
     @mapping
     def set(self, record):
-        binder = self.get_binder_for_model('magento.product.attribute.set')
+        binder = self.get_binder_for_model('magento.attribute.set')
         set_id = binder.to_backend(record.attribute_set_id.id)
         return {'attrset': set_id}
 

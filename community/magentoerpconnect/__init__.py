@@ -6,7 +6,6 @@ import backend
 import magento_model
 import product
 import product_category
-import product_attribute_set
 import partner
 import partner_category
 import invoice

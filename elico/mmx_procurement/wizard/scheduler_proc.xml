@@ -10,6 +10,7 @@
                     <field name="draft_so"/>
                     <field name="cart_so"/>
                     <field name="wishlist_so"/>
+                    <field name="reservation_so"/>
                     <field name="merge_po"/>
                 </xpath>
             </field>

@@ -101,7 +101,10 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
 
             magento_attribute = scale_obj.attribute_id
             if magento_attribute:
-                return {str(magento_attribute.attribute_code): scale_option_magento_id}
+                return {
+                    str(magento_attribute.attribute_code):
+                        scale_option_magento_id
+                }
         return False
 
     @mapping
@@ -114,7 +117,9 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             magento_attribute = model_obj.attribute_id
             if magento_attribute:
                 return {
-                    str(magento_attribute.attribute_code): model_option_magento_id}
+                    str(magento_attribute.attribute_code):
+                        model_option_magento_id
+                }
         return False
 
     @mapping
@@ -130,7 +135,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
                 magento_attribute = race_id.attribute_id
 
                 if magento_attribute:
-                    res[magento_attribute.attribute_code] = race_option_magento_id
+                    res[magento_attribute.attribute_code] =\
+                        race_option_magento_id
         if race_ed_obj and race_ed_obj.year:
                 res['race_edition_year'] = race_ed_obj.year
         return res
@@ -189,7 +195,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
 
         for pricelist in pricelists:
             price = pricelist_pool.price_get(
-                sess.cr, sess.uid, [pricelist['openerp_id']], record.openerp_id.id, 1)
+                sess.cr, sess.uid, [pricelist['openerp_id']],
+                record.openerp_id.id, 1)
             if not price[pricelist['openerp_id']]:
                 continue
             group_price.append({'website_id': 0,
@@ -229,14 +236,18 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             company = website_id.company_id
             if not company.stock_user_id:
                 continue
-            product = product_pool.browse(sess.cr, company.stock_user_id.id, record.openerp_id.id)
+            product = product_pool.browse(sess.cr, company.stock_user_id.id,
+                                          record.openerp_id.id)
             for store_id in website_id.store_ids:
-		for view_id in store_id.storeview_ids:
-            		stocks[view_id.magento_id] = [view_id.magento_id, product.qty_available + product.outgoing_qty]     
+                for view_id in store_id.storeview_ids:
+                    stocks[view_id.magento_id] = [
+                        view_id.magento_id,
+                        product.qty_available + product.outgoing_qty
+                    ]
 
         return {
             'stocks': stocks,
-	    'custom_product_qty': 0,
+            'custom_product_qty': 0,
             'qty': 100}
 
 

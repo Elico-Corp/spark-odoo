@@ -777,7 +777,6 @@ class SaleOrderLineImportMapper(ImportMapper):
     _model_name = 'magento.sale.order.line'
 
     direct = [('qty_ordered', 'product_uom_qty'),
-              ('qty_ordered', 'product_uos_qty'),
               ('name', 'name'),
               ('item_id', 'magento_id'),
             ]

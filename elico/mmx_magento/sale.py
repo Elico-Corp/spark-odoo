@@ -62,6 +62,7 @@ class sale_order(orm.Model):
             ('done', 'Done'),
             ('cart', 'Cart'),
             ('wishlist', 'Wishlist'),
+            ('reservation', 'Reservation')
         ], 'Status', readonly=True, track_visibility='onchange',
             help="Gives the status of the quotation or sales order. \n\
                   The exception status is automatically set when a cancel\
@@ -72,17 +73,20 @@ class sale_order(orm.Model):
         'magento_cart_bind_ids': fields.one2many('magento.sale.cart',
                                                  'openerp_id',
                                                  string="Ma]gento Bindings"),
-        'magento_wishlist_bind_ids': fields.one2many('magento.sale.wishlist',
-                                                 'openerp_id',
-                                                 string="Ma]gento Bindings"),
-        'order_line': fields.one2many('sale.order.line',
-                                      'order_id',
-                                      'Order Lines',
-                                      readonly=True,
-                                      states={'draft': [('readonly', False)],
-                                              'sent': [('readonly', False)],
-                                              'cart': [('readonly', False)],
-                                              'wishlist': [('readonly', False)]}),
+        'magento_wishlist_bind_ids': fields.one2many(
+            'magento.sale.wishlist', 'openerp_id', string="Ma]gento Bindings"),
+        'order_line': fields.one2many(
+            'sale.order.line',
+            'order_id',
+            'Order Lines',
+            readonly=True,
+            states={
+                'draft': [('readonly', False)],
+                'sent': [('readonly', False)],
+                'cart': [('readonly', False)],
+                'wishlist': [('readonly', False)],
+                'reservation': [('readonly', False)]
+            }),
     }
 
     # def unlink(self, cr, uid, ids,
@@ -105,9 +109,10 @@ class sale_order_line(orm.Model):
         'magento_cart_bind_ids': fields.one2many('magento.sale.cart.line',
                                                  'openerp_id',
                                                  string="Magento Bindings"),
-        'magento_wishlist_bind_ids': fields.one2many('magento.sale.wishlist.line',
-                                                 'openerp_id',
-                                                 string="Magento Bindings"),
+        'magento_wishlist_bind_ids': fields.one2many(
+            'magento.sale.wishlist.line',
+            'openerp_id',
+            string="Magento Bindings"),
     }
 
     def unlink(self, cr, uid, ids, context=None):
@@ -116,8 +121,11 @@ class sale_order_line(orm.Model):
         if isinstance(ids, int):
             ids = [ids]
         """Allows to delete sales order lines in draft,cancel states"""
+        backlisted_states = [
+            'cart', 'draft', 'wishlist', 'reservation', 'cancel'
+        ]
         for rec in self.browse(cr, uid, ids, context=context):
-            if rec.state not in ['cart', 'draft', 'wishlist', 'cancel']:
+            if rec.state not in backlisted_states:
                 raise osv.except_osv(_('Invalid Action!'),
                                      _('Cannot delete a sales order line which\
                                        is in state \'%s\'.') % (rec.state))
@@ -141,9 +149,9 @@ class MagentoSaleCartOnChange(SaleOrderOnChange):
         :rtype: dict
         """
         sess = self.session
-        #play onchange on sale order
+        #  play onchange on sale order
         order = self._play_order_onchange(order)
-        #play onchanfe on sale order line
+        #  play onchange on sale order line
         processed_order_lines = []
         line_lists = [order_lines]
 
@@ -193,12 +201,12 @@ class magento_sale_cart(orm.Model):
         'magento_cart_line_ids': fields.one2many('magento.sale.cart.line',
                                                  'magento_cart_id',
                                                  'Magento Cart Lines'),
-        'total_amount': fields.float('Total amount',
-                                     digits_compute=
-                                     dp.get_precision('Account')),
-        'total_amount_tax': fields.float('Total amount w. tax',
-                                         digits_compute=
-                                         dp.get_precision('Account')),
+        'total_amount': fields.float(
+            'Total amount',
+            digits_compute=dp.get_precision('Account')),
+        'total_amount_tax': fields.float(
+            'Total amount w. tax',
+            digits_compute=dp.get_precision('Account')),
         'magento_cart_id': fields.integer('Magento Cart ID',
                                           help="'order_id' field in Magento"),
         # when a sale order is modified, Magento creates a new one, cancels
@@ -309,7 +317,6 @@ class CartAdapter(GenericAdapter):
         return super(CartAdapter, self).search(arguments)
 
 
-
 @magento_sparkmodel
 class CartImportMapper(SaleOrderImportMapper):
     _model_name = 'magento.sale.cart'
@@ -327,7 +334,7 @@ class CartImportMapper(SaleOrderImportMapper):
         sess = self.session
         # TODO: refactor: do no longer store the transient fields in the
         # result, use a ConnectorUnit to create the lines
-        if not 'magento_cart_line_ids' in result:
+        if 'magento_cart_line_ids' not in result:
             result['magento_cart_line_ids'] = []
         result.pop('value')
         result = sess.pool['sale.order']._convert_special_fields(
@@ -348,7 +355,8 @@ class CartImportMapper(SaleOrderImportMapper):
         sess = self.session
         binder = self.get_binder_for_model('magento.res.partner')
         partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
-        partner = sess.pool.get('res.partner').browse(sess.cr, sess.uid, partner_id)
+        partner = sess.pool.get('res.partner').browse(
+            sess.cr, sess.uid, partner_id)
         if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
@@ -368,7 +376,7 @@ class CartImportMapper(SaleOrderImportMapper):
         name = str(partner_id)
         prefix = self.backend_record.cart_prefix
         if prefix:
-            name = prefix+name
+            name = prefix + name
         return {'name': name}
 
     @mapping
@@ -447,7 +455,6 @@ class SaleCartImport(MagentoImportSynchronizer):
     _model_name = ['magento.sale.cart']
 
 
-
 @job
 def sale_cart_import_batch(session, model_name, backend_id, filters=None):
     """ Prepare a batch import of records from Magento """
@@ -474,7 +481,7 @@ def _play_order_onchange(self, order):
     """
     sale_model = self.session.pool.get('sale.order')
 
-    #Play partner_id onchange
+    # Play partner_id onchange
     args, kwargs = self._get_shop_id_onchange_param(order)
     res = sale_model.onchange_shop_id(self.session.cr,
                                       self.session.uid,
@@ -592,6 +599,9 @@ def cart_import_batch(session, model_name, backend_id, filters=None):
 
 
 # Wishlist
+@magento_sparkmodel
+class SaleOrderImport(MagentoImportSynchronizer):
+    _model_name = ['magento.sale.wishlist']
 
 
 @magento_sparkmodel
@@ -608,9 +618,9 @@ class MagentoSaleWishlistOnChange(SaleOrderOnChange):
         :rtype: dict
         """
         sess = self.session
-        #play onchange on sale order
+        # play onchange on sale order
         order = self._play_order_onchange(order)
-        #play onchanfe on sale order line
+        # play onchange on sale order line
         processed_order_lines = []
         line_lists = [order_lines]
 
@@ -658,17 +668,19 @@ class magento_sale_wishlist(orm.Model):
                                       string='Magento order',
                                       required=True,
                                       ondelete='cascade'),
-        'magento_wishlist_line_ids': fields.one2many('magento.sale.wishlist.line',
-                                                 'magento_wishlist_id',
-                                                 'Magento Wishlist Lines'),
-        'total_amount': fields.float('Total amount',
-                                     digits_compute=
-                                     dp.get_precision('Account')),
-        'total_amount_tax': fields.float('Total amount w. tax',
-                                         digits_compute=
-                                         dp.get_precision('Account')),
-        'magento_wishlist_id': fields.integer('Magento Wishlist ID',
-                                          help="'order_id' field in Magento"),
+        'magento_wishlist_line_ids': fields.one2many(
+            'magento.sale.wishlist.line',
+            'magento_wishlist_id',
+            'Magento Wishlist Lines'),
+        'total_amount': fields.float(
+            'Total amount',
+            digits_compute=dp.get_precision('Account')),
+        'total_amount_tax': fields.float(
+            'Total amount w. tax',
+            digits_compute=dp.get_precision('Account')),
+        'magento_wishlist_id': fields.integer(
+            'Magento Wishlist ID',
+            help="'order_id' field in Magento"),
         # when a sale order is modified, Magento creates a new one, cancels
         # the parent order and link the new one to the canceled parent
         'magento_parent_id': fields.many2one('magento.sale.order',
@@ -747,9 +759,7 @@ class WishlistBatchImport(DelayedBatchImport):
         """ Run the synchronization """
         if filters is None:
             filters = {}
-        magento_store_ids = filters.pop('magento_store_ids')
-        record_ids = self.backend_adapter.search(filters,
-                                                 magento_store_ids)
+        record_ids = self.backend_adapter.search(filters)
         _logger.info('search for magento saleorders %s  returned %s',
                      filters, record_ids)
         for record_id in record_ids:
@@ -759,42 +769,24 @@ class WishlistBatchImport(DelayedBatchImport):
 @magento_sparkmodel
 class WishlistAdapter(GenericAdapter):
     _model_name = 'magento.sale.wishlist'
-    _magento_model = 'ec_wishlist'
-
-    def search(self, filters=None, magento_store_ids=None):
-        """ Search records according to some criterias
-        and returns a list of ids
-
-        :rtype: list
-        """
-        if filters is None:
-            filters = {}
-        if magento_store_ids is not None:
-            filters['store_id'] = {'in': magento_store_ids}
-        arguments = {
-            # 'store_id': magento_store_ids,
-        }
-        return super(WishlistAdapter, self).search(arguments)
+    _magento_model = 'ec_mwishlist'
 
 
 @magento_sparkmodel
 class WishlistImportMapper(SaleOrderImportMapper):
     _model_name = 'magento.sale.wishlist'
 
-    direct = [('wishlist_id', 'magento_id'),
-              ('wishlist_id', 'magento_wishlist_id'),
-              ('grand_total', 'total_amount'),
-              ('tax_amount', 'total_amount_tax'),
-              ('created_at', 'date_order')
-              ]
+    direct = [('wishlist_id', 'id'), ('created_at', 'date_order')]
 
-    children = [('items', 'magento_wishlist_line_ids', 'magento.sale.wishlist.line')]
+    children = [
+        ('items', 'magento_wishlist_line_ids', 'magento.sale.wishlist.line')
+    ]
 
     def _after_mapping(self, result):
         sess = self.session
         # TODO: refactor: do no longer store the transient fields in the
         # result, use a ConnectorUnit to create the lines
-        if not 'magento_wishlist_line_ids' in result:
+        if 'magento_wishlist_line_ids' not in result:
             result['magento_wishlist_line_ids'] = []
         result.pop('value')
         result = sess.pool['sale.order']._convert_special_fields(
@@ -814,7 +806,8 @@ class WishlistImportMapper(SaleOrderImportMapper):
         sess = self.session
         binder = self.get_binder_for_model('magento.res.partner')
         partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
-        partner = sess.pool.get('res.partner').browse(sess.cr, sess.uid, partner_id)
+        partner = sess.pool.get('res.partner').browse(
+            sess.cr, sess.uid, partner_id)
         if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
@@ -826,7 +819,8 @@ class WishlistImportMapper(SaleOrderImportMapper):
 
     @mapping
     def state(self, record):
-        return {'state': 'wishlist'}
+        state = 'wishlist' if record['wishlist'] else 'reservation'
+        return {'state': state}
 
     @mapping
     def name(self, record):
@@ -834,7 +828,7 @@ class WishlistImportMapper(SaleOrderImportMapper):
         name = str(partner_id)
         prefix = self.backend_record.wishlist_prefix
         if prefix:
-            name = prefix+name
+            name = prefix + name
         return {'name': name}
 
     @mapping
@@ -908,12 +902,6 @@ class WishlistImportMapper(SaleOrderImportMapper):
         return {'partner_shipping_id': 1}
 
 
-@magento_sparkmodel
-class SaleWishlistImport(MagentoImportSynchronizer):
-    _model_name = ['magento.sale.wishlist']
-
-
-
 @job
 def sale_wishlist_import_batch(session, model_name, backend_id, filters=None):
     """ Prepare a batch import of records from Magento """
@@ -940,7 +928,7 @@ def _play_order_onchange(self, order):
     """
     sale_model = self.session.pool.get('sale.order')
 
-    #Play partner_id onchange
+    # Play partner_id onchange
     args, kwargs = self._get_shop_id_onchange_param(order)
     res = sale_model.onchange_shop_id(self.session.cr,
                                       self.session.uid,
@@ -989,7 +977,6 @@ class WishlistExport(MagentoExporter):
 @magento_sparkmodel
 class WishlistExportMapper(ExportMapper):
     _model_name = 'magento.sale.wishlist'
-
 
     @mapping
     def item(self, record):

@@ -32,10 +32,10 @@ import openerp.addons.magentoerpconnect.consumer as magentoerpconnect
 def delay_export_so(session, model_name, record_id, fields=[]):
     order_pool = session.pool.get(model_name)
     order = order_pool.browse(session.cr, session.uid, record_id)
-    if order.state not in ('wishlist'):
+    if order.state not in ('wishlist', 'reservation'):
         return False
 
-    mag_id = order.magento_wishlist_bind_ids[0].id         
+    mag_id = order.magento_wishlist_bind_ids[0].id
     fields.append({'magento_order_lines_ids': order.order_line})
     export_record(session, 'magento.sale.wishlist', mag_id, fields=fields)
     return True
