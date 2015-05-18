@@ -184,7 +184,7 @@ class ShipmentContainedProductInfo(orm.Model):
                 continue
             shipment = contain_info.sale_shipment_id
 
-            if shipment.so_ids:
+            if shipment.sol_ids:
                 for sol in shipment.sol_ids:
                     # TODO you need to move the final_qty from module
                     # (mmx_sale_status) to current module.

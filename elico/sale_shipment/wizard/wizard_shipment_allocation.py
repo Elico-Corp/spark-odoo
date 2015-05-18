@@ -111,8 +111,6 @@ class WizardShipmentAllocation(orm.TransientModel):
                         'line.\n Or final qty is negative.'
                         '' % (line.product_id.name)))
             # check if the remaining quantity is negative.
-            import pdb
-            pdb.set_trace()
         return True
 
     def confirm_final_qty(self, cr, uid, ids, context=None):
@@ -240,6 +238,8 @@ class WizardShipmentAllocation(orm.TransientModel):
         return True
 
     def split_sol(self, cr, uid, ids, context=None):
+        '''this method is from old sale_shipment module
+        TODO: refactory.'''
         seq_pool = self.pool['ir.sequence']
         so_pool = self.pool.get('sale.order')
         sol_pool = self.pool.get('sale.order.line')

@@ -32,19 +32,23 @@ class WizardShipmentAssignSOL(orm.TransientModel):
             'wizard_id', 'sol_id', 'Sale order lines',
             domain=[
                 ('product_id.state', '=', 'order'),
-                ('state', 'in', ('wishlist', 'draft')),
+                ('so_state', 'in', ('wishlist', 'draft')),
                 ('sale_shipment_id', '=', False)]),
     }
 
     def fields_get(self, cr, uid, fields=None, context=None):
-        '''Dynamic domain
-        in the wizard, we only want system to display the sale order
-        lines whose products are in pre defined contained products
-        of the shipment.
+        '''creating dynamic domain
 
         You can have active_id and active_model only when the act_window
         is created/returned by function.
         Please check the button related method.
+
+        only display the sale order lines:
+            - shipment is False,
+            - so state is draft or wishlist
+            - product state is order
+            - the product is in the pre defined contained products
+            of the shipment
         '''
 
         res = super(WizardShipmentAssignSOL, self).fields_get(
@@ -59,6 +63,11 @@ class WizardShipmentAssignSOL(orm.TransientModel):
             product_ids = [p.product_id.id
                            for p in shipment.contained_product_info_ids]
             sol_ids = [sol.id for sol in shipment.sol_ids]
+
+            # empty the domain defining the product_id and sol_ids
+            # because it's possible of duplication.
+            domain = filter(lambda i: i[0] not in ('product_id', 'id'), domain)
+
             domain.append(('product_id', 'in', tuple(product_ids)))
             if sol_ids:
                 domain.append(('id', 'not in', tuple(sol_ids)))
