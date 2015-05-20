@@ -26,9 +26,8 @@ import base64
 import xmlrpclib
 from operator import itemgetter
 from openerp.osv import orm, fields
-from openerp.tools.translate import _
 from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.event import on_record_create, on_record_write
+from openerp.addons.connector.event import on_record_write
 from openerp.addons.connector.unit.synchronizer import (ImportSynchronizer,
                                                         ExportSynchronizer
                                                         )
@@ -36,9 +35,7 @@ from openerp.addons.connector.exception import (MappingError,
                                                 InvalidDataError,
                                                 IDMissingInBackend)
 from openerp.addons.connector.unit.mapper import (mapping,
-                                                  only_create,
-                                                  ImportMapper,
-                                                  )
+                                                  ImportMapper)
 from .unit.backend_adapter import GenericAdapter
 from .unit.import_synchronizer import (DelayedBatchImport,
                                        MagentoImportSynchronizer,
@@ -49,6 +46,32 @@ from .connector import get_environment
 from .backend import magento
 
 _logger = logging.getLogger(__name__)
+
+
+class MagentoAttributeSet(orm.Model):
+    _name = 'magento.attribute.set'
+    _description = ""
+    _inherit = 'magento.binding'
+    _rec_name = 'attributeSetName'
+    SKELETON_SET_ID = '4'
+
+    _columns = {
+        'openerp_id': fields.many2one(
+            'attribute.set',
+            string='Attribute set',
+            ondelete='cascade'),
+        'attributeSetName': fields.char(
+            'Name',
+            size=64,
+            required=True),
+        'skeletonSetId': fields.char(
+            'Attribute set template',
+            readonly=True),
+    }
+
+    _defaults = {
+        'skeletonSetId': SKELETON_SET_ID,
+    }
 
 
 class magento_product_product(orm.Model):
@@ -85,9 +108,11 @@ class magento_product_product(orm.Model):
         'product_type': fields.selection(_product_type_get,
                                          'Magento Product Type',
                                          required=True),
-        'attribute_set_id': fields.many2one('product.attribute.set',
-                                            string='Attribute Set',
-                                            required=True),
+        'attribute_set_id': fields.many2one(
+            'magento.attribute.set',
+            string='Attribute Set',
+            required=True,
+            domain="[('backend_id', '=', backend_id)]"),
         'visibility': fields.selection(
             [('1', 'Not Visible Individually'),
              ('2', 'Catalog'),
@@ -117,7 +142,8 @@ class magento_product_product(orm.Model):
             [('use_default', 'Use Default Config'),
              ('no', 'No Sell'),
              ('yes', 'Sell Quantity < 0'),
-             ('yes-and-notification', 'Sell Quantity < 0 and Use Customer Notification')],
+             ('yes-and-notification',
+              'Sell Quantity < 0 and Use Customer Notification')],
             string='Manage Inventory Backorders',
             required=True),
         'magento_qty': fields.float('Computed Quantity',
@@ -219,7 +245,10 @@ class ProductProductAdapter(GenericAdapter):
                               [filters] if filters else [{}])]
 
     def create(self, data):
-        return self._call('%s.create' % self._magento_model, [data.pop('product_type'), data.pop('attrset'), data.pop('sku'), data])
+        return self._call('%s.create' % self._magento_model, [
+            data.pop('product_type'), data.pop('attrset'), data.pop('sku'),
+            data
+        ])
 
     def read(self, id, storeview_id=None, attributes=None):
         """ Returns the information of a record
@@ -243,8 +272,9 @@ class ProductProductAdapter(GenericAdapter):
                        [int(id), custom_data, price[0]])
         if len(stocks) > 0:
             for stock in stocks.values():
-                self._call('ol_catalog_product.update',
-                       [int(id), {'custom_product_qty': stock[1]}, stock[0]])
+                self._call('ol_catalog_product.update', [
+                    int(id), {'custom_product_qty': stock[1]}, stock[0]
+                ])
         return self._call('ol_catalog_product.update',
                           [int(id), data, storeview_id])
 
@@ -416,7 +446,7 @@ class ProductImportMapper(ImportMapper):
 
     @mapping
     def set(self, record):
-        binder = self.get_binder_for_model('magento.product.attribute.set')
+        binder = self.get_binder_for_model('magento.attribute.set')
         set_id = binder.to_openerp(record['set'])
         if set_id is None:
             raise MappingError("The product attribute set with "

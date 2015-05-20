@@ -51,62 +51,8 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class magento_product_product(orm.Model):
-    _inherit = 'magento.product.product'
-
-    # _columns = {
-    #     'attribute_set_id': fields.many2one('magento.attribute.set',
-    #                                         string='Attribute Set',
-    #                                         ),
-    # }
-
-
-# @magento
-# class ProductProductExportMapperForSet(ProductProductExportMapper):
-#     _model_name = 'magento.product.product'
-
-#     @mapping
-#     def set(self, record):
-#         binder = self.get_binder_for_model('magento.attribute.set')
-#         set_id = binder.to_backend(record.attribute_set_id.id)
-
-#         return {'attrset': set_id}
-
-"""
-Can not inherit the class
-    for the reason connector have a contraint of uniqueness
-        of (model name, exporter )
-"""
-
-
-# @mapping
-# def ProductProductExportMapperForSet(self, record):
-#     binder = self.get_binder_for_model('magento.attribute.set')
-#     set_id = binder.to_backend(record.attribute_set_id.id)
-
-#     return {'attrset': set_id}
-
-# ProductProductExportMapper.set = ProductProductExportMapperForSet
-
-# @magento
-# class ProductImportMapperForSet(ProductImportMapper):
-#     _model_name = 'magento.product.product'
-
-#     @mapping
-#     def set(self, record):
-#         binder = self.get_binder_for_model('magento.attribute.set')
-#         # binder = self.get_binder_for_model('magento.product.attribute.set')
-#         set_id = binder.to_openerp(record['set'])
-#         if set_id is None:
-#             raise MappingError("The product attribute set with "
-#                                "magento id %s is not imported." %
-#                                record['set'])
-#         return {'attribute_set_id': set_id}
-
-
 def ProductImportMapperForSet(self, record):
     binder = self.get_binder_for_model('magento.attribute.set')
-    # binder = self.get_binder_for_model('magento.product.attribute.set')
     set_id = binder.to_openerp(record['set'])
     if set_id is None:
         raise MappingError("The product attribute set with "
@@ -474,33 +420,6 @@ class AttributeSet(orm.Model):
             'magento.attribute.set',
             'openerp_id',
             string='Magento Bindings',),
-    }
-
-
-class MagentoAttributeSet(orm.Model):
-    _name = 'magento.attribute.set'
-    _description = ""
-    _inherit = 'magento.binding'
-    _rec_name = 'attributeSetName'
-    SKELETON_SET_ID = '4'
-
-    _columns = {
-        'openerp_id': fields.many2one(
-            'attribute.set',
-            string='Attribute set',
-            # required=True,
-            ondelete='cascade'),
-        'attributeSetName': fields.char(
-            'Name',
-            size=64,
-            required=True),
-        'skeletonSetId': fields.char(
-            'Attribute set template',
-            readonly=True),
-    }
-
-    _defaults = {
-        'skeletonSetId': SKELETON_SET_ID,
     }
 
 

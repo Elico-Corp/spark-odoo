@@ -18,7 +18,8 @@
             <field name="inherit_id" ref="sale.view_order_product_search" />
             <field name="arch" type="xml">
                 <filter string='Sales' position="after">
-                    <filter icon="terp-personal" string="WishList" domain="[('so_state','=', 'wishlist')]"/>
+                    <filter icon="terp-personal" string="Wishlist" domain="[('so_state','=', 'wishlist')]"/>
+                    <filter icon="terp-personal" string="Reservation" domain="[('so_state','=', 'reservation')]"/>
                 </filter>
             </field>
         </record>

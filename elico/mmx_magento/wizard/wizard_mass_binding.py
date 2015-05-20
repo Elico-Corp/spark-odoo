@@ -44,9 +44,11 @@ class wizard_customs_invoice_report(osv.osv_memory):
         'product_type': fields.selection(_product_type_get,
                                          'Magento Product Type',
                                          required=True),
-        'attribute_set_id': fields.many2one('product.attribute.set',
-                                            string='Attribute Set',
-                                            required=True),
+        'attribute_set_id': fields.many2one(
+            'magento.attribute.set',
+            string='Attribute Set',
+            required=True,
+            domain="[('backend_id', '=', backend_id)]"),
         'visibility': fields.selection(
             [('1', 'Not Visible Individually'),
              ('2', 'Catalog'),
@@ -76,7 +78,8 @@ class wizard_customs_invoice_report(osv.osv_memory):
             [('use_default', 'Use Default Config'),
              ('no', 'No Sell'),
              ('yes', 'Sell Quantity < 0'),
-             ('yes-and-notification', 'Sell Quantity < 0 and Use Customer Notification')],
+             ('yes-and-notification',
+              'Sell Quantity < 0 and Use Customer Notification')],
             string='Manage Inventory Backorders',
             required=True),
         'magento_qty': fields.float('Computed Quantity',
@@ -101,7 +104,10 @@ class wizard_customs_invoice_report(osv.osv_memory):
             data = {
                 'magento_bind_ids': [(0, 0, {
                     'backend_id': binding.backend_id.id,
-                    'website_ids': [(4, website_id.id) for website_id in binding.website_ids],
+                    'website_ids': [
+                        (4, website_id.id)
+                        for website_id in binding.website_ids
+                    ],
                     'product_type': binding.product_type,
                     'attribute_set_id': binding.attribute_set_id.id,
                     'visibility': binding.visibility,

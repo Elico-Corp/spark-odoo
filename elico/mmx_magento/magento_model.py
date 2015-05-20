@@ -42,21 +42,43 @@ class magento_backend(orm.Model):
     _columns = {
         'version': fields.selection(
             _select_versions, string='Version', required=True),
-        'import_carts_from_date': fields.datetime('Import carts from date'),
-        'import_wishlists_from_date': fields.datetime('Import wishlists from date'),
         'wishlist_prefix': fields.char(
             'Wishlist Prefix',
             help="A prefix put before the name of imported wishlist.\n"
                  "For instance, if the prefix is 'mag-', the wishlist "
                  "100000692 in Magento, will be named 'wishlist-100000692' "
-                 "in OpenERP."),
+                 "in OpenERP.", required=True),
+        'reservation_prefix': fields.char(
+            'Reservation Prefix',
+            help="A prefix put before the name of imported reservation.\n"
+                 "For instance, if the prefix is 'mag-', the reservation "
+                 "100000692 in Magento, will be named 'reservation-100000692' "
+                 "in OpenERP.", required=True),
         'cart_prefix': fields.char(
             'Cart Prefix',
             help="A prefix put before the name of imported cart.\n"
                  "For instance, if the prefix is 'mag-', the cart "
                  "100000692 in Magento, will be named 'cart-100000692' "
-                 "in OpenERP."),
+                 "in OpenERP.", required=True),
     }
+
+    def _check_prefixes(self, cr, uid, ids, context=None):
+        backends = self.browse(cr, uid, ids, context=context)
+        for backend in backends:
+            domain = ['|', '|',
+                      ('cart_prefix', '=', backend.cart_prefix),
+                      ('wishlist_prefix', '=', backend.wishlist_prefix),
+                      ('reservation_prefix', '=', backend.reservation_prefix)]
+            if len(self.search(cr, uid, domain, context=context)) > 1:
+                return False
+        return True
+
+    _constraints = [
+        (_check_prefixes,
+         '''Error ! Cart prefix, Reservation Prefix and Wishlist Prefix
+           should be unique between themselves and for all the backends..''',
+         ['cart_prefix', 'sale_prefix', 'reservation_prefix'])
+    ]
 
     def import_cart(self, cr, uid, ids, context=None):
         if not hasattr(ids, '__iter__'):
@@ -73,8 +95,15 @@ class magento_backend(orm.Model):
         self.check_magento_structure(cr, uid, ids, context=context)
         for backend in self.browse(cr, uid, ids, context=context):
             for website in backend.website_ids:
-                website.import_wishlists()
+                website.import_wishlists(context=context)
         return True
+
+    def import_reservation(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        context.update(
+            {'reservation': True})
+        self.import_wishlist(cr, uid, ids, context=context)
 
 
 class magento_website(orm.Model):
@@ -164,6 +193,10 @@ class magento_website(orm.Model):
             backend_id = website.backend_id.id
             wishlist_import_batch(
                 session, 'magento.sale.wishlist', backend_id,
-                {'magento_store_ids': store_ids})
+                {
+                    'magento_store_ids': store_ids,
+                    'reservation': context.get('reservation', False)
+                }
+            )
         return True
 magento_backend()

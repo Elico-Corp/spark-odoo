@@ -37,7 +37,6 @@ class sale_order(orm.Model):
     _columns = {
         'openerp_id': fields.many2one('sale.order',
                                       string='Sale Order',
-                                      required=True,
                                       ondelete='cascade'),
         'icops_bind_ids': fields.one2many(
             'icops.sale.order', 'openerp_id',

@@ -123,6 +123,7 @@ class sale_order_line(osv.osv):
         'so_state': fields.selection([
             ('draft', 'Draft'),
             ('wishlist', 'Wishlist'),
+            ('reservation', 'Reservation'),
             ], 'SO Status', track_visibility='onchange',
             help="", select=True),
     }

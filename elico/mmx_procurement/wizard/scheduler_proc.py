@@ -37,11 +37,14 @@ class procurement_compute_all(osv.osv_memory):
             'Include "Draft" SO',
             help='Draft Sales Orders are included in the calculation\
             of the stock needed.'),
-        'cart_so':  fields.boolean(
+        'cart_so': fields.boolean(
             'Include "Cart" SO', help='Cart Sales Orders are included\
             in the calculation of the stock needed.'),
-        'wishlist_so':  fields.boolean(
+        'wishlist_so': fields.boolean(
             'Include "Wishlist" SO', help='Wishlist Sales Orders are included\
+            in the calculation of the stock needed.'),
+        'reservation_so': fields.boolean(
+            'Include "Reservation" SO', help='Reservation Sales Orders are included\
             in the calculation of the stock needed.'),
         'merge_po': fields.boolean(
             'Merge created PO',
@@ -63,7 +66,8 @@ class procurement_compute_all(osv.osv_memory):
         self.pool.get('procurement.order').run_scheduler(
             new_cr, uid, automatic=proc.automatic,
             use_new_cursor=new_cr.dbname,
-            draft_so=proc.draft_so, cart_so=proc.cart_so,wishlist_so=proc.wishlist_so,
+            draft_so=proc.draft_so, cart_so=proc.cart_so,
+            wishlist_so=proc.wishlist_so, reservation_so=proc.reservation_so,
             merge_po=proc.merge_po,
             context=context)
         new_cr.close()
@@ -78,12 +82,14 @@ class procurement_order(osv.osv):
 
     def run_scheduler(
             self, cr, uid, automatic=False, use_new_cursor=False,
-            draft_so=False, cart_so=False, wishlist_so=False, merge_po=False, context=None):
+            draft_so=False, cart_so=False, wishlist_so=False,
+            reservation_so=False,
+            merge_po=False, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         if use_new_cursor:
             use_new_cursor = cr.dbname
         # We delete the previously created PO which are still in draft
-        if draft_so or cart_so or wishlist_so:
+        if draft_so or cart_so or wishlist_so or reservation_so:
             po_pool = self.pool.get('purchase.order')
             po_ids = po_pool.search(
                 cr, uid,
@@ -101,7 +107,8 @@ class procurement_order(osv.osv):
             cr, uid, use_new_cursor=use_new_cursor, context=context)
         self._procure_orderpoint_confirm(
             cr, uid, automatic=automatic, use_new_cursor=use_new_cursor,
-            draft_so=draft_so, cart_so=cart_so, wishlist_so=wishlist_so, merge_po=merge_po,
+            draft_so=draft_so, cart_so=cart_so, wishlist_so=wishlist_so,
+            reservation_so=reservation_so, merge_po=merge_po,
             context=context)
 
     def _prepare_automatic_op_procurement(
@@ -127,7 +134,8 @@ class procurement_order(osv.osv):
 
     def create_automatic_op(
             self, cr, uid, draft_so=False,
-            cart_so=False, wishlist_so=False, merge_po=False, context=None):
+            cart_so=False, wishlist_so=False,
+            reservation_so=False, merge_po=False, context=None):
         """ Create procurement of  virtual stock < 0
             @param self: The object pointer
             @param cr: The current row, from the database cursor,
@@ -167,7 +175,7 @@ class procurement_order(osv.osv):
                     context=context):
                 pdt_processing = "%s_%s" % (
                     product_read['id'], warehouse.company_id.id)
-                if ((draft_so or cart_so or wishlist_so) and
+                if ((draft_so or cart_so or wishlist_so or reservation_so) and
                         product_read['procure_method'] == 'make_to_stock' and
                         pdt_processing not in processed_pdt):
                     # For MTS product when the option "draft_so" and/or
@@ -181,6 +189,8 @@ class procurement_order(osv.osv):
                         in_states.append('cart')
                     if wishlist_so:
                         in_states.append('wishlist')
+                    if reservation_so:
+                        in_states.append('reservation')
                     cr.execute("""  SELECT coalesce(
                                     sum(
                                         sol.product_uom_qty *
@@ -223,15 +233,14 @@ class procurement_order(osv.osv):
                     location_id = warehouse.lot_stock_id.id
                 else:
                     continue
-                if (draft_so or cart_so or wishlist_so) and draft_so_qty:
+                if (draft_so or cart_so or wishlist_so or reservation_so) and draft_so_qty:
                     context.update(
                         {'virtual_draft_available': virtual_draft_available})
                 else:
                     context.update(
                         {'virtual_draft_available': virtual_draft_available})
-                    #context.update({'virtual_draft_available': False})
                 proc_id = proc_obj.create(
-                    cr, uid,  self._prepare_automatic_op_procurement(
+                    cr, uid, self._prepare_automatic_op_procurement(
                         cr, uid, product, warehouse, location_id,
                         context=context),
                     context=context)
@@ -242,7 +251,7 @@ class procurement_order(osv.osv):
                         'button_confirm', cr)
                     wf_service.trg_validate(
                         uid, 'procurement.order', proc_id,
-                        'button_check',   cr)
+                        'button_check', cr)
         if proc_ids and merge_po:
             proc_ids.append(0)
             # cr.commit()
@@ -260,7 +269,8 @@ class procurement_order(osv.osv):
 
     def _procure_orderpoint_confirm(
         self, cr, uid, automatic=False, use_new_cursor=False,
-        draft_so=False, cart_so=False, wishlist_so=False, merge_po=False,
+        draft_so=False, cart_so=False, wishlist_so=False,
+        reservation_so=False, merge_po=False,
             context=None, user_id=False):
         """ Create procurement based on Orderpoint
 
@@ -290,7 +300,8 @@ class procurement_order(osv.osv):
         if automatic:
             self.create_automatic_op(
                 cr, uid, draft_so=draft_so,
-                cart_so=cart_so, wishlist_so=wishlist_so, merge_po=merge_po,
+                cart_so=cart_so, wishlist_so=wishlist_so,
+                reservation_so=reservation_so, merge_po=merge_po,
                 context=context)
             context.update({'del_merged_po': 0})
 
@@ -314,6 +325,8 @@ class procurement_order(osv.osv):
                         in_states.append('cart')
                     if wishlist_so:
                         in_states.append('wishlist')
+                    if reservation_so:
+                        in_states.append('reservation')
                     cr.execute("""  SELECT
                                     coalesce(
                                         sum(
@@ -362,7 +375,7 @@ class procurement_order(osv.osv):
                         continue
                     if op.product_id.type not in ['consu']:
                         if op.procurement_draft_ids:
-                        # Check draft procurement related to this order point
+                            # Check draft procurement related to this order point
                             proc_ids = [
                                 x.id for x in op.procurement_draft_ids]
                             procure_datas = procurement_obj.read(
@@ -552,7 +565,7 @@ class purchase_order(osv.osv):
             # make triggers pointing to the old orders point to the new order
             for old_id in old_ids:
                 wf_service.trg_redirect(
-                    uid, 'purchase.order', old_id, neworder_id,       cr)
+                    uid, 'purchase.order', old_id, neworder_id, cr)
                 wf_service.trg_validate(
                     uid, 'purchase.order', old_id, 'purchase_cancel', cr)
 
