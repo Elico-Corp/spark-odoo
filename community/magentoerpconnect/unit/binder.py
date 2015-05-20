@@ -53,7 +53,7 @@ class MagentoModelBinder(MagentoBinder):
             'magento.sale.order',
             'magento.sale.order.line',
             'magento.account.invoice',
-            'magento.product.attribute.set',
+            'magento.attribute.set',
         ]
 
     def to_openerp(self, external_id, unwrap=False):

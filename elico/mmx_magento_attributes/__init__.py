@@ -18,13 +18,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import binder
-import connector
-import consumer
-import product_attribute
-import magento_model
-import product_scale
-# import product_manufacturers
-import product_model
-# import product_race
-import product_driver
+from . import binder
+from . import connector
+from . import consumer
+from . import product_attribute
+from . import magento_model
+from . import product_scale
+from . import product_model
+from . import product_driver

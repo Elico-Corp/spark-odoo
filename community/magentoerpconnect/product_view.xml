@@ -102,23 +102,5 @@
                 </tree>
             </field>
         </record>
-
-        <record id="product_attribute_set_action_form" model="ir.actions.act_window">
-            <field name="name">Product Attribute Set</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">product.attribute.set</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click to create a product attribute set
-              </p>
-            </field>
-        </record>
-
-        <menuitem action="product_attribute_set_action_form"
-            groups="base.group_no_one"
-            id="menu_product_attribute_set_action_form"
-            parent="product.prod_config_main" sequence="3"/>
     </data>
 </openerp>

@@ -224,7 +224,7 @@ class magento_backend(orm.Model):
         self.check_magento_structure(cr, uid, ids, context=context)
         session = ConnectorSession(cr, uid, context=context)
         for backend_id in ids:
-            import_batch.delay(session, 'magento.product.attribute.set',
+            import_batch.delay(session, 'magento.attribute.set',
                                backend_id)
         return True
 

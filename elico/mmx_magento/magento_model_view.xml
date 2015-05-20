@@ -8,7 +8,7 @@
 			<field name="arch" type="xml" >
 				<xpath expr="//page[@name='import']/group[5]" position="after">
 					<group>
-						<label string="Import cart since" class="oe_inline" />
+						<label string="Import cart" class="oe_inline" />
 						<div>
 							<button name="import_cart"
 								type="object"
@@ -17,9 +17,18 @@
 						</div>
 					</group>
 					<group>
-						<label string="Import wishlist since" class="oe_inline" />
+						<label string="Import wishlist" class="oe_inline" />
 						<div>
 							<button name="import_wishlist"
+								type="object"
+								class="oe_highlight"
+								string="Import in background"/>
+						</div>
+					</group>
+					<group>
+						<label string="Import reservation" class="oe_inline" />
+						<div>
+							<button name="import_reservation"
 								type="object"
 								class="oe_highlight"
 								string="Import in background"/>
@@ -29,6 +38,7 @@
 				<field name="sale_prefix" position="after">
 					<field name="cart_prefix" />
 					<field name="wishlist_prefix" />
+					<field name="reservation_prefix" />
 				</field>
 			</field>
 		</record>

@@ -29,7 +29,7 @@
 		        </xpath>
 		        <!-- new confirm button , replace the old confirm button  jon.chow#elico-corp.com Jul 4, 2013-->
 		        <xpath expr="//button[@name='action_button_confirm']" position="replace">
-		        	<button name="action_button_confirm_extend"  states='draft,wishlist' string="Confirm sale" class="oe_highlight" type="object"/>
+		        	<button name="action_button_confirm_extend"  states='draft,wishlist,reservation' string="Confirm sale" class="oe_highlight" type="object"/>
 		        </xpath>
 		        
 		    </field>
