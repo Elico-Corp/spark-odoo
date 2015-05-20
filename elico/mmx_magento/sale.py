@@ -72,9 +72,9 @@ class sale_order(orm.Model):
                   to run on the order date.", select=True),
         'magento_cart_bind_ids': fields.one2many('magento.sale.cart',
                                                  'openerp_id',
-                                                 string="Ma]gento Bindings"),
+                                                 string="Magento Bindings"),
         'magento_wishlist_bind_ids': fields.one2many(
-            'magento.sale.wishlist', 'openerp_id', string="Ma]gento Bindings"),
+            'magento.sale.wishlist', 'openerp_id', string="Magento Bindings"),
         'order_line': fields.one2many(
             'sale.order.line',
             'order_id',
@@ -600,7 +600,7 @@ def cart_import_batch(session, model_name, backend_id, filters=None):
 
 # Wishlist
 @magento_sparkmodel
-class SaleOrderImport(MagentoImportSynchronizer):
+class SaleWishlistImport(MagentoImportSynchronizer):
     _model_name = ['magento.sale.wishlist']
 
 
@@ -771,12 +771,28 @@ class WishlistAdapter(GenericAdapter):
     _model_name = 'magento.sale.wishlist'
     _magento_model = 'ec_mwishlist'
 
+    def search(self, filters=None, magento_store_ids=None):
+        """ Search records according to some criterias
+        and returns a list of ids
+
+        :rtype: list
+        """
+        if filters is None:
+            filters = {}
+        arguments = {
+            'reservation': filters.get('reservation', False)
+        }
+        return super(WishlistAdapter, self).search(arguments)
+
 
 @magento_sparkmodel
 class WishlistImportMapper(SaleOrderImportMapper):
     _model_name = 'magento.sale.wishlist'
 
-    direct = [('wishlist_id', 'id'), ('created_at', 'date_order')]
+    direct = [('wishlist_id', 'magento_id'),
+              ('wishlist_id', 'magento_wishlist_id'),
+              ('created_at', 'date_order'),
+              ('date_order', 'date_order')]
 
     children = [
         ('items', 'magento_wishlist_line_ids', 'magento.sale.wishlist.line')
@@ -826,7 +842,10 @@ class WishlistImportMapper(SaleOrderImportMapper):
     def name(self, record):
         partner_id = self.customer_id(record)['partner_id']
         name = str(partner_id)
-        prefix = self.backend_record.wishlist_prefix
+        prefix = self.backend_record.reservation_prefix
+        # output is a char equals to either 1 or 0
+        if record['wishlist']:
+            prefix = self.backend_record.wishlist_prefix
         if prefix:
             name = prefix + name
         return {'name': name}
@@ -915,6 +934,49 @@ def sale_wishlist_import_batch(session, model_name, backend_id, filters=None):
 @magento_sparkmodel
 class WishlistLineImportMapper(SaleOrderLineImportMapper):
     _model_name = 'magento.sale.wishlist.line'
+
+    direct = [('qty_ordered', 'product_uom_qty'),
+              ('item_id', 'magento_id')]
+
+    def _partner(self, record):
+        binder = self.get_binder_for_model('magento.res.partner')
+        partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
+        assert partner_id is not None, \
+            ("customer_id %s should have been imported in "
+             "SaleOrderImport._import_dependencies" % record['customer_id'])
+        sess = self.session
+        return sess.pool.get('res.partner').browse(
+            sess.cr, sess.uid, partner_id)
+
+    @mapping
+    def name(self, record):
+        product_id = self.product_id(record)['product_id']
+        assert product_id
+        sess = self.session
+        product_pool = self.session.pool.get('product.product')
+        product = product_pool.browse(
+            sess.cr, sess.uid, product_id, context=sess.context)
+        return {'name': product.name}
+
+    @mapping
+    def price(self, record):
+        product_id = self.product_id(record)['product_id']
+        assert product_id
+        sess = self.session
+        partner = self._partner(record)
+        pricelist_id = (partner.property_product_pricelist.id
+                        if partner.property_product_pricelist
+                        else False)
+        pricelist_pool = sess.pool.get('product.pricelist')
+        price_unit = pricelist_pool.price_get(
+            sess.cr, sess.uid, [pricelist_id],
+            product_id, float(record['qty_ordered']))
+        price = price_unit[int(pricelist_id)]
+        return {'price_unit': price}
+
+    @mapping
+    def product_options(self, record):
+        return {}
 
 
 def _play_order_onchange(self, order):

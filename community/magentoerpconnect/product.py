@@ -447,7 +447,7 @@ class ProductImportMapper(ImportMapper):
 
     @mapping
     def set(self, record):
-        binder = self.get_binder_for_model('magento.product.attribute.set')
+        binder = self.get_binder_for_model('magento.attribute.set')
         set_id = binder.to_openerp(record['set'])
         if set_id is None:
             raise MappingError("The product attribute set with "
