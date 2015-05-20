@@ -237,7 +237,8 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             if not company.stock_user_id:
                 continue
             product = product_pool.browse(sess.cr, company.stock_user_id.id,
-                                          record.openerp_id.id)
+                                          record.openerp_id.id,
+                                          context=sess.context)
             for store_id in website_id.store_ids:
                 for view_id in store_id.storeview_ids:
                     stocks[view_id.magento_id] = [

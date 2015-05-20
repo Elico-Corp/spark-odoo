@@ -59,7 +59,6 @@ class MagentoAttributeSet(orm.Model):
         'openerp_id': fields.many2one(
             'attribute.set',
             string='Attribute set',
-            # required=True,
             ondelete='cascade'),
         'attributeSetName': fields.char(
             'Name',

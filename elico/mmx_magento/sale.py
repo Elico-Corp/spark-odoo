@@ -121,11 +121,11 @@ class sale_order_line(orm.Model):
         if isinstance(ids, int):
             ids = [ids]
         """Allows to delete sales order lines in draft,cancel states"""
-        backlisted_states = [
+        black_listed = [
             'cart', 'draft', 'wishlist', 'reservation', 'cancel'
         ]
         for rec in self.browse(cr, uid, ids, context=context):
-            if rec.state not in backlisted_states:
+            if rec.state not in black_listed:
                 raise osv.except_osv(_('Invalid Action!'),
                                      _('Cannot delete a sales order line which\
                                        is in state \'%s\'.') % (rec.state))
@@ -208,7 +208,7 @@ class magento_sale_cart(orm.Model):
             'Total amount w. tax',
             digits_compute=dp.get_precision('Account')),
         'magento_cart_id': fields.integer('Magento Cart ID',
-                                          help="'order_id' field in Magento"),
+                                          help="Cart identifier field in Magento"),
         # when a sale order is modified, Magento creates a new one, cancels
         # the parent order and link the new one to the canceled parent
         'magento_parent_id': fields.many2one('magento.sale.order',
@@ -356,7 +356,7 @@ class CartImportMapper(SaleOrderImportMapper):
         binder = self.get_binder_for_model('magento.res.partner')
         partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
         partner = sess.pool.get('res.partner').browse(
-            sess.cr, sess.uid, partner_id)
+            sess.cr, sess.uid, partner_id, context=sess.context)
         if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
@@ -680,7 +680,7 @@ class magento_sale_wishlist(orm.Model):
             digits_compute=dp.get_precision('Account')),
         'magento_wishlist_id': fields.integer(
             'Magento Wishlist ID',
-            help="'order_id' field in Magento"),
+            help="Wishlist identifier field in Magento"),
         # when a sale order is modified, Magento creates a new one, cancels
         # the parent order and link the new one to the canceled parent
         'magento_parent_id': fields.many2one('magento.sale.order',
@@ -823,7 +823,7 @@ class WishlistImportMapper(SaleOrderImportMapper):
         binder = self.get_binder_for_model('magento.res.partner')
         partner_id = binder.to_openerp(record['customer_id'], unwrap=True)
         partner = sess.pool.get('res.partner').browse(
-            sess.cr, sess.uid, partner_id)
+            sess.cr, sess.uid, partner_id, context=sess.context)
         if not partner:
             raise MappingError("The store does not exist in magento.\
                 You need to import it first")
@@ -946,7 +946,7 @@ class WishlistLineImportMapper(SaleOrderLineImportMapper):
              "SaleOrderImport._import_dependencies" % record['customer_id'])
         sess = self.session
         return sess.pool.get('res.partner').browse(
-            sess.cr, sess.uid, partner_id)
+            sess.cr, sess.uid, partner_id, context=sess.context)
 
     @mapping
     def name(self, record):
