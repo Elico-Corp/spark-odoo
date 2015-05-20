@@ -188,8 +188,7 @@ class ShipmentContainedProductInfo(orm.Model):
                 for sol in shipment.sol_ids:
                     # TODO you need to move the final_qty from module
                     # (mmx_sale_status) to current module.
-                    assert sol.final_qty >= 0, 'There is negetive Quantity'
-                    ' in the sale order line.'
+                    assert sol.final_qty >= 0, '''Quantity can't be negative!'''
                     if contain_info.product_id == sol.product_id:
                         res[contain_info.id] += sol.final_qty
         return res
@@ -222,10 +221,10 @@ class ShipmentContainedProductInfo(orm.Model):
                 if this.product_id == sol.product_id:
                     raise orm.except_orm(
                         _('Warning'),
-                        _('You cannot remove the contained product because'
-                            ' there is already related sale '
-                            'order line assigned!\nPlease '
-                            'remove the related sale order line first!'))
+                        _('You cannot remove the contained product '
+                            'because a related sale order line is '
+                            'already assigned.\n Please remove the related'
+                            'sale order line first!'))
         return super(ShipmentContainedProductInfo, self).unlink(
             cr, uid, ids, context=context)
 
@@ -320,8 +319,9 @@ class sale_order_line(orm.Model):
     }
 
     def empty_sale_shipment(self, cr, uid, ids, context=None):
-        '''Empty the sale shipment on the sale order line.
-        only allowing draft and wishlist state'''
+        '''remove the sale order line on the sale shipment.
+        only allowing draft and wishlist state which doesn't have
+        stock pickings created.'''
         if not ids:
             return False
         for this in self.browse(cr, uid, ids, context=context):

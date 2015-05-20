@@ -53,10 +53,7 @@ class sale_order(osv.osv):
         open wizard, split the order,
         in the wizard,you can split order and comfirm
         """
-        # sale_order = self.browse(cr, uid, ids[0])
-        # states = [line.product_id.state for line in sale_order.order_line]
         need_wizard = True
-        # alwansy pop the wizard
 
         if need_wizard:
             return {
@@ -68,10 +65,6 @@ class sale_order(osv.osv):
                 'target': 'new',
                 'nodestroy': True,
             }
-        # else:
-        #    return self.action_button_confirm(cr, uid, ids, context=context)
-
-sale_order()
 
 
 class sale_order_line(osv.osv):

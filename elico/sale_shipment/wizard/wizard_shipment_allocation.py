@@ -105,12 +105,10 @@ class WizardShipmentAllocation(orm.TransientModel):
                     line.final_qty < 0:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('Please check product: %s, '
-                        'Final qty is current larger '
-                        'than the quantity in sale order '
-                        'line.\n Or final qty is negative.'
-                        '' % (line.product_id.name)))
-            # check if the remaining quantity is negative.
+                    _('A sale order line final quantity is larger than '
+                        'its current quantity or the final quantity '
+                        'has a negative value.\n '
+                        'Product: %s' % (line.product_id.name)))
         return True
 
     def confirm_final_qty(self, cr, uid, ids, context=None):
@@ -202,15 +200,14 @@ class WizardShipmentAllocation(orm.TransientModel):
     }
 
     def _check_confirm_all(self, so, wizard_lines):
-        '''TODO'''
-        sol_dic = {}
-        split_dic = {}
-        [sol_dic.update({x.id: x.product_uom_qty}) for x in so.order_line]
-        [split_dic.update({x.sol_id.id: x.final_qty}) for x in wizard_lines]
-        if sol_dic == split_dic:
-            return True
-        else:
-            return False
+        '''check if we can confirm all the final quantity of
+        the sale order line in the wizard is all the same in
+        the sale order.
+        @param so: sale order object
+        @param wizard_lines: lines in the wizard'''
+        sol_dic = {x.id: x.product_uom_qty for x in so.order_line}
+        split_dic = {x.sol_id.id: x.final_qty for x in wizard_lines}
+        return sol_dic == split_dic
 
     def _check_split(self, wizard):
         """
@@ -221,116 +218,176 @@ class WizardShipmentAllocation(orm.TransientModel):
             if not line.sol_id:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Must have one sale order line .'
+                    _('Must have one sale order line'
                         'corresponding to the wizard line'))
             if line.sol_id.product_id.state != 'order':
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Split Only SOLine Product state is "Order".'))
+                    _("You can only split a sale order line "
+                        "where its product state is set to order."))
             if line.final_qty <= 0:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Can not confirm if Fianl qty <= 0'))
+                    _('Can not confirm if final quantity <= 0'))
             if line.final_qty > line.sol_id.product_uom_qty:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Can not confirm Fqty > SOL.qty'))
+                    _('The final quantity cannot be confirmed '
+                        'since it should be superior to the '
+                        'sale order line quantity.'))
         return True
 
-    def split_sol(self, cr, uid, ids, context=None):
-        '''this method is from old sale_shipment module
-        TODO: refactory.'''
+    def _prepare_new_so_date(
+            self, cr, uid, old_so, sale_shipment_id, context=None):
+        '''prepare the data for creating new sale order.
+
+        rules:
+            1- should not copy the shipment from the old sale order.
+            2- empty sale order line.
+        @param old_so: the old so to copy
+        @return: return the dict for new sale order.'''
+        so_pool = self.pool['sale.order']
         seq_pool = self.pool['ir.sequence']
-        so_pool = self.pool.get('sale.order')
-        sol_pool = self.pool.get('sale.order.line')
+        # TODO: to be Compatible with inter-company module.
+        return so_pool.copy_data(
+            cr, uid, old_so.id, default={
+                'name': seq_pool.get(cr, uid, 'sale.order'),
+                'origin': old_so['name'],
+                'order_line': False,
+                'sale_shipment_id': sale_shipment_id,
+                'purchase_id': None
+            })
+
+    def _prepare_sol_data(
+            self, cr, uid, old_sol, final_qty,
+            sale_shipment_id, so_id=False, context=None):
+        '''Prepare the data for creating a new sale order line.
+
+        rules:
+            - should not copy the sale shipment from the old.
+            - product quantity should be the final qty
+        @param old_sol: the sale order line to be copied.
+        @param so_id: the sale order to be binded with the new sale order line.
+        @param final_qty: the final quantity to be assigned to the new.
+        @return: return the data.
+        '''
+        sol_pool = self.pool['sale.order.line']
+        # TODO to be compatible with inter-company
+        # ic_pol_id and ic_sol_id
+        return sol_pool.copy_data(
+            cr, uid, old_sol.id, default={
+                'final_qty': final_qty,
+                'order_id': so_id,
+                'sale_shipment_id': sale_shipment_id,
+            })
+
+    def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
+        '''Split the sale order. There are the following cases:
+            - final_qty = product quantity on sale order line
+            - final_qty < product quantity on sale order line'''
+        # if final_qty = product_qty, directly confirm this sale order
+        sol_pool = self.pool['sale.order.line']
+        so_pool = self.pool['sale.order']
+        new_so_ids, new_sol_ids = [], []
+        if self._check_confirm_all(so, wizard_lines):
+            for soline in so.order_line:
+                sol_pool.write(
+                    cr, uid, soline.id,
+                    {'final_qty': soline.product_uom_qty,
+                     'sale_shipment_id': shipment_id},
+                    context=context)
+            so_pool.action_button_confirm(
+                cr, uid, [so.id], context=context)
+            return True
+        # if not, then we need to create new SO
+        # prepare the data of the new SO
+        new_so_data = self._prepare_new_so_date(
+            cr, uid, so, shipment_id, context=context)
+        new_so_id = so_pool.create(
+            cr, uid, new_so_data, context=context)
+        # empty the shipment in the old sale order.
+        so.write({'sale_shipment_id': False})
+        new_so_ids.append(new_so_id)
+
+        # split the sol by going through the wizard lines.
+        # only split when the final qty is smaller than quantity
+        # in sale order line.
+        for wizard_line in wizard_lines:
+            sol = wizard_line.sol_id
+            final_qty = wizard_line.final_qty
+            res_qty = sol.product_uom_qty - final_qty
+            sol_data = self._prepare_sol_data(
+                cr, uid, sol, final_qty, shipment_id,
+                new_so_id, context=context)
+            # empty the shipment in the old sale order line.
+            sol.write({'sale_shipment_id': False})
+            if res_qty > 0:
+                # update the old sale order line with the residual quantity
+                so_pool.write(
+                    cr, uid, so.id,
+                    {'order_line': [(1, sol.id, {
+                        'product_uom_qty': res_qty,
+                        'final_qty': 0
+                    })]})
+            elif res_qty == 0:
+                # delete the old sale order line.
+                so_pool.write(
+                    cr, uid, so.id,
+                    {'order_line': [(2, sol.id)]}, context=context)
+            else:
+                raise orm.except_orm(
+                    _('Warning'),
+                    _('Final quantity cannot be larger than '
+                        'quantity on sale order line!'))
+            # create the new sale order line
+            new_sol_id = sol_pool.create(
+                cr, uid, sol_data, context=context)
+            new_sol_ids.append(new_sol_id)
+        return new_so_ids, new_sol_ids
+
+    def split_sol(self, cr, uid, ids, context=None):
+        '''split the sale order line'''
+        if not ids:
+            return True
+        so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
         shipment_id = wizard.shipment_id and wizard.shipment_id.id or None,
 
+        # check before splitting the sale order lines.
         self._check_split(wizard)
 
         new_so_ids = []
-        new_soline_ids = []
+        new_sol_ids = []
         dic = {}
+        # group the wizard lines by so_id
         for wizard_line in wizard.lines:
             so = wizard_line.so_id
-            if dic.get(so, False):
+            if dic.get(so):
                 dic[so].append(wizard_line)
             else:
                 dic.update({so: [wizard_line]})
 
+        # go through sale order by sale order.
         for so in dic:
             wizard_lines = dic[so]
+            so_ids, sol_ids = self._split_so(
+                cr, uid, so, wizard_lines, shipment_id, context=context)
+            new_so_ids.extend(so_ids)
+            new_sol_ids.extend(sol_ids)
 
-            # if want to split SOL,qty == whole SO, directly confirm this SO
-            if self._check_confirm_all(so, wizard_lines):
-                for soline in so.order_line:
-                    sol_pool.write(
-                        cr, uid, soline.id,
-                        {'final_qty': soline.product_uom_qty,
-                         'sale_shipment_id': shipment_id},
-                        context=context)
-                so_pool.action_button_confirm(
-                    cr, uid, [so.id], context=context)
-                continue
-            # create new SO
-            new_so_data = so_pool.copy_data(
-                cr, uid, so.id, default={
-                    'name': seq_pool.get(cr, uid, 'sale.order'),
-                    'origin': so['name'],
-                    'order_line': False,
-                    'date_order': time.strftime(DEFAULT_SERVER_DATE_FORMAT),
-                    'sale_shipment_id': False,
-                    'purchase_id': None,
-                    'sale_shipment_id': shipment_id,
-                    'sale_id': None}, context=context)
-            new_so_id = so_pool.create(cr, uid, new_so_data, context=context)
-            new_so_ids.append(new_so_id)
-            for wizard_line in wizard_lines:
-                soline = wizard_line.sol_id
-                final_qty = wizard_line.final_qty
-                res_qty = soline.product_uom_qty - final_qty
-                sol_data = sol_pool.copy_data(
-                    cr, uid, soline.id,
-                    default={'product_uom_qty': final_qty,
-                             'final_qty': final_qty,
-                             'order_id': new_so_id,
-                             'sale_shipment_id': False,
-                             'ic_pol_id': None,
-                             'ic_sol_id': None}, context=context)
-                # do not use sol_pool.write
-                if res_qty > 0:
-                    so_pool.write(
-                        cr, uid, so.id,
-                        {'order_line':
-                            [(1, soline.id, {
-                                'product_uom_qty': res_qty, 'final_qty': 0})]}
-                    )
-                elif res_qty == 0.0:
-                    so_pool.write(
-                        cr, uid, so.id, {'order_line': [(2, soline.id)]},
-                        context=context)
-                else:
-                    pass
-                sol_id = sol_pool.create(cr, uid, sol_data, context=context)
-                new_soline_ids.append(sol_id)
-
-                # TODO if Confirm Orgin
-                # If only reserve one SOL, comfirm this SO.
-                # else split A another new SO, and
-
-        # confirm new SO
+        # confirm new sale orders
         for so_id in new_so_ids:
             context['sale_shipment_id'] = shipment_id
             so_pool.action_button_confirm(cr, uid, [so_id], context=context)
 
-        # return old+new SOL
+        # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {
             'name': _('Split Sale Order lines'),
             'view_type': 'form',
             "view_mode": 'tree,form',
             'res_model': 'sale.order.line',
-            'domain': [('id', 'in', new_soline_ids + old_soline_ids)],
+            'domain': [('id', 'in', new_sol_ids + old_soline_ids)],
             'type': 'ir.actions.act_window',
         }
 

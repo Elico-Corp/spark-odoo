@@ -66,7 +66,7 @@ class wizard_assign_shipment(osv.osv_memory):
         data = []
         active_ids = context.get('active_ids', False)
         if context.get('active_model') == 'sale.order.line':
-            for sol in sol_pool.browse(cr, uid, active_ids):
+            for sol in sol_pool.browse(cr, uid, active_ids, context):
                 if sol.product_id.state == 'order':
                     data.append((0, 0, {
                         'product_id': sol.product_id.id,
