@@ -44,6 +44,7 @@
                 border-bottom: 1px double black;
                 width: 45%;
                 font-size: 22px;
+                padding-top: 50px;
             }
         </style>
     </head>

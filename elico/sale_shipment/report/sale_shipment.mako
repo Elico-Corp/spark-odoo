@@ -7,19 +7,7 @@
                 vertical-align: top;
                 margin-bottom: 50px;
             }
-            ul {
-                padding: 0;
-                margin-top: 0;
-                margin-bottom: 0;
-                display: block;
-            }
-            li {
-                border: 1px solid black;
-                float: left;
-                display: block;
-                padding: 3px;
-            }
-            h1, h2, tr, li {
+            h1, h2, tr, td, th{
                 page-break-inside: avoid;
             }
             table {
@@ -55,9 +43,13 @@
                 border-bottom: 1px double black;
                 width: 45%;
                 font-size: 22px;
+                padding-top: 50px;
             }
             table.table2{
                 margin-bottom: 10px;
+            }
+            table.table2 th{
+                padding-top: 5px;
             }
     </style>
 </head>
@@ -69,16 +61,21 @@
             <% move_ids = move_pool.search(cr, uid, group['__domain']) %>
 
                 %for pack_move_group in move_pool.read_group(cr, uid, [('id', 'in', move_ids)], ['tracking_id'], ['tracking_id']):
-                    <table class="table1">
-                        <tr>
-                            <td class="col_name">Customer:</td>
-                            <td>${group.get('partner_id', '') and group.get('partner_id')[1]}</td>
-                            <td class="col_name">Package:</td>
-                            <td>${pack_move_group.get('tracking_id', '') and pack_move_group.get('tracking_id', '')[1] or 'No Package'}</td>
-                        </tr>
-                    </table>
                     <table class="table2">
                     <thead>
+                        <tr>
+                            <th style="border: none;">
+                                <table class="table1">
+                                    <tr>
+                                        <td class="col_name">Customer:</td>
+                                        <td>${group.get('partner_id', '') and group.get('partner_id')[1]}</td>
+                                        <td class="col_name">Package:</td>
+                                        <td>${pack_move_group.get('tracking_id', '') and pack_move_group.get('tracking_id', '')[1] or 'No Package'}</td>
+                                    </tr>
+                                </table>
+                            </th>
+                            <th style="border: none;"></th>
+                        </tr>
                         <tr>
                             <th>Product Name</th>
                             <th>Quantity</th>

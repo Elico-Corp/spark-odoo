@@ -20,3 +20,5 @@
 #
 ##############################################################################
 from . import replenishment_transfer
+from . import wizard_shipment_assign_sol
+from . import wizard_shipment_allocation

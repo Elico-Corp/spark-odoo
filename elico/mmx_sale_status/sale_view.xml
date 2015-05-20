@@ -32,31 +32,8 @@
 		        	<button name="action_button_confirm_extend"  states='draft,wishlist,reservation' string="Confirm sale" class="oe_highlight" type="object"/>
 		        </xpath>
 		        
-		        <!-- why cant invisilbe this button , only can replace??   jon.chow#elico-corp.com Jul 4, 2013
-		        <xpath expr="//form/header/button[@name='action_button_confirm' and @states='draft']" position="replace"/>
-		        <xpath expr="//form/header/button[@name='action_button_confirm' and @states='sent']" position="replace"/>
-		        
-		        <xpath expr="//form/header/button[@name='action_view_invoice']" position="after">
-		        	<button name="%(action_wizard_order_split_2)d" states="draft" string="Split Sale Order" class="oe_highlight" type="action" />
-		        </xpath>
-		        -->
-		        
-		        
 		    </field>
 		</record>
-		
-		
-		<!-- Sale Order search view   jon.chow#elico-corp.com Jul 25, 2013-->
-<!-- 	    <record id="inherit_view_sales_order_filter" model="ir.ui.view">
-            <field name="name">sale.order.search</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search/filter[@name='sales']" position="after">
-                    <filter icon="terp-check" string="Is Cart" name="is_cart" domain="[('state','=','cart')]"/>
-                </xpath>
-            </field>
-        </record> -->
 		
 	    
 		<!-- SO lines menu tree view   jon.chow#elico-corp.com Jul 17, 2013-->

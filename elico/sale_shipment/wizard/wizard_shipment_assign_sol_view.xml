@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_wizard_shipment_assign_sol" model="ir.ui.view">
+            <field name="name">Wizard shipment assign SOL form view</field>
+            <field name="model">wizard.shipment.assign.sol</field>
+            <field name="arch" type="xml">
+                <form string="Assigning sale order lines" version="7.0">
+                    <header>
+                        <button icon="gtk-execute" string="Assign" name="shipment_assign_sol" type="object" class="oe_highlight"  />
+                    </header>
+                    <group>
+                        <label colspan="4" nolabel="1" string="This wizard will assign the selected sale order lines to the sale shipment." />
+                    </group>
+                    <group colspan="4" >
+                        <separator string="Sale order lines" colspan="4"/>
+                        <newline/>
+                        <field name="sol_ids" nolabel="1">
+                            <tree string="Sale order lines" editable="top">
+                                <field name="name" readonly="1"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="order_id" readonly="1"/>
+                                <field name="order_partner_id" readonly="1"/>
+                                <field name="product_uom_qty" readonly="1"/>
+                                <field name="final_qty" readonly="1"/>
+                                <field name="product_uom" readonly="1"/>
+                                <field name="so_state" readonly="1"/>
+                                <field name="state" readonly="1"/>
+                            </tree>
+                        </field>
+                    </group>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_assign_sale_order_lines" model="ir.actions.act_window">
+            <field name="name">Assign sale order lines</field>
+            <field name="res_model">wizard.shipment.assign.sol</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_wizard_shipment_assign_sol"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

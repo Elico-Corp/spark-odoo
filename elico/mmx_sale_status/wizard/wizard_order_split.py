@@ -47,8 +47,6 @@ class wizard_order_split_line(osv.osv_memory):
         'active': fields.boolean('Active'),
     }
 
-wizard_order_split_line()
-
 
 class wizard_order_split (osv.osv_memory):
     _name = 'wizard.order.split'
