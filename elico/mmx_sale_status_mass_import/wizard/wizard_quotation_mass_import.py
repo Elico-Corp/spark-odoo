@@ -157,7 +157,7 @@ class CSVMassImportParser(CSVParser):
                 raise orm.except_orm(
                     _('Warning'),
                     _('Please make sure the columns names are correct!\n'
-                        'You must have a this fields:%s') % str(
+                        'You must have these fields:%s') % str(
                             self.required_fields))
         # TODO: more format and field type checkings.
         return True
@@ -180,8 +180,8 @@ class CSVMassImportParser(CSVParser):
         return self.result_row_list
 
 
-class WizardWishlistMassImport(orm.TransientModel):
-    _name = 'wizard.wishlist.mass.import'
+class WizardQuotationMassImport(orm.TransientModel):
+    _name = 'wizard.quotation.mass.import'
     _columns = {
         'name': fields.char('name', size=32),
         'date': fields.date(
@@ -233,7 +233,7 @@ class WizardWishlistMassImport(orm.TransientModel):
             wizard_id = ids
         assert wizard_id, 'No wizard ID!'
 
-        # get filestream result_row_list
+        # get file stream result_row_list
         wizard = self.browse(cr, uid, wizard_id, context=context)
 
         partner_obj = self.pool['res.partner']
@@ -244,7 +244,7 @@ class WizardWishlistMassImport(orm.TransientModel):
         msg, parser = self.check_import_valid(cr, uid, wizard, context=context)
 
         for r in parser.result_row_list:
-            # pass the invalid ones, this var is initilized when parse
+            # pass the invalid ones, this var is initialized when parse
             # this file.
             assert 'valid' in r, \
                 'The "valid" should be in the result_row_list!'
@@ -276,17 +276,20 @@ class WizardWishlistMassImport(orm.TransientModel):
             r['partner_id'] = partner_id
 
             # search for the SOs to be updated.
+            # state is 'draft' and with check box checked.
             so_ids = sale_obj.search(
                 cr, uid,
                 [
-                    ('state', '=', 'wishlist'),
+                    ('state', '=', 'draft'),
+                    ('is_imported', '=', True),
                     ('partner_shipping_id', '=', address_id)
                 ], context=context)
             so_id = so_ids and so_ids[0] or False
+            # TODO log warning when more than 2 so are found
 
-            # create new wishlist if we don't find any in system.
+            # create new quotation if we don't find any in system.
             if not so_id:
-                so_id = self.create_new_wishlist(
+                so_id = self.create_new_quotation(
                     cr, uid, partner_id, address_id,
                     wizard.shop_id and wizard.shop_id.id,
                     wizard.date, context=context)
@@ -320,7 +323,7 @@ class WizardWishlistMassImport(orm.TransientModel):
                 # if exists, update the quantity in the csv
                 assert l.product_id, 'The product is None in the sol!'
                 if l.product_id.id == product_id:
-                    self.update_wishlist_line(
+                    self.update_quotation_line(
                         cr, uid, so_id, product_id,
                         quantity, l.id, context=context)
                     # l.write({'product_uom_qty': quantity}, context=context)
@@ -329,18 +332,19 @@ class WizardWishlistMassImport(orm.TransientModel):
                     break
             # if line doesn't exist in system, create a new one
             if not r.get('sol_id'):
-                sol_id = self.create_new_wishlist_line(
+                sol_id = self.create_new_quotation_line(
                     cr, uid, so_id, product_id,
                     quantity, context=context)
                 r['sol_id'] = sol_id
-        # after the whole loop, check if there are so_line(wishlist) that not
-        # exists in the CSV file. If so, delete them.
+        # after the whole loop, check if there are so_line(quotation) that not
+        # exists in the CSV file and with check box checked. If so, delete them
         file_so_ids = sale_obj.search(
-            cr, uid, [('state', '=', 'wishlist')], context=context)
+            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True)],
+            context=context)
         sol_ids = sol_obj.search(
             cr, uid,
-            ['|', ('so_state', '=', 'wishlist'),
-                ('order_id', 'in', file_so_ids)],
+            ['|', ('order_id', 'in', file_so_ids),
+             ('so_state', '=', 'draft'), ('is_imported', '=', True)],
             context=context)
 
         # csv file sol ids
@@ -359,8 +363,8 @@ class WizardWishlistMassImport(orm.TransientModel):
         if msg:
             return {
                 'type': 'ir.actions.act_window',
-                'name': 'Wishlist Mass Import',
-                'res_model': 'wizard.wishlist.mass.import',
+                'name': 'Quotation Mass Import',
+                'res_model': 'wizard.quotation.mass.import',
                 'context': {
                     'log_message': msg},
                 'res_id': wizard_id,
@@ -370,10 +374,10 @@ class WizardWishlistMassImport(orm.TransientModel):
         else:
             return True
 
-    def prepare_wishlist_vals(
+    def prepare_quotation_vals(
             self, cr, uid, partner_id, address_id,
             shop_id=False, date=None, context=None):
-        '''Prepare the updating data for wishlist'''
+        '''Prepare the updating data for quotation'''
         so_obj = self.pool['sale.order']
         so_val = so_obj.onchange_partner_id(
             cr, uid, [], partner_id, context=context)['value']
@@ -381,7 +385,8 @@ class WizardWishlistMassImport(orm.TransientModel):
             'partner_id': partner_id,
             'partner_invoice_id': partner_id,
             'partner_shipping_id': address_id,
-            'state': 'wishlist'
+            'state': 'draft',
+            'is_imported': True
         })
         if shop_id:
             so_val['shop_id'] = shop_id
@@ -389,32 +394,32 @@ class WizardWishlistMassImport(orm.TransientModel):
             so_val['date_order'] = date
         return so_val
 
-    def create_new_wishlist(
+    def create_new_quotation(
             self, cr, uid, partner_id, address_id,
             shop_id=False, date=None, context=None):
-        '''create new empty wishlist'''
+        '''create new empty quotation'''
 
         so_obj = self.pool['sale.order']
-        vals = self.prepare_wishlist_vals(
+        vals = self.prepare_quotation_vals(
             cr, uid, partner_id, address_id, shop_id=shop_id,
             date=date, context=context)
         so_id = so_obj.create(cr, uid, vals, context=context)
         return so_id
 
-    def update_wishlist(
+    def update_quotation(
             self, cr, uid, so_id, partner_id, address_id,
             shop_id=False, date=None, context=None):
-        '''update existing wishlist'''
+        '''update existing quotation'''
         assert so_id, 'Must have a sale order to be updated.'
         so_obj = self.pool['sale.order']
-        vals = self.prepare_wishlist_vals(
+        vals = self.prepare_quotation_vals(
             cr, uid, partner_id, address_id, shop_id=shop_id,
             date=date, context=context)
 
         so_id = so_obj.write(cr, uid, so_id, vals, context=context)
         return so_id
 
-    def prepare_wishlist_line_vals(
+    def prepare_quotation_line_vals(
             self, cr, uid, so_id, product_id, quantity, context=None):
         '''Prepare the data to be update in the sol'''
         assert so_id, 'Data error, must have SO id to get information'
@@ -431,16 +436,17 @@ class WizardWishlistMassImport(orm.TransientModel):
             'product_id': product_id,
             'order_id': so_id,
             'product_uom_qty': quantity,
-            'so_state': 'wishlist'
+            'so_state': 'draft',
+            'is_imported': True
         })
         return line_val
 
-    def update_wishlist_line(
+    def update_quotation_line(
             self, cr, uid, so_id, product_id, quantity, sol_id, context=None):
-        '''Update the existing wishlist line'''
+        '''Update the existing quotation line'''
 
         sol_obj = self.pool['sale.order.line']
-        line_val = self.prepare_wishlist_line_vals(
+        line_val = self.prepare_quotation_line_vals(
             cr, uid, so_id, product_id, quantity, context=context)
 
         # don't update the description
@@ -450,11 +456,11 @@ class WizardWishlistMassImport(orm.TransientModel):
         sol_id = sol_obj.write(cr, uid, sol_id, line_val, context=context)
         return sol_id
 
-    def create_new_wishlist_line(
+    def create_new_quotation_line(
             self, cr, uid, so_id, product_id, quantity, context=None):
 
         sol_obj = self.pool['sale.order.line']
-        line_val = self.prepare_wishlist_line_vals(
+        line_val = self.prepare_quotation_line_vals(
             cr, uid, so_id, product_id, quantity, context=context)
         sol_id = sol_obj.create(cr, uid, line_val, context=context)
         return sol_id
