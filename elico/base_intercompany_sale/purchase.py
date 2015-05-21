@@ -38,7 +38,6 @@ class purchase_order(orm.Model):
     _columns = {
         'openerp_id': fields.many2one('purchase.order',
                                       string='Sale Order',
-                                      required=True,
                                       ondelete='cascade'),
         'icops_bind_ids': fields.one2many(
             'icops.purchase.order', 'openerp_id',
@@ -56,11 +55,24 @@ class purchase_order(orm.Model):
     def create(self, cr, uid, data, context=None):
         data['icops_bind_ids'] = self.pool.get(
             'icops.backend').prepare_binding(cr, uid, data, context)
-        return super(purchase_order, self).create(cr, uid, data, context)
+        res = super(purchase_order, self).create(cr, uid, data, context)
+        # Could not find another way to support cascading.
+        if context.get('icops'):
+            self.write(cr, uid, res, {'order_line': []},
+                       context=context)
+        return res
 
     def write(self, cr, uid, ids, data, context=None):
         self._check_icops(cr, uid, ids, context=context)
-        return super(purchase_order, self).write(cr, uid, ids, data, context)
+        res = super(purchase_order, self).write(cr, uid, ids, data, context)
+        # Could not find another way to support cascading.
+        if context.get('icops'):
+            if context.get('written'):
+                context['written'] = False
+            else:
+                context['written'] = True
+                self.write(cr, uid, ids, {'order_line': []}, context=context)
+        return res
 
     def unlink(self, cr, uid, ids, context=None):
         self._check_icops(cr, uid, ids, context=context)
@@ -114,6 +126,7 @@ class icops_purchase_order_line(orm.Model):
         return line_obj.search(cr, uid,
                                [('icops_order_id', 'in', ids)],
                                context=context)
+
     _columns = {
         'icops_order_id': fields.many2one('icops.purchase.order',
                                           'ICOPS Sale Order',
@@ -133,7 +146,7 @@ class icops_purchase_order_line(orm.Model):
                    (lambda self, cr, uid, ids, c=None: ids,
                     ['icops_order_id'],
                     10),
-                 'icops.purchase.order':
+                   'icops.purchase.order':
                    (_get_lines_from_order, ['backend_id'], 20),
                    },
             readonly=True)
@@ -141,8 +154,9 @@ class icops_purchase_order_line(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         icops_order_id = vals['icops_order_id']
-        info = self.pool['icops.purchase.order'].read(cr, uid,
-                        [icops_order_id],
+        info = self.pool['icops.purchase.order'].read(
+            cr, uid,
+            [icops_order_id],
             ['openerp_id'],
             context=context)
         order_id = info[0]['openerp_id']

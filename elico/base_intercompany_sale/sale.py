@@ -54,11 +54,23 @@ class sale_order(orm.Model):
     def create(self, cr, uid, data, context=None):
         data['icops_bind_ids'] = self.pool.get(
             'icops.backend').prepare_binding(cr, uid, data, context)
-        return super(sale_order, self).create(cr, uid, data, context)
+        res = super(sale_order, self).create(cr, uid, data, context)
+        # Could not find another way to support cascading.
+        if context.get('icops'):
+            self.write(cr, uid, res, {'order_line': []}, context=context)
+        return res
 
     def write(self, cr, uid, ids, data, context=None):
         self._check_icops(cr, uid, ids, context=context)
-        return super(sale_order, self).write(cr, uid, ids, data, context)
+        res = super(sale_order, self).write(cr, uid, ids, data, context)
+        # Could not find another way to support cascading.
+        if context.get('icops'):
+            if context.get('written'):
+                context['written'] = False
+            else:
+                context['written'] = True
+                self.write(cr, uid, ids, {'order_line': []}, context=context)
+        return res
 
     def unlink(self, cr, uid, ids, context=None):
         self._check_icops(cr, uid, ids, context=context)
@@ -132,7 +144,7 @@ class icops_sale_order_line(orm.Model):
                    (lambda self, cr, uid, ids, c=None: ids,
                     ['icops_order_id'],
                     10),
-                 'icops.sale.order':
+                   'icops.sale.order':
                    (_get_lines_from_order, ['backend_id'], 20),
                    },
             readonly=True)
@@ -140,8 +152,9 @@ class icops_sale_order_line(orm.Model):
 
     def create(self, cr, uid, vals, context=None):
         icops_order_id = vals['icops_order_id']
-        info = self.pool['icops.sale.order'].read(cr, uid,
-                        [icops_order_id],
+        info = self.pool['icops.sale.order'].read(
+            cr, uid,
+            [icops_order_id],
             ['openerp_id'],
             context=context)
         order_id = info[0]['openerp_id']
@@ -215,6 +228,7 @@ class SaleOrderExportMapper(ICOPSExportMapper):
     ]
 
     def _partner(self, record, is_po=False):
+        res = {}
         sess = self.session
         backend = self._backend_to
         ic_uid = backend.icops_uid.id
@@ -230,6 +244,7 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             payment_term_id = (partner.property_supplier_payment_term.id
                                if partner.property_supplier_payment_term
                                else False)
+            res.update({'payment_term_id': payment_term_id})
         else:
             pricelist_id = (partner.property_product_pricelist.id
                             if partner.property_product_pricelist
@@ -237,13 +252,15 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             payment_term_id = (partner.property_payment_term.id
                                if partner.property_payment_term
                                else False)
+            res.update({'payment_term': payment_term_id})
+
         fiscal_position_id = (partner.property_account_position.id
                               if partner.property_account_position
                               else False)
-        return {'partner_id': partner.id,
-                'pricelist_id': pricelist_id,
-                'payment_term_id': payment_term_id,
-                'fiscal_position': fiscal_position_id}
+        res.update({'partner_id': partner.id,
+                    'pricelist_id': pricelist_id,
+                    'fiscal_position': fiscal_position_id})
+        return res
 
     @mapping
     def origin(self, record):
@@ -321,12 +338,18 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             state = 'approved'
         return {'state': state}
 
+    def so2po_lol(self, record):
+        return {}
+
 
 @icops
 class SaleOrderLineExportMapper(ICOPSExportMapper):
     _model_name = 'icops.sale.order.line'
 
     direct = [('name', 'name')]
+
+    def so2po_lol(self, record):
+        return {}
 
     def _price(self, record, is_po=False):
         if not record.product_id:
@@ -356,7 +379,6 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
     @mapping
     def map_all(self, record):
         assert self._icops
-        map_test = self._get_mapping(self._icops.concept, record)
         return self._get_mapping(self._icops.concept, record)
 
     def so2so_price(self, record):

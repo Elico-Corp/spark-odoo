@@ -84,9 +84,9 @@ class ICOPSModelBinder(ICOPSBinder):
                                      binding_id)
         assert record
         res = {}
-        for icops in record.icops_ids:
-            key = '%s_%s' % (icops.backend_id.id, icops.concept)
-            res[key] = {'id': icops.record_id}
+        for icop_id in record.icops_ids:
+            key = '%s_%s' % (icop_id.backend_id.id, icop_id.concept)
+            res[key] = {'id': icop_id.record_id}
         return res
 
     def bind(self, records, binding_id):
@@ -107,11 +107,12 @@ class ICOPSModelBinder(ICOPSBinder):
         for record, record_id in records.items():
             backend_id, concept = record.split('_')
 
-            icops_id = (0, 0, {'record_id': record_id['id'],
-                        'backend_id': backend_id,
-                        'concept': concept,
-                        'binding_id': binding_id,
-                        'model': record_id['model']})
+            icops_id = (0, 0,
+                        {'record_id': record_id['id'],
+                         'backend_id': backend_id,
+                         'concept': concept,
+                         'binding_id': binding_id,
+                         'model': record_id['model']})
             icops_ids.append(icops_id)
 
         self.environment.model.write(

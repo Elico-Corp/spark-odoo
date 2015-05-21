@@ -75,9 +75,9 @@ class icops_backend(orm.Model):
     def prepare_binding(self, cr, uid, data, context=None):
         context = context or {}
         icops_bind_ids = []
-        if not 'icops_bind_ids' in data:
+        if 'icops_bind_ids' not in data:
             data['icops_bind_ids'] = None
-        if not 'icops' in context and not data['icops_bind_ids']:
+        if not data['icops_bind_ids']:
             user = self.pool.get('res.users').browse(
                 cr, uid, uid, context)
             backend_pool = self.pool.get('icops.backend')
