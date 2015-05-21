@@ -188,7 +188,8 @@ class ShipmentContainedProductInfo(orm.Model):
                 for sol in shipment.sol_ids:
                     # TODO you need to move the final_qty from module
                     # (mmx_sale_status) to current module.
-                    assert sol.final_qty >= 0, '''Quantity can't be negative!'''
+                    assert sol.final_qty >= 0, '''Quantity can't'''
+                    ''' be negative!'''
                     if contain_info.product_id == sol.product_id:
                         res[contain_info.id] += sol.final_qty
         return res
@@ -326,7 +327,15 @@ class sale_order_line(orm.Model):
             return False
         for this in self.browse(cr, uid, ids, context=context):
             if this.state in ('draft', 'wishlist'):
-                this.write({'sale_shipment_id': False}, context=context)
+                # use the write on sale order
+                # to be compatible with inter company api
+                if this.order_id:
+                    this.order_id.write(
+                        {'order_line':
+                            [(1, this.id, {'sale_shipment_id': False})]},
+                        context=context)
+                else:
+                    this.write({'sale_shipment_id': False}, context=context)
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',

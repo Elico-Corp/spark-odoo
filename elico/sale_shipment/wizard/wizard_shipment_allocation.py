@@ -19,11 +19,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import time
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 
 
 class WizardShipmentAllocationLine(orm.TransientModel):
@@ -56,7 +54,7 @@ class WizardShipmentAllocationLine(orm.TransientModel):
         'sol_id': fields.many2one('sale.order.line', 'SO Lines'),
         'product_id': fields.related('sol_id', 'product_id', type='many2one',
                                      string='Product', readonly=True,
-                                     relation='product.product'),
+                                     relation='product.product', store=True),
         'product_qty': fields.related('sol_id', 'product_uom_qty',
                                       type='float', string='Quantity',
                                       readonly=True),
@@ -86,6 +84,8 @@ class WizardShipmentAllocationLine(orm.TransientModel):
             string="Customer", readonly=True, relation="res.partner")
     }
 
+    _order = 'product_id'
+
 
 class WizardShipmentAllocation(orm.TransientModel):
     _name = 'wizard.shipment.allocation'
@@ -111,7 +111,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                         'Product: %s' % (line.product_id.name)))
         return True
 
-    def confirm_final_qty(self, cr, uid, ids, context=None):
+    def _confirm_final_qty(self, cr, uid, ids, context=None):
         '''This method is used update the final qty on sale order line.'''
         if not ids:
             return False
@@ -124,6 +124,37 @@ class WizardShipmentAllocation(orm.TransientModel):
                     l.sol_id.write({'final_qty': l.final_qty}, context=context)
         return True
 
+    def confirm_final_qty(self, cr, uid, ids, context=None):
+        self._confirm_final_qty(cr, uid, ids, context=context)
+
+        # raise error when you confirm the final qty if over allocated.
+        for wizard in self.browse(cr, uid, ids, context=context):
+            if not self._update_message(wizard):
+                raise orm.except_orm(
+                    _('Warning'),
+                    _('Quantity is over allocated!'))
+
+    def _update_message(self, wizard):
+        '''display the message in the wizard when update the remaining quantity:
+            - green: quantity is fully allocated
+            - yellow: quantity is partially allocated
+            - red: quantity is over allocated
+        @return: True or False'''
+        mark = 'green'
+        for line in wizard.lines:
+            if line.remaining_qty < 0:
+                mark = 'red'
+                break
+            if line.remaining_qty > 0:
+                mark = 'yellow'
+        if mark == 'red':
+            wizard.write({'message': 'Quantity is over allocated!'})
+        elif mark == 'yellow':
+            wizard.write({'message': 'Quantity is partially allocated!'})
+        else:
+            wizard.write({'message': 'Quantity is fully allocated!'})
+        return mark != 'red'
+
     def update_remaining_qty(
             self, cr, uid, ids, context=None):
         '''Update the remaining qty in the wizard'''
@@ -133,7 +164,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         model_pool = self.pool['ir.model.data']
         wizard = self.browse(cr, uid, ids, context=context)[0]
         # update the final qty of sale order lines on the wizard.
-        wizard.confirm_final_qty()
+        wizard._confirm_final_qty()
 
         # get the action to return
         # the module name is not flexible
@@ -143,6 +174,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             'action_shipment_allocation_wizard_qty_assign')
         action = action_pool.read(
             cr, uid, [action_id], context=context)[0]
+        self._update_message(wizard)
         action['res_id'] = wizard.id
         return action
 
@@ -191,6 +223,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         'lines': fields.one2many(
             'wizard.shipment.allocation.line', 'wizard_id', 'SO Lines',
             domain=[('state', 'in', ('draft', 'wishlist'))]),
+        'message': fields.text('Message')
     }
 
     _defaults = {
@@ -255,7 +288,6 @@ class WizardShipmentAllocation(orm.TransientModel):
                 'origin': old_so['name'],
                 'order_line': False,
                 'sale_shipment_id': sale_shipment_id,
-                'purchase_id': None
             })
 
     def _prepare_sol_data(
@@ -274,12 +306,13 @@ class WizardShipmentAllocation(orm.TransientModel):
         sol_pool = self.pool['sale.order.line']
         # TODO to be compatible with inter-company
         # ic_pol_id and ic_sol_id
-        return sol_pool.copy_data(
+        res = sol_pool.copy_data(
             cr, uid, old_sol.id, default={
                 'final_qty': final_qty,
                 'order_id': so_id,
                 'sale_shipment_id': sale_shipment_id,
             })
+        return res
 
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
@@ -289,6 +322,8 @@ class WizardShipmentAllocation(orm.TransientModel):
         sol_pool = self.pool['sale.order.line']
         so_pool = self.pool['sale.order']
         new_so_ids, new_sol_ids = [], []
+        # check if the wizard have all the sale order lines and full
+        # quantity in the sale order.
         if self._check_confirm_all(so, wizard_lines):
             for soline in so.order_line:
                 sol_pool.write(
@@ -323,12 +358,20 @@ class WizardShipmentAllocation(orm.TransientModel):
             sol.write({'sale_shipment_id': False})
             if res_qty > 0:
                 # update the old sale order line with the residual quantity
-                sol.write({
-                    'product_uom_qty': res_qty,
-                    'final_qty': 0}, context=context)
+                # for the Compatibility with inter company module, you have to
+                # update the data this way instead of directly use the write
+                # from sale order line.
+                so_pool.write(
+                    cr, uid, so.id,
+                    {'order_line': [(1, sol.id, {
+                        'product_uom_qty': res_qty,
+                        'final_qty': 0
+                    })]})
             elif res_qty == 0:
                 # delete the old sale order line.
-                sol.unlink(context=context)
+                so_pool.write(
+                    cr, uid, so.id,
+                    {'order_line': [(2, sol.id)]}, context=context)
             else:
                 raise orm.except_orm(
                     _('Warning'),
@@ -365,15 +408,17 @@ class WizardShipmentAllocation(orm.TransientModel):
         # go through sale order by sale order.
         for so in dic:
             wizard_lines = dic[so]
-            so_ids, sol_ids = self._split_so(
-                cr, uid, so, wizard_lines, shipment_id, context=context)
-            new_so_ids.extend(so_ids)
-            new_sol_ids.extend(sol_ids)
+            if so and wizard_lines:
+                so_ids, sol_ids = self._split_so(
+                    cr, uid, so, wizard_lines, shipment_id, context=context)
+                new_so_ids.extend(so_ids)
+                new_sol_ids.extend(sol_ids)
 
         # confirm new sale orders
-        for so_id in new_so_ids:
+        for so_id in list(set(new_so_ids)):
             context['sale_shipment_id'] = shipment_id
-            so_pool.action_button_confirm(cr, uid, [so_id], context=context)
+            so_pool.action_button_confirm(
+                cr, uid, [so_id], context=context)
 
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]

@@ -46,8 +46,13 @@
                         <label string="Assigning the final quantity per shipment."/>
                     </group>
                     <group>
-                        <field name="date"/>
-                        <field name="shipment_id" />
+                        <group>
+                            <field name="date"/>
+                            <field name="shipment_id" />
+                        </group>
+                        <group>
+                            <field name="message" readonly="1"/>
+                        </group>
                         <field name="lines" colspan="4" nolabel="1">
                             <tree create="0" editable='1'>  
                                 <field name="sol_id" invisible="1" widget="selection"/>
