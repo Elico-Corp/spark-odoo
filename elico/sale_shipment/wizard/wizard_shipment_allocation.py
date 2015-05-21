@@ -323,17 +323,12 @@ class WizardShipmentAllocation(orm.TransientModel):
             sol.write({'sale_shipment_id': False})
             if res_qty > 0:
                 # update the old sale order line with the residual quantity
-                so_pool.write(
-                    cr, uid, so.id,
-                    {'order_line': [(1, sol.id, {
-                        'product_uom_qty': res_qty,
-                        'final_qty': 0
-                    })]})
+                sol.write({
+                    'product_uom_qty': res_qty,
+                    'final_qty': 0}, context=context)
             elif res_qty == 0:
                 # delete the old sale order line.
-                so_pool.write(
-                    cr, uid, so.id,
-                    {'order_line': [(2, sol.id)]}, context=context)
+                sol.unlink(context=context)
             else:
                 raise orm.except_orm(
                     _('Warning'),
