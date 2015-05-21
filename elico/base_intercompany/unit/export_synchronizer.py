@@ -129,7 +129,7 @@ class ICOPSExporter(ICOPSBaseExporter):
             self._set_icops(icops, backend)
             try:
                 self._map_data(fields=fields)
-            except MappingError as e:
+            except MappingError:
                 continue
             if self.icops_ids:
                 record = self.mapper.data
@@ -176,8 +176,7 @@ class ICOPSExporter(ICOPSBaseExporter):
         intercompany_ids = intercompany_pool.search(
             sess.cr, sess.uid,
             [('backend_id', '=', backend_ids[0]),
-             ('concept', 'in', self._concepts),
-             ('model', '=', self.binding_record.openerp_id._name)])
+             ('concept', 'in', self._concepts)])
         res = intercompany_pool.browse(sess.cr, sess.uid, intercompany_ids)
         return res
 
@@ -194,7 +193,7 @@ class ICOPSExporter(ICOPSBaseExporter):
 
     def _write(self, id, data):
         context = self.session.context or {}
-        if not self.backend_adapter._icops.on_write and not 'icops' in context:
+        if not self.backend_adapter._icops.on_write and 'icops' not in context:
             raise osv.except_osv('ICOPS Error', 'Can\'t write')
         self.backend_adapter.write(id, data)
 

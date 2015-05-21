@@ -81,9 +81,11 @@ class icops_model(orm.AbstractModel):
         res = {}
         for obj in self.browse(cr, uid, ids, context=context):
             pool = self.pool.get('icops.record')
+            # record_ids = pool.search(
+            #     cr, uid, [('record_id', '=', obj.id),
+            #               ('model', '=', self._name)])
             record_ids = pool.search(
-                cr, uid, [('record_id', '=', obj.id),
-                          ('model', '=', self._name)])
+                cr, uid, [('record_id', '=', obj.id)])
 
             res[obj.id] = True if record_ids else False
         return res
@@ -94,11 +96,10 @@ class icops_model(orm.AbstractModel):
             ids = [ids]
         if 'icops' in context:
             return
-        fields = ['locked', 'temp_unlock']
-        for obj in self.read(cr, uid, ids, fields, context=context):
-            if obj['temp_unlock']:
+        for obj in self.browse(cr, uid, ids, context=context):
+            if obj.temp_unlock:
                 return
-            elif obj['locked']:
+            elif obj.locked:
                 raise osv.except_osv(
                     'ICOPS Error',
                     'This object is locked by an intercompany process')
