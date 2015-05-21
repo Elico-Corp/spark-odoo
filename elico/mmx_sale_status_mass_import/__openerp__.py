@@ -21,7 +21,7 @@
 ##############################################################################
 
 {
-    'name': 'MMX Wishlist mass import',
+    'name': 'MMX Quotation mass import',
     'version': '1.0',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
@@ -30,11 +30,11 @@
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License
 
-MMX Wishlist Mass import
+MMX Quotation Mass import
 ========================
 
 This module depends on the module: mmx_sale_status, allow user
-mass importing the wishlist on specific rule.
+mass importing the quotation on specific rule.
 
 **csv file header**:
     partner_id (char, linked to the reference in the partner form)
@@ -47,8 +47,10 @@ date: to be used for the SO date
 shop: to be used for the SO shop
 
 **Import process**
+Note: here we only talk about the quotations with checkbox(is_imported) checked
+-------------------------------------------------------------------------------
 Import all information from the Excel into
-SO of type wishlist (specific status)
+SO of type quotation (specific status)
 
 If a partner reference or product reference is not found, skip the line,
 continue the process and display a window with error message
@@ -67,9 +69,9 @@ In SO, set all defaults as in the manual process (pricelist, payment terms,
     fiscal position etc.)
 In SOL, set all defaults as in the manual process (UoM, VAT)
 rules for SO
-If SO/Wishlist doesnot exist,
-    one SO/Wishlist is to be created per address_id
-Do not delete the SO wishlist if there is no line inside.
+If SO/Quotation checked doesnot exist,
+    one SO/Quotation is to be created per address_id
+Do not delete the SO quotation if there is no line inside.
 
 **Rules for SOL**
 If the product line exist in the ERP and Excel:
@@ -97,7 +99,8 @@ Contributors
     'sequence': 10,
     'demo': [],
     'data': [
-        'wizard/wizard_wishlist_mass_import_view.xml',
+        'wizard/wizard_quotation_mass_import_view.xml',
+        'sale_view.xml'
     ],
     'test': [],
     'installable': True,

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 <data>
-<record id="wizard_wishlist_mass_import_from_view" model="ir.ui.view">
-    <field name="name">wishlist.mass.import.form</field>
-    <field name="model">wizard.wishlist.mass.import</field>
+<record id="wizard_quotation_mass_import_from_view" model="ir.ui.view">
+    <field name="name">quotation.mass.import.form</field>
+    <field name="model">wizard.quotation.mass.import</field>
     <field name="arch" type="xml">
-        <form string="Wishlist Mass Import" version="7.0">
+        <form string="Quotation Mass Import" version="7.0">
           <group>
             <group>
               <field name="date" />
@@ -27,18 +27,18 @@
     </field>
 </record>
 
-<act_window id="action_wizard_wishlist_mass_import" 
-    name="Mass Import Wishlist" 
+<act_window id="action_wizard_quotation_mass_import" 
+    name="Mass Import Quotation" 
     multi="False" 
     key2="client_action_multi" 
-    res_model="wizard.wishlist.mass.import" 
+    res_model="wizard.quotation.mass.import" 
     src_model="sale.order.line" 
-    view_id="wizard_wishlist_mass_import_from_view" 
+    view_id="wizard_quotation_mass_import_from_view" 
     view_mode="form" 
     target="new"/>
 
-<!-- menu for mass importing wishlist -->
-<menuitem action="action_wizard_wishlist_mass_import" name='Mass Import Wishlists'  id="menu_mass_import_wishlist" parent="mmx_magento.menu_online_sale" sequence="3" groups="base.group_sale_salesman,base.group_sale_manager"/>
+<!-- menu for mass importing quotation -->
+<menuitem action="action_wizard_quotation_mass_import" name='Mass Import Quotations'  id="menu_mass_import_quotation" parent="mmx_magento.menu_online_sale" sequence="3" groups="base.group_sale_salesman,base.group_sale_manager"/>
     
 </data>
 </openerp>

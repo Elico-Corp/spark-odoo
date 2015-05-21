@@ -1,0 +1,28 @@
+<openerp>
+    <data>
+        <record id="inherit_view_sales_order_filter" model="ir.ui.view">
+            <field name="name">inherit.sale.order.search</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <filter name="my_sale_orders_filter" position="after">
+                    <filter string="Manually Imported"
+                        domain="[('is_imported', '=', True)]"
+                        help="Manually imported by csv files."
+                        name="manually_imported_filter"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="inherit_view_sales_order_line_filter" model="ir.ui.view">
+        <field name="name">sale.order.line.select.inherit</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_sales_order_uninvoiced_line_filter"/>
+        <field name="arch" type="xml">
+              <xpath expr="//search/filter[@name='sale order']" position="after">
+                  <filter name='manually_imported' string="Manually Imported"  domain="[('is_imported','=', True)]"/>
+              </xpath>
+        </field>
+    </record>
+    </data>
+</openerp>

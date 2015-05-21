@@ -19,7 +19,28 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from openerp.osv import orm, fields
 
-from . import wizard_quotation_mass_import
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+class sale_order(orm.Model):
+    _inherit = 'sale.order'
+
+    _columns = {
+        'is_imported': fields.boolean('Is Imported')
+    }
+
+    _defaults = {
+        'is_imported': False
+    }
+
+
+class sale_order_line(orm.Model):
+    _inherit = 'sale.order.line'
+
+    _columns = {
+        'is_imported': fields.boolean('Is Imported')
+    }
+
+    _defaults = {
+        'is_imported': False
+    }
