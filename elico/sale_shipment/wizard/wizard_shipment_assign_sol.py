@@ -85,6 +85,13 @@ class WizardShipmentAssignSOL(orm.TransientModel):
         if not active_id:
             return False
         for sol in wizard.sol_ids:
-            sol.write({
-                'sale_shipment_id': active_id,
-            }, context=context)
+            # to be compatible with inter company API
+            if sol.order_id:
+                sol.order_id.write(
+                    {'order_line':
+                        [(1, sol.id, {'sale_shipment_id': active_id})]},
+                    context=context)
+            else:
+                sol.write({
+                    'sale_shipment_id': active_id,
+                }, context=context)
