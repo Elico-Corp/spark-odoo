@@ -232,6 +232,29 @@ class WizardShipmentAllocation(orm.TransientModel):
         'shipment_id': _get_shipment_id,
     }
 
+    def fill_final_qty(self, cr, uid, ids, context=None):
+        if not ids:
+            return
+        wizard = self.browse(cr, uid, ids, context=context)[0]
+        for line in wizard.lines:
+            line.write({'final_qty': line.product_qty}, context=context)
+
+        # self._update_message(wizard)
+
+        # get the action to return
+        # the module name is not flexible
+        # if we wanna change the module name, then we have to change here.
+        model_pool = self.pool['ir.model.data']
+        action_pool = self.pool['ir.actions.act_window']
+        dumb, action_id = model_pool.get_object_reference(
+            cr, uid, 'sale_shipment',
+            'action_shipment_allocation_wizard_qty_assign')
+        action = action_pool.read(
+            cr, uid, [action_id], context=context)[0]
+        # self._update_message(wizard)
+        action['res_id'] = wizard.id
+        return action
+
     def _check_confirm_all(self, so, wizard_lines):
         '''check if we can confirm all the final quantity of
         the sale order line in the wizard is all the same in
@@ -333,7 +356,8 @@ class WizardShipmentAllocation(orm.TransientModel):
                     context=context)
             so_pool.action_button_confirm(
                 cr, uid, [so.id], context=context)
-            return True
+            sol_ids = [line.id for line in so.order_line]
+            return [so.id], sol_ids
         # if not, then we need to create new SO
         # prepare the data of the new SO
         new_so_data = self._prepare_new_so_date(
@@ -370,7 +394,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             elif res_qty == 0:
                 # delete the old sale order line.
                 so_pool.write(
-                    cr, uid, so.id,
+                    cr, uid, sol.order_id.id,
                     {'order_line': [(2, sol.id)]}, context=context)
             else:
                 raise orm.except_orm(
