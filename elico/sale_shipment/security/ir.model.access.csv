@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 sale_shipment_user,sale_shipment_user,sale_shipment.model_sale_shipment,base.group_user,1,1,1,1
+sale_shipment_contained_product_all,sale_shipment_contained_products_all,sale_shipment.model_shipment_contained_product_info,,1,1,1,1
