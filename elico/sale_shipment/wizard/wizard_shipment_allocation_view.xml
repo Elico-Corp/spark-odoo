@@ -68,6 +68,7 @@
                         </field>
                     </group>
                     <footer>
+                        <button name="fill_final_qty" string="Mass add final quantity" type="object"/>
                         <button name="update_remaining_qty" string="Update Remaining Quantity" type="object"/>
                         <button name="confirm_final_qty" string="Assign Final Quantity" type="object" class="oe_highlight"/>
                         or
