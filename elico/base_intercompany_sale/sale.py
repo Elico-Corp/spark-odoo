@@ -38,6 +38,8 @@ class sale_order(orm.Model):
         'openerp_id': fields.many2one('sale.order',
                                       string='Sale Order',
                                       ondelete='cascade'),
+        'icops_id': fields.integer(string='ICOPS ID'),
+        'icops_model': fields.char(string='ICOPS Model'),
         'icops_bind_ids': fields.one2many(
             'icops.sale.order', 'openerp_id',
             string="ICOPS Bindings"),
@@ -52,6 +54,8 @@ class sale_order(orm.Model):
                                                  context=context)
 
     def create(self, cr, uid, data, context=None):
+        if not context:
+            context = {}
         data['icops_bind_ids'] = self.pool.get(
             'icops.backend').prepare_binding(cr, uid, data, context)
         res = super(sale_order, self).create(cr, uid, data, context)
@@ -61,6 +65,8 @@ class sale_order(orm.Model):
         return res
 
     def write(self, cr, uid, ids, data, context=None):
+        if not context:
+            context = {}
         self._check_icops(cr, uid, ids, context=context)
         res = super(sale_order, self).write(cr, uid, ids, data, context)
         # Could not find another way to support cascading.
@@ -103,6 +109,7 @@ class sale_order_line(orm.Model):
         'icops_bind_ids': fields.one2many(
             'icops.sale.order.line', 'openerp_id',
             string="ICOPS Bindings"),
+        'icops_id': fields.integer('ICOPS ID')
     }
 
     def copy_data(self, cr, uid, id, default=None, context=None):
@@ -227,6 +234,13 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         ('order_line', 'order_line', 'icops.sale.order.line')
     ]
 
+    @mapping
+    def icops(self, record):
+        return {
+            'icops_id': record.id,
+            'icops_model': record._name,
+        }
+
     def _partner(self, record, is_po=False):
         res = {}
         sess = self.session
@@ -264,7 +278,10 @@ class SaleOrderExportMapper(ICOPSExportMapper):
 
     @mapping
     def origin(self, record):
-        return {'origin': 'ICOPS: %s' % record.name}
+        name = record.name
+        if record.origin:
+            name = '%s:%s' % (record.origin.replace('IC:', ''), name)
+        return {'origin': 'IC:%s' % name}
 
     @mapping
     def map_all(self, record):
@@ -338,18 +355,12 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             state = 'approved'
         return {'state': state}
 
-    def so2po_lol(self, record):
-        return {}
-
 
 @icops
 class SaleOrderLineExportMapper(ICOPSExportMapper):
     _model_name = 'icops.sale.order.line'
 
     direct = [('name', 'name')]
-
-    def so2po_lol(self, record):
-        return {}
 
     def _price(self, record, is_po=False):
         if not record.product_id:
@@ -380,6 +391,10 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
     def map_all(self, record):
         assert self._icops
         return self._get_mapping(self._icops.concept, record)
+
+    @mapping
+    def icops_id(self, record):
+        return {'icops_id': record.id}
 
     def so2so_price(self, record):
         return self._price(record)

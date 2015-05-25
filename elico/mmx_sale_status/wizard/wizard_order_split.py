@@ -202,9 +202,7 @@ class wizard_order_split (osv.osv_memory):
                 default={'product_uom_qty': final_qty,
                          'final_qty': final_qty,
                          'order_id': new_so_id,
-                         'sale_shipment_id': shipment_id,
-                         'ic_pol_id': None,
-                         'ic_sol_id': None})
+                         'sale_shipment_id': shipment_id})
             if sol_data:
                 sol_pool.create(cr, uid, sol_data, context=context)
 

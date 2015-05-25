@@ -39,6 +39,8 @@ class purchase_order(orm.Model):
         'openerp_id': fields.many2one('purchase.order',
                                       string='Sale Order',
                                       ondelete='cascade'),
+        'icops_id': fields.integer(string='ICOPS ID'),
+        'icops_model': fields.char(string='ICOPS Model'),
         'icops_bind_ids': fields.one2many(
             'icops.purchase.order', 'openerp_id',
             string="ICOPS Bindings"),
@@ -53,6 +55,8 @@ class purchase_order(orm.Model):
                                                      context=context)
 
     def create(self, cr, uid, data, context=None):
+        if not context:
+            context = {}
         data['icops_bind_ids'] = self.pool.get(
             'icops.backend').prepare_binding(cr, uid, data, context)
         res = super(purchase_order, self).create(cr, uid, data, context)
@@ -63,6 +67,8 @@ class purchase_order(orm.Model):
         return res
 
     def write(self, cr, uid, ids, data, context=None):
+        if not context:
+            context = {}
         self._check_icops(cr, uid, ids, context=context)
         res = super(purchase_order, self).write(cr, uid, ids, data, context)
         # Could not find another way to support cascading.
@@ -104,6 +110,7 @@ class purchase_order_line(orm.Model):
         'icops_bind_ids': fields.one2many(
             'icops.purchase.order.line', 'openerp_id',
             string="ICOPS Bindings"),
+        'icops_id': fields.integer('ICOPS ID')
     }
 
     def copy_data(self, cr, uid, id, default=None, context=None):
@@ -225,7 +232,10 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
 
     @mapping
     def origin(self, record):
-        return {'origin': 'ICOPS: %s' % record.name}
+        name = record.name
+        if record.origin:
+            name = '%s:%s' % (record.origin.replace('IC:', ''), name)
+        return {'origin': 'IC:%s' % name}
 
     @mapping
     def state(self, record):
@@ -272,7 +282,9 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
             'fiscal_position': fiscal_position.id,
             'payment_term': payment_term.id,
             'user_id': ic_uid,
-            'shop_id': shop.id
+            'shop_id': shop.id,
+            'icops_id': record.id,
+            'icops_model': record._name
         }
 
 
@@ -289,6 +301,10 @@ class PurchaseOrderLineExportMapper(ICOPSExportMapper):
             'product_uom': record.product_uom.id,
             'product_uom_qty': record.product_qty
         }
+
+    @mapping
+    def icops_id(self, record):
+        return {'icops_id': record.id}
 
     @mapping
     def price(self, record):

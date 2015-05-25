@@ -20,10 +20,7 @@
 #
 ##############################################################################
 import time
-from openerp import netsvc
 from openerp.osv import fields, osv
-from openerp.addons.mmx_magento.consumer import delay_export
-from openerp.addons.connector.session import ConnectorSession
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
@@ -104,7 +101,7 @@ class wizard_sol_split(osv.osv_memory):
             return True
         else:
             return False
-        
+
     def _check_split(self, wizard):
         """
         check qty, product,state
@@ -118,41 +115,38 @@ class wizard_sol_split(osv.osv_memory):
             if line.final_qty <= 0:
                 raise osv.except_osv(
                     _('Error!'),
-                    _('Can not confirm Fqty <= Zero'))
+                    _('Final quantity cannot be set to 0'))
                 return False
             if line.final_qty > line.sol_id.product_uom_qty:
                 raise osv.except_osv(
                     _('Error!'),
-                    _('Can not confirm Fqty > SOL.qty'))
+                    _('Final quantity cannot be superior to quantity'))
                 return False
         return True
-        
+
     def split_sol(self, cr, uid, ids, context=None):
         seq_pool = self.pool.get('ir.sequence')
         so_pool = self.pool.get('sale.order')
         sol_pool = self.pool.get('sale.order.line')
-        sol_ids = context.get('active_ids', [])
         wizard = self.browse(cr, uid, ids[0], context=context)
         shipment_id = wizard.shipment_id and wizard.shipment_id.id or None,
-        wf_service = netsvc.LocalService('workflow')
-        
+
         self._check_split(wizard)
-        
-        
+
         new_so_ids = []
         new_soline_ids = []
-        dic = {} # {SO1: [wizard_lines in SO1], order_id_2:...}
+        dic = {}  # {SO1: [wizard_lines in SO1], order_id_2:...}
         for wizard_line in wizard.lines:
             so = wizard_line.so_id
-            if dic.get(so,False):
+            if dic.get(so, False):
                 dic[so].append(wizard_line)
             else:
-                dic.update({so:[wizard_line,]})
+                dic.update({so: [wizard_line]})
 
         for so in dic:
             wizard_lines = dic[so]
-            
-            #if want to split SOL,qty == whole SO, directly confirm this SO
+
+            # if want to split SOL,qty == whole SO, directly confirm this SO
             if self._check_confirm_all(so, wizard_lines):
                 for soline in so.order_line:
                     sol_pool.write(
@@ -160,9 +154,10 @@ class wizard_sol_split(osv.osv_memory):
                         {'final_qty': soline.product_uom_qty,
                          'sale_shipment_id': shipment_id},
                         context=context)
-                so_pool.action_button_confirm(cr, uid, [so.id], context=context)
+                so_pool.action_button_confirm(cr, uid, [so.id],
+                                              context=context)
                 continue
-            #create new SO
+            # create new SO
             new_so_data = so_pool.copy_data(
                 cr, uid, so.id, default={
                     'name': seq_pool.get(cr, uid, 'sale.order'),
@@ -183,14 +178,19 @@ class wizard_sol_split(osv.osv_memory):
                     cr, uid, soline.id,
                     default={'product_uom_qty': final_qty,
                              'final_qty': final_qty,
-                             'order_id': new_so_id,
-                             'ic_pol_id': None,
-                             'ic_sol_id': None}, context=context)
-                #do not use sol_pool.write
+                             'order_id': new_so_id}, context=context)
+                # do not use sol_pool.write
                 if res_qty > 0:
-                    so_pool.write(cr, uid, so.id,
-                        {'order_line': [(1, soline.id,{'product_uom_qty': res_qty, 'final_qty': 0})]}
-                        )
+                    so_pool.write(
+                        cr, uid, so.id,
+                        {
+                            'order_line':
+                                [(1, soline.id,
+                                    {
+                                        'product_uom_qty': res_qty,
+                                        'final_qty': 0
+                                    })]}
+                    )
                 elif res_qty == 0.0:
                     so_pool.write(
                         cr, uid, so.id, {'order_line': [(2, soline.id)]},
@@ -200,24 +200,22 @@ class wizard_sol_split(osv.osv_memory):
                 sol_id = sol_pool.create(cr, uid, sol_data, context=context)
                 new_soline_ids.append(sol_id)
 
-                # TODO if Confirm Orgin
-                # If only reserve one SOL, comfirm this SO. 
-                # else split A another new SO, and 
+                # TODO if Confirm Origin
+                # If only reserve one SOL, confirm this SO.
+                # else split A another new SO, and
 
         # confirm new SO
         for so_id in new_so_ids:
             context['sale_shipment_id'] = shipment_id
-            so_pool.action_button_confirm(cr, uid, [so_id,], context=context)
+            so_pool.action_button_confirm(cr, uid, [so_id], context=context)
 
-        # return old+new SOL
-        old_soline_ids = [x.sol_id.id  for x in wizard.lines]
+        # return old + new SOL
+        old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {
             'name': _('Split Sale Order lines'),
             'view_type': 'form',
             "view_mode": 'tree,form',
             'res_model': 'sale.order.line',
-            'domain': [('id', 'in',  new_soline_ids + old_soline_ids)],
+            'domain': [('id', 'in', new_soline_ids + old_soline_ids)],
             'type': 'ir.actions.act_window',
         }
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

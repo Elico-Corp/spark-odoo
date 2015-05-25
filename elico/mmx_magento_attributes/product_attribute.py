@@ -205,7 +205,7 @@ class MagentoProductAttribute(orm.Model):
     }
 
     _sql_constraints = [
-        ('magento_uniq', 'unique(attribute_code)',
+        ('magento_backend_uniq', 'unique(attribute_code, backend_id)',
          "Attribute with the same code already exists : must be unique")
     ]
 
