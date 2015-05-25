@@ -58,7 +58,7 @@ class stock_picking(orm.Model):
         if not picking.qc_approved:
             raise orm.except_orm(
                 _('Warning'),
-                _('This delivery order have been QC Approved!'))
+                _('This delivery order has not been QC Approved!'))
 
     # check before confirm & delivery
     def draft_validate(self, cr, uid, ids, context=None):
