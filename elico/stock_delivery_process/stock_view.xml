@@ -1,0 +1,76 @@
+<openerp>
+    <data>
+        <!-- stock picking from inheritance add two fields -->
+        <record model="ir.ui.view" id="inherit_stock_picking_out">
+            <field name="name">stock.picking.out.form.inherit</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="stock_journal_id" position="after">
+                    <field name="on_hold" />
+                    <field name="qc_approved" />
+                </field>
+                <field name="date_done" position="after">
+                    <field name="on_hold_modify_id" />
+                    <field name="on_hold_modify_date" />
+                    <field name="qc_approve_modify_id" />
+                    <field name="qc_approve_modify_date" />
+                </field>
+            </field>
+        </record>
+
+        <!-- stock move inheritance -->
+        <record id="inherit_stock_move_view" model="ir.ui.view">
+            <field name="name">inherit.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Traceability']" position="replace">
+                    <group name="process_grp" string="Logistics process">
+                        <field name="on_hold" />
+                        <field name="qc_approved" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="inherit_stock_move_view" model="ir.ui.view">
+            <field name="name">inherit.stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Traceability']" position="replace">
+                    <group name="process_grp" string="Logistics process">
+                        <field name="on_hold" />
+                        <field name="qc_approved" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- filter the on hold and qc_approved -->
+        <record id="inherit_view_picking_out_search" model="ir.ui.view">
+            <field name="name">stock.picking.out.search.inherit</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_search"/>
+            <field name="arch" type="xml">
+                <filter name="done" position="after">
+                    <filter string="Oh hold" name="filter_on_hold" domain="[('on_hold', '=', True)]"/>
+                    <filter string="QC approved" name="filter_qc_approved" domain="[('qc_approved', '=', True)]"/>
+                </filter>
+            </field>
+        </record>
+
+        <!-- filter the on hold and QC approved on stock move -->
+        <record model="ir.ui.view" id="view_move_search_inherit">
+            <field name="name">view.move.search.inherit</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_search"/>
+            <field name="arch" type="xml">
+                <filter name="done" position="after">
+                    <filter string="Oh hold" name="filter_on_hold" domain="[('on_hold', '=', True)]"/>
+                    <filter string="QC approved" name="filter_qc_approved" domain="[('qc_approved', '=', True)]"/>
+                </filter>
+            </field>
+        </record>
+    </data>
+</openerp>
