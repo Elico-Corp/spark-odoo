@@ -32,7 +32,7 @@ class WizardShipmentAssignSOL(orm.TransientModel):
             'wizard_id', 'sol_id', 'Sale order lines',
             domain=[
                 ('product_id.state', '=', 'order'),
-                ('so_state', 'in', ('wishlist', 'draft')),
+                ('so_state', 'in', ('reservation', 'draft')),
                 ('sale_shipment_id', '=', False)]),
     }
 
@@ -45,7 +45,7 @@ class WizardShipmentAssignSOL(orm.TransientModel):
 
         only display the sale order lines:
             - shipment is False,
-            - so state is draft or wishlist
+            - so state is draft or reservation
             - product state is order
             - the product is in the pre defined contained products
             of the shipment
