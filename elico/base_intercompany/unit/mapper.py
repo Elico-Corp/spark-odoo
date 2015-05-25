@@ -90,8 +90,6 @@ class ICOPSExportMapper(ExportMapper):
         # it will be used later to know what to remove in the icops object
         new_ids = []
         for record in child_records:
-            import pdb
-            pdb.set_trace()
             new_ids.append(record['icops_id'])
             domain = [
                 ('icops_id', '=', record['icops_id']),
