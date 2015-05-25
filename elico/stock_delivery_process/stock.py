@@ -185,7 +185,7 @@ class stock_move(orm.Model):
             if not picking.qc_approved:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('The delivery order have been QC Approved!'))
+                    _('The delivery order has not been QC Approved!'))
 
     # check before user clicks the button 'process entirely'
     def action_done(self, cr, uid, ids, context=None):
@@ -302,6 +302,6 @@ class stock_partial_move(orm.TransientModel):
         partial = self.browse(cr, uid, ids[0], context=context)
         move_pool = self.pool['stock.move']
         for move in partial.move_ids:
-            move_pool._check_if_process(move)
+            move_pool._check_if_process(move.move_id)
         return super(stock_partial_move, self).do_partial(
             cr, uid, ids, context=context)
