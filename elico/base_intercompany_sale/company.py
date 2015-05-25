@@ -44,9 +44,9 @@ class res_intercompany(orm.Model):
         """
         res = super(res_intercompany, self)._select_models(
             cr, uid, context)
-        new_dict = {'so2po': 'sale.order',
-                    'so2so': 'sale.order',
-                    'po2so': 'purchase.order'}
+        new_dict = {'so2po': ('sale.order', 'purchase.order'),
+                    'so2so': ('sale.order', 'sale.order'),
+                    'po2so': ('purchase.order', 'sale.order')}
         res = dict(res.items() + new_dict.items())
         return res
 

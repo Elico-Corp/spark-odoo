@@ -43,7 +43,9 @@ class sale_order_line(osv.osv):
         return res
 
     _columns = {
-        'qty_store': fields.float('QTY store',help='Want you look this field,Pls first run xxxx wizard'),
+        'qty_store': fields.float(
+            'Quantity store',
+            help='Launch the wizard to update this field.'),
         'product_default_code': fields.function(_get_pdt_code,
                                                 arg=None,
                                                 string='Product Code',
@@ -58,9 +60,12 @@ class sale_order_line(osv.osv):
                                             size=32,
                                             readonly=True,
                                             store=True),
-        'qty_available': fields.related('product_id', 'qty_available', type='float', string='Quantity On Hand',),
-        'virtual_available': fields.related('product_id', 'virtual_available', type='float', string='Forecasted Quantity',),
-       
+        'qty_available': fields.related(
+            'product_id', 'qty_available', type='float',
+            string='Quantity On Hand',),
+        'virtual_available': fields.related(
+            'product_id', 'virtual_available', type='float',
+            string='Forecasted Quantity',),
     }
     _sql_constraints = [
         ('product_uom_qty_check',
@@ -104,5 +109,3 @@ class sale_order_line(osv.osv):
         return res
 
 sale_order_line()
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

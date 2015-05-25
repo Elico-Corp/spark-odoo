@@ -53,7 +53,10 @@ class res_intercompany(orm.Model):
             if intercompany.concept:
                 model = self._select_models(
                     cr, uid)[intercompany.concept]
-            res[intercompany.id] = model
+            res[intercompany.id] = {
+                'model': model[0],
+                'model_dest': model[1]
+            }
         return res
 
     def get_intercompany(self, cr, uid, obj_id,
@@ -94,7 +97,10 @@ class res_intercompany(orm.Model):
         'concept': fields.selection(_select_concepts, string="Concept",
                                     required=True),
         'model': fields.function(_get_model, type='char',
-                                 string='Object', store=False),
+                                 string='Object', store=False, multi="models"),
+        'model_dest': fields.function(_get_model, type='char', multi="models",
+                                      string='Object Destination',
+                                      store=False),
         'icops_uid': fields.related(
             'backend_to', 'icops_uid', type='many2one',
             relation='res.users', readonly=True, string='IC User'),
