@@ -77,6 +77,13 @@ class icops_record(orm.Model):
 class icops_model(orm.AbstractModel):
     _name = 'icops.model'
 
+    def _get_icops_parent(self, cr, uid, ids, context=None):
+        assert len(ids) == 1
+        ids = ids[0]
+        obj = self.browse(cr, uid, ids, context=context)
+        pool = self.pool.get(obj.icops_model)
+        return pool.browse(cr, 1, obj.icops_id, context=context).openerp_id
+
     def _is_locked(self, cr, uid, ids, name, arg, context=None):
         res = {}
         for obj in self.browse(cr, uid, ids, context=context):
