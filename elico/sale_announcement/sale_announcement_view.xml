@@ -13,6 +13,7 @@
 			<field name='sequence'/>
 			<field name='create_date' groups='base.group_system'/>
 			<field name='public_date'/>
+            <field name="cut_off_date" />
 			<field name='responsible_uid'/>
 		</tree>
     </field>
@@ -36,6 +37,7 @@
 					<field name='create_date'/>
 					<field name='sequence'/>
 					<field name='public_date'/>
+                    <field name="cut_off_date" />
 					<field name='responsible_uid'/>
 				</group>
 				<group col='4'>
@@ -88,6 +90,7 @@
                  <filter string="User" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'responsible_uid'}"/>
                  <filter string="State" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'state'}"/>
                  <filter string="Publication Date" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'public_date'}"/>
+                 <filter string="Cut-off Date" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'cut_off_date'}"/>
             </group>
 			
 		</search>
@@ -158,6 +161,7 @@
     <field name="arch" type="xml">
         <xpath expr="//tree" position="inside">
             <field name="announcement_id"/>
+            <field name="cut_off_date" />
         </xpath>
     </field>
 </record>
@@ -168,6 +172,7 @@
     <field name="arch" type="xml">
 		<xpath expr="//search/group[@string='Group By...']" position="inside">
 			<filter name="group_announcement_id" string="Announcement" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'announcement_id'}"/>
+            <filter name="group_cut_off_date" string="Cut-off Date" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'cut_off_date'}"/>
 		</xpath>
     </field>
     

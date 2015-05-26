@@ -81,7 +81,10 @@ class WizardShipmentAllocationLine(orm.TransientModel):
             digits_compute=dp.get_precision('Product Unit of Measure'),),
         'partner_id': fields.related(
             'sol_id', 'order_partner_id', type="many2one",
-            string="Customer", readonly=True, relation="res.partner")
+            string="Customer", readonly=True, relation="res.partner"),
+        'cut_off_date': fields.related(
+            'sol_id', 'cut_off_date', type="date",
+            string="Cut-off Date")
     }
 
     _order = 'product_id'
@@ -201,7 +204,8 @@ class WizardShipmentAllocation(orm.TransientModel):
                     'product_qty': sol.product_uom_qty,
                     'product_state': sol.product_id.state,
                     'final_qty': sol.final_qty,
-                    'state': sol.state
+                    'state': sol.state,
+                    'cut_off_date': sol.cut_off_date
                 }
 
                 # get max_qty and remaininng_qty

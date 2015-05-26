@@ -77,7 +77,8 @@
     			<th width="50%">Responsible</th>
     		</tr>
     		<tr>
-    			<th class="title">${o.public_date} </th>
+                <th class="title">${o.public_date} </th>
+                <th class="title">${o.cut_off_date} </th>
     			<th class="title">${o.responsible_uid.name} </th>
     		</tr>
     	</table>

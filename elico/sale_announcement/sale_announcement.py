@@ -30,7 +30,6 @@ class sale_announcement_line(osv.osv):
         'announcement_id': fields.many2one('sale.announcement',
                                            'Sale Announcement'),
     }
-sale_announcement_line()
 
 
 class product_product(osv.osv):
@@ -39,7 +38,6 @@ class product_product(osv.osv):
         'announcement_id': fields.many2one('sale.announcement',
                                            'Sale Announcement'),
     }
-product_product()
 
 
 class sale_announcement (osv.osv):
@@ -53,6 +51,7 @@ class sale_announcement (osv.osv):
         'sequence': fields.char('Sequence', size=32, required=True, select=1),
         'create_date': fields.date('Creation date', readonly=True),
         'public_date': fields.date('Publication Date'),
+        'cut_off_date': fields.date('Cut-off Date'),
         'responsible_uid': fields.many2one('res.users', 'Person responsible'),
         'lines': fields.one2many('sale.announcement.line',
                                  'announcement_id', 'Announcement Line'),
@@ -64,6 +63,8 @@ class sale_announcement (osv.osv):
         'order_categ_ids': fields.many2many(
             'product.category', 'order_announcement_categ_rel',
             'announcement_id', 'categ_id', string='Order Website Categories'),
+        'sale_order_line_ids': fields.one2many(
+            'sale.order.line', 'announcement_id', 'Sale order lines')
     }
     _defaults = {
         'state': lambda *a: 'draft',
@@ -73,7 +74,7 @@ class sale_announcement (osv.osv):
 
     def action_publish(self, cr, uid, ids, context=None):
         """
-        atcion publish, all product approve to announcement
+        action publish, all product approve to announcement
         TODO:The categories included in the announcement
             should be added to the products.
         """
@@ -138,8 +139,6 @@ class sale_announcement (osv.osv):
             'categ_ids': False, })
         return super(sale_announcement, self).copy(cr, uid, id, default)
 
-sale_announcement()
-
 
 class product_product(osv.osv):
     _inherit = 'product.product'
@@ -173,34 +172,62 @@ class product_product(osv.osv):
 
         categ_ids = context.get('categ_ids', False)[0][2]
         order_categ_ids = context.get('order_categ_ids', False)[0][2]
-        #unlink announcement_categ and link order_categ
+        # unlink announcement_categ and link order_categ
         self.write(cr, uid, ids,
                    {'categ_ids': [(3, x) for x in categ_ids]
                     + [(4, x) for x in order_categ_ids]})
         return True
 
-product_product()
-
 
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
-    #TODO auto_init to init all sol.annoucement
 
-    def _get_announcement(self, cr, uid, ids, fieldname, arg=None,
-                          context=None):
+    def _get_announcement(
+            self, cr, uid, ids, fieldname, arg=None,
+            context=None):
         res = {}
         for sol in self.browse(cr, uid, ids, context=context):
             res[sol.id] = (sol.product_id.announcement_id
                            and sol.product_id.announcement_id.id
                            or False)
         return res
+
+    def _get_sale_order_lines(self, cr, uid, ids, context=None):
+        if ids:
+            res = {}
+            anno_obj = self.pool['sale.announcement']
+            for anno in anno_obj.browse(cr, uid, ids, context=context):
+                for sol in anno.sale_order_line_ids:
+                    res[sol.id] = True
+            import pdb
+            pdb.set_trace()
+            return res.keys()
+
+    def _get_cut_off_date(
+            self, cr, uid, ids, field_names, args, context=None):
+        if not ids:
+            return {}
+        res = {}.fromkeys(ids, None)
+        for line in self.browse(cr, uid, ids, context=context):
+            if line.announcement_id:
+                res[line.id] = line.announcement_id.cut_off_date
+        import pdb
+        pdb.set_trace()
+        return res
+
     _columns = {
-        'announcement_id': fields.function(_get_announcement,
-                                           type='many2one',
-                                           relation='sale.announcement',
-                                           string='Announcement',
-                                           store=True),
+        'announcement_id': fields.function(
+            _get_announcement,
+            type='many2one',
+            relation='sale.announcement',
+            string='Announcement',
+            store=True),
+        'cut_off_date': fields.function(
+            _get_cut_off_date,
+            type="date", string="Cut-off Date",
+            store={
+                'sale.announcement': (_get_sale_order_lines, ['cut_off_date'], 1),
+            })
     }
 
-sale_order_line()
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
