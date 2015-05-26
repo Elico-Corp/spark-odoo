@@ -367,6 +367,8 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         state = record.state
         if record.state in ('progress', 'manual'):
             state = 'approved'
+        if record.state in ['wishlist', 'reservation']:
+            state = 'draft'
         return {'state': state}
 
 

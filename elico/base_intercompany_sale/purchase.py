@@ -240,8 +240,6 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
     @mapping
     def state(self, record):
         state = record.state
-        if record.state in ['wishlist', 'reservation']:
-            state = 'draft'
         if record.state == 'approved':
             state = 'progress'
         return {'state': state}
