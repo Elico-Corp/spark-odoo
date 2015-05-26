@@ -82,6 +82,18 @@ class sale_order(orm.Model):
         self._check_icops(cr, uid, ids, context=context)
         return super(sale_order, self).unlink(cr, uid, ids, context)
 
+    def action_button_confirm(self, cr, uid, ids, context=None):
+        for so in self.browse(cr, uid, ids, context=context):
+            if so.locked:
+                # do not use the normal way of confirming them
+                del ids[ids.index(so.id)]
+                parent = so._get_icops_parent(context=context)
+                parent.action_button_confirm(context=context)
+        # do not super if nothing to confirm
+        if ids:
+            return super(sale_order, self).action_button_confirm(
+                cr, uid, ids, context=context)
+
 
 class icops_sale_order(orm.Model):
     _name = 'icops.sale.order'
@@ -181,6 +193,8 @@ class SaleOrderAdapter(ICOPSAdapter):
         return sess.pool.get(name)
 
     def confirm(self, id):
+        import pdb
+        pdb.set_trace()
         sess = self.session
         pool = self._get_pool()
         context = {'icops': True}
