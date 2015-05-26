@@ -199,8 +199,6 @@ class sale_order_line(osv.osv):
             for anno in anno_obj.browse(cr, uid, ids, context=context):
                 for sol in anno.sale_order_line_ids:
                     res[sol.id] = True
-            import pdb
-            pdb.set_trace()
             return res.keys()
 
     def _get_cut_off_date(
@@ -211,8 +209,6 @@ class sale_order_line(osv.osv):
         for line in self.browse(cr, uid, ids, context=context):
             if line.announcement_id:
                 res[line.id] = line.announcement_id.cut_off_date
-        import pdb
-        pdb.set_trace()
         return res
 
     _columns = {
