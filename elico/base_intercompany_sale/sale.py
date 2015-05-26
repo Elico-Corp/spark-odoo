@@ -342,7 +342,10 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         return {'order_policy': record.order_policy}
 
     def so2so_state(self, record):
-        return {'state': record.state}
+        state = record.state
+        if state in ['reservation', 'wishlist']:
+            state = 'draft'
+        return {'state': state}
 
     def so2po_partner(self, record):
         return self._partner(record, True)
