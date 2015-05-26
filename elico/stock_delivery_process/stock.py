@@ -51,6 +51,8 @@ class stock_picking(orm.Model):
 
     def _check_if_process(self, picking):
         '''before process the order, check the on_hold and qc_approved'''
+        if picking.type != 'out':
+            return True
         if picking.on_hold:
             raise orm.except_orm(
                 _('Warning'),
@@ -167,7 +169,7 @@ class stock_move(orm.Model):
 
     def _check_if_process(self, move):
         '''before process the stock moves, check the on_hold and qc_approved'''
-        if not move.picking_id:
+        if (not move.picking_id) and (move.type == 'out'):
             if move.on_hold:
                 raise orm.except_orm(
                     _('Warning'),
@@ -178,6 +180,8 @@ class stock_move(orm.Model):
                     _('This stock move have not been QC Approved!'))
         else:
             picking = move.picking_id
+            if picking.type != 'out':
+                return True
             if picking.on_hold:
                 raise orm.except_orm(
                     _('Warning'),
