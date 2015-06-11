@@ -26,3 +26,4 @@ from . import magento_model
 from . import product_scale
 from . import product_model
 from . import product_driver
+from . import product_race

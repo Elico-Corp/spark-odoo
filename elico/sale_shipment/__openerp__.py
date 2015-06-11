@@ -31,7 +31,7 @@
     and ask Yaxi to provide the related documentation.
     TODO: replace mmx related information in data.xml
     """,
-    'depends': ['stock', 'sale_order_line', 'sale_menu'],
+    'depends': ['stock', 'sale_order_line', 'sale_menu', 'sale_announcement'],
     'category': '',
     'sequence': 10,
     'demo': [],
