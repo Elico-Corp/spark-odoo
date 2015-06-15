@@ -58,3 +58,13 @@ class MMXProductModel(orm.Model):
                 cr, uid, option_vals, context=context)
 
         return res_id
+
+    def _get_all_backends(self, cr, uid, context=None):
+        '''return all the backends'''
+        backend_pool = self.pool['magento.backend']
+        ids = backend_pool.search(cr, uid, [], context=context)
+        return ids
+
+    _defaults = {
+        'backend_ids': _get_all_backends
+    }
