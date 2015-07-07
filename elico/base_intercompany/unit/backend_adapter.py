@@ -23,6 +23,8 @@
 
 import logging
 from openerp.addons.connector.unit.backend_adapter import CRUDAdapter
+from openerp.osv import osv
+
 
 _logger = logging.getLogger(__name__)
 recorder = {}
@@ -134,18 +136,35 @@ class ICOPSAdapter(GenericAdapter):
 
     def create(self, data):
         sess = self.session
+        # always set backward to true for creation so it won't go backward
+        context = {'icops': True, 'backward': True}
+        icops_uid = self._backend_to.icops_uid.id
         pool = self._get_pool()
         return pool.create(
-            sess.cr, self._backend_to.icops_uid.id, data, {'icops': True})
+            sess.cr, icops_uid, data, context)
 
     def write(self, id, data):
         sess = self.session
+        context = {'icops': True}
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        icops_uid = self._backend_to.icops_uid.id
         pool = self._get_pool()
-        pool.write(sess.cr, self._backend_to.icops_uid.id, id, data,
-                   {'icops': True})
+        try:
+            pool.write(sess.cr, icops_uid, id, data,
+                       context)
+        except:
+            raise osv.except_osv(
+                'ICOPS Error',
+                'You can only add a new record\
+                 from the original object..')
 
     def delete(self, id):
         sess = self.session
+        context = {'icops': True}
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        icops_uid = self._backend_to.icops_uid.id
         pool = self._get_pool()
-        pool.unlink(sess.cr, self._backend_to.icops_uid.id, [id],
-                    {'icops': True})
+        pool.unlink(sess.cr, icops_uid, [id],
+                    context)

@@ -193,35 +193,43 @@ class SaleOrderAdapter(ICOPSAdapter):
         return sess.pool.get(name)
 
     def confirm(self, id):
-        import pdb
-        pdb.set_trace()
         sess = self.session
         pool = self._get_pool()
+        context = sess.context
         context = {'icops': True}
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': True}, context)
-        if hasattr(pool, 'wkf_confirm_order'):
-            pool.wkf_confirm_order(
-                sess.cr, self._backend_to.icops_uid.id, [id])
-        else:
-            pool.action_wait(
-                sess.cr, self._backend_to.icops_uid.id, [id])
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': False}, context)
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        # pool.write(
+        #     sess.cr, self._backend_to.icops_uid.id, [id],
+        #     {'temp_unlock': True}, context)
+        # if hasattr(pool, 'wkf_confirm_order'):
+        #     pool.wkf_confirm_order(
+        #         sess.cr, self._backend_to.icops_uid.id, [id],
+        #         context=context)
+        # else:
+        #     pool.action_wait(
+        #         sess.cr, self._backend_to.icops_uid.id, [id],
+        #         context=context)
+        # pool.write(
+        #     sess.cr, self._backend_to.icops_uid.id, [id],
+        #     {'temp_unlock': False}, context)
 
     def cancel(self, id):
         sess = self.session
         pool = self._get_pool()
+        context = sess.context
         context = {'icops': True}
-        pool.write(
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        # pool.write(
+        #     sess.cr, self._backend_to.icops_uid.id, [id],
+        #     {'temp_unlock': True}, context)
+        pool.action_cancel(
             sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': True}, context)
-        pool.action_cancel(sess.cr, self._backend_to.icops_uid.id, [id])
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': False}, context)
+            context=context)
+        # pool.write(
+        #     sess.cr, self._backend_to.icops_uid.id, [id],
+        #     {'temp_unlock': False}, context)
 
 
 @icops
@@ -236,7 +244,7 @@ class SaleOrderExport(ICOPSExporter):
                 self._cancel(id)
             elif state in ('approved', 'progress', 'manual'):
                 self._confirm(id)
-        elif fields:
+        else:
             self._write(id, record)
 
 
@@ -256,6 +264,9 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         }
 
     def _partner(self, record, is_po=False):
+        # do not change partner for backward update
+        if self._backward:
+            return {}
         res = {}
         sess = self.session
         backend = self._backend_to
@@ -292,6 +303,9 @@ class SaleOrderExportMapper(ICOPSExportMapper):
 
     @mapping
     def origin(self, record):
+        # you don't wanna to write the origin for backward
+        if self._backward:
+            return {}
         name = record.name
         if record.origin:
             name = '%s:%s' % (record.origin.replace('IC:', ''), name)
@@ -303,6 +317,8 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         return self._get_mapping(self._icops.concept, record)
 
     def so2so_icops(self, record):
+        if self._backward:
+            return {}
         if not self._backend_to:
             raise MappingError("Could not find an ICOPS backend")
         backend = self._backend_to
@@ -328,6 +344,8 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         return self._partner(record)
 
     def so2so_address(self, record):
+        if self._backward:
+            return {}
         sess = self.session
         partner = record.company_id.partner_id
         partner_pool = sess.pool.get('res.partner')
@@ -351,6 +369,8 @@ class SaleOrderExportMapper(ICOPSExportMapper):
         return self._partner(record, True)
 
     def so2po_icops(self, record):
+        if self._backward:
+            return {}
         if not self._backend_to:
             raise MappingError("Could not find an ICOPS backend")
         backend = self._backend_to
@@ -386,7 +406,7 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
             return {'price_unit': 0}
         sess = self.session
         backend = self._backend_to
-        ic_uid = backend.icops_uid.id
+        ic_uid = sess.uid if self._backward else backend.icops_uid.id
         partner_pool = sess.pool.get('res.partner')
         partner_id = record.order_id.company_id.partner_id.id
         partner = partner_pool.browse(sess.cr, ic_uid, partner_id)

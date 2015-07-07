@@ -19,11 +19,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import time
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.addons.mmx_magento.consumer import delay_export_so
 from openerp.addons.connector.session import ConnectorSession
 
@@ -140,7 +138,10 @@ class wizard_order_split (osv.osv_memory):
                     cr, uid, line['id'],
                     {'final_qty': line['product_uom_qty']},
                     context=context)
-            so_pool.action_button_confirm(cr, 1, [so_id], context=context)
+            try:
+                so_pool.action_button_confirm(cr, uid, [so_id], context=context)
+            except:
+                so_pool.action_button_confirm(cr, 1, [so_id], context=context)
             return True
 
         new_so_id = None
@@ -166,17 +167,22 @@ class wizard_order_split (osv.osv_memory):
             if res_qty > 0:
                 so_pool.write(
                     cr, uid, so_id,
-                    {'order_line': [(1, soline.id, {'final_qty': final_qty})]})
-                delay_export_so(session, 'sale.order', so_id, ['order_line'])
+                    {'order_line': [(1, soline.id, {'final_qty': final_qty})]},
+                    context=context)
+                delay_export_so(
+                    session, 'sale.order', so_id, ['order_line'],
+                    context=context)
                 so_pool.write(
                     cr, uid, so_id,
                     {'order_line': [(
                         1, soline.id,
-                        {'product_uom_qty': res_qty, 'final_qty': 0})]})
+                        {'product_uom_qty': res_qty, 'final_qty': 0})]},
+                    context=context)
             else:
                 so_pool.write(
                     cr, uid, so_id,
-                    {'order_line': [(1, soline.id, {'final_qty': final_qty})]})
+                    {'order_line': [(1, soline.id, {'final_qty': final_qty})]},
+                    context=context)
                 delay_export_so(session, 'sale.order', so_id, ['order_line'])
                 so_pool.write(
                     cr, uid, so_id, {'order_line': [(2, soline.id)]},
@@ -233,7 +239,8 @@ class wizard_order_split (osv.osv_memory):
 
         for line in wizard.lines:
             sol_pool.write(cr, uid, line.sol_id.id,
-                           {'order_id': wizard.other_order.id})
+                           {'order_id': wizard.other_order.id},
+                           context=context)
 
         return {
             'name': _('Updated Sale Order'),

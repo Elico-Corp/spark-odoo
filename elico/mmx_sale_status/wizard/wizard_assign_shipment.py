@@ -95,7 +95,7 @@ class wizard_assign_shipment(osv.osv_memory):
 
     def action(self, cr, uid, ids, context=None):
         sol_pool = self.pool.get('sale.order.line')
-        wizard = self.browse(cr, uid, ids[0], context=None)
+        wizard = self.browse(cr, uid, ids[0], context=context)
 
         if not self.check(wizard):
             return True
@@ -103,7 +103,7 @@ class wizard_assign_shipment(osv.osv_memory):
             sol_pool.write(cr, uid, line.sol_id.id, {
                 'sale_shipment_id': wizard.shipment_id.id,
                 'final_qty': line.final_qty,
-            })
+            }, context=context)
         return {
             'name': _('Split Sale Order lines'),
             'view_type': 'form',

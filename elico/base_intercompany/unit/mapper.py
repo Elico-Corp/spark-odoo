@@ -21,6 +21,7 @@
 #
 ##############################################################################
 from openerp.addons.connector.unit.mapper import ExportMapper
+from openerp.osv import osv
 
 
 class ICOPSExportMapper(ExportMapper):
@@ -33,6 +34,7 @@ class ICOPSExportMapper(ExportMapper):
         super(ICOPSExportMapper, self).__init__(environment)
         self._icops = None
         self._backend_to = None
+        self._backward = None
 
     @property
     def data(self):
@@ -83,20 +85,35 @@ class ICOPSExportMapper(ExportMapper):
         backend = self._backend_to
         ic_uid = backend.icops_uid.id
         sess = self.session
+        model_dest = self._icops.model if self._backward else\
+            self._icops.model_dest
         pool = sess.pool.get(
-            self._get_children_model(self._icops.model_dest, attr))
+            self._get_children_model(model_dest, attr))
         res = []
         # stock the list of child ids present in the main object
         # it will be used later to know what to remove in the icops object
         new_ids = []
         for record in child_records:
-            new_ids.append(record['icops_id'])
-            domain = [
-                ('icops_id', '=', record['icops_id']),
-                ('order_id.icops_id', '=', self._data['icops_id']),
-                ('order_id.icops_model', '=', self._data['icops_model'])
-            ]
-            ids = pool.search(sess.cr, ic_uid, domain, context=sess.context)
+            ids = None
+            if self._backward:
+                obj = pool.browse(
+                    sess.cr, sess.uid, record.pop('icops_id'),
+                    context=sess.context)
+                try:
+                    ids = [obj.icops_id]
+                    new_ids.append(obj.icops_id)
+                except Exception, e:
+                    # new record
+                    pass
+            else:
+                new_ids.append(record['icops_id'])
+                domain = [
+                    ('icops_id', '=', record['icops_id']),
+                    ('order_id.icops_id', '=', self._data['icops_id']),
+                    ('order_id.icops_model', '=', self._data['icops_model'])
+                ]
+                ids = pool.search(
+                    sess.cr, ic_uid, domain, context=sess.context)
             # update old line
             if ids:
                 res.append((1, ids[0], record))
@@ -106,12 +123,25 @@ class ICOPSExportMapper(ExportMapper):
         # search for the lines that need to be deleted
         if not res:
             return [(5, 0)]
-        domain = [
-            ('icops_id', 'not in', new_ids),
-            ('order_id.icops_id', '=', self._data['icops_id']),
-            ('order_id.icops_model', '=', self._data['icops_model'])
-        ]
-        unlink_ids = pool.search(sess.cr, ic_uid, domain, context=sess.context)
+        domain = None
+        if self._backward:
+            obj = sess.pool.get(
+                self._data['icops_model']).browse(
+                sess.cr, sess.uid, self._data['icops_id'])
+            domain = [
+                ('icops_id', 'not in', new_ids),
+                ('order_id', '=', obj.id)
+            ]
+            unlink_ids = pool.search(
+                sess.cr, sess.uid, domain, context=sess.context)
+        else:
+            domain = [
+                ('icops_id', 'not in', new_ids),
+                ('order_id.icops_id', '=', self._data['icops_id']),
+                ('order_id.icops_model', '=', self._data['icops_model'])
+            ]
+            unlink_ids = pool.search(
+                sess.cr, ic_uid, domain, context=sess.context)
         res += [(2, unlink_id) for unlink_id in unlink_ids]
 
         return res

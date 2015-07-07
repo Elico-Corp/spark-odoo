@@ -189,7 +189,8 @@ class wizard_sol_split(osv.osv_memory):
                                     {
                                         'product_uom_qty': res_qty,
                                         'final_qty': 0
-                                    })]}
+                                    })]},
+                            context=context
                     )
                 elif res_qty == 0.0:
                     so_pool.write(
