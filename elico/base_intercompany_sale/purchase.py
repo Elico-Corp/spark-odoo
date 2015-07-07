@@ -183,27 +183,33 @@ class PurchaseOrderAdapter(ICOPSAdapter):
     def confirm(self, id):
         sess = self.session
         pool = self._get_pool()
+        uid = self._backend_to.icops_uid.id
         context = {'icops': True}
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': True}, context=context)
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state not in ('draft', 'sent'):
+            return
         pool.action_wait(
-            sess.cr, self._backend_to.icops_uid.id, [id])
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': False}, context=context)
+            sess.cr, uid, [id],
+            context=context)
 
     def cancel(self, id):
         sess = self.session
         pool = self._get_pool()
         context = {'icops': True}
-        pool.write(
+        uid = self._backend_to.icops_uid.id
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state == 'cancel':
+            return
+        if 'backward' in self.session.context:
+            context.update({'backward': True})
+        pool.action_cancel(
             sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': True}, context=context)
-        pool.action_cancel(sess.cr, self._backend_to.icops_uid.id, [id])
-        pool.write(
-            sess.cr, self._backend_to.icops_uid.id, [id],
-            {'temp_unlock': False}, context=context)
+            context=context)
+        # pool.write(
+        #     sess.cr, self._backend_to.icops_uid.id, [id],
+        #     {'temp_unlock': False}, context=context)
 
 
 @icops
@@ -232,6 +238,8 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
 
     @mapping
     def origin(self, record):
+        if self._backward:
+            return {}
         name = record.name
         if record.origin:
             name = '%s:%s' % (record.origin.replace('IC:', ''), name)
@@ -246,6 +254,8 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
 
     @mapping
     def address(self, record):
+        if self._backward:
+            return {}
         sess = self.session
         partner = record.company_id.partner_id
         partner_pool = sess.pool.get('res.partner')
@@ -257,7 +267,9 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
         }
 
     @mapping
-    def icops(self, record):
+    def basic_info(self, record):
+        if self._backward:
+            return {}
         if not self._backend_to:
             raise MappingError("Could not find an ICOPS backend")
         sess = self.session
@@ -282,9 +294,14 @@ class PurchaseOrderExportMapper(ICOPSExportMapper):
             'fiscal_position': fiscal_position.id,
             'payment_term': payment_term.id,
             'user_id': ic_uid,
-            'shop_id': shop.id,
+            'shop_id': shop.id
+        }
+
+    @mapping
+    def icops(self, record):
+        return {
             'icops_id': record.id,
-            'icops_model': record._name
+            'icops_model': record._name,
         }
 
 

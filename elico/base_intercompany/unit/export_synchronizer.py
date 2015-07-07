@@ -30,8 +30,6 @@ from openerp.addons.connector.exception import MappingError
 from osv import osv
 
 _logger = logging.getLogger(__name__)
-
-
 """
 
 Exporters for ICOPS.
@@ -96,11 +94,19 @@ class ICOPSExporter(ICOPSBaseExporter):
         """ Return True if the export can be skipped """
         return False
 
-    def _routing(self, record, fields=None):
+    def _routing(self, record, fields=None, backward=False):
+            sess = self.session
             fields = fields or []
             icops = self.mapper._icops
-            icops_id = self._get_icops_id(
-                icops.backend_to.id, icops.concept)
+            icops_id = None
+            if backward:
+                icops_id = sess.pool.get(
+                    self.binding_record.icops_model).browse(
+                    sess.cr, 1, self.binding_record.icops_id).openerp_id.id
+
+            else:
+                icops_id = self._get_icops_id(
+                    icops.backend_to.id, icops.concept)
             if not icops_id:
                 return
             if 'icops_delete' in fields:
@@ -124,6 +130,24 @@ class ICOPSExporter(ICOPSBaseExporter):
 
         nb_records = 0
         icops_ids = {}
+
+        if self.binding_record.locked and 'backward' not in\
+                self.session.context:
+            self.session.context.update({'backward': True})
+            for icops in self._get_backward_icops():
+                backend = self._get_backend_with_permission(
+                    icops, backward=True)
+                self._set_icops(icops, backend, backward=True)
+                try:
+                    self._map_data(fields=fields)
+                except MappingError:
+                    continue
+                record = self.mapper.data
+                if not record:
+                    continue
+                self._validate_data(record)
+                self._routing(record, fields, backward=True)
+
         for icops in self._get_icops():
             backend = self._get_backend_with_permission(icops)
             self._set_icops(icops, backend)
@@ -156,14 +180,18 @@ class ICOPSExporter(ICOPSBaseExporter):
             return _('Nothing to export.')
         return _('Record exported.')
 
-    def _get_backend_with_permission(self, icops):
+    def _get_backend_with_permission(self, icops, backward=False):
         sess = self.session
+        # don't know the ic_uid in case of reverse backend
+        ic_uid = icops.backend_id.icops_uid.id if backward else icops.icops_uid.id
+        backend = icops.backend_id.id if backward else icops.backend_to.id
         backend_pool = sess.pool.get('icops.backend')
         return backend_pool.browse(
-            sess.cr, icops.icops_uid.id, icops.backend_to.id)
+            sess.cr, ic_uid, backend)
 
     def _get_icops(self):
         res = []
+        # test
         sess = self.session
         user_pool = sess.pool.get('res.users')
         user = user_pool.browse(sess.cr, sess.uid, sess.uid)
@@ -180,7 +208,39 @@ class ICOPSExporter(ICOPSBaseExporter):
         res = intercompany_pool.browse(sess.cr, sess.uid, intercompany_ids)
         return res
 
-    def _set_icops(self, icops, backend):
+    def _get_backward_icops(self):
+        assert self.binding_id
+        assert self.binding_record
+        res = []
+        sess = self.session
+        icops_obj = sess.pool.get(self.binding_record.icops_model).browse(
+            sess.cr, 1, self.binding_record.icops_id)
+
+        backend_pool = sess.pool.get('icops.backend')
+        backend_ids = backend_pool.search(
+            sess.cr, icops_obj.user_id.id,
+            [('company_id', '=', icops_obj.company_id.id)])
+        if not backend_ids:
+            return res
+        intercompany_pool = sess.pool.get('res.intercompany')
+        # reverse concepts
+        concepts = []
+        for concept in self._concepts:
+            temp_concept = list(concept.partition('2'))
+            temp_concept.reverse()
+            concepts.append(''.join(temp_concept))
+
+        intercompany_ids = intercompany_pool.search(
+            sess.cr, icops_obj.user_id.id,
+            [('backend_id', '=', backend_ids[0]),
+             ('concept', 'in', concepts)])
+        res = intercompany_pool.browse(sess.cr, sess.uid, intercompany_ids)
+        return res
+
+    def _set_icops(self, icops, backend, backward=False):
+        # backward
+        self.mapper._backward = backward
+        self.backend_adapter._backward = backward
         self.mapper._icops = icops
         self.backend_adapter._icops = icops
         self.mapper._backend_to = backend
@@ -193,21 +253,27 @@ class ICOPSExporter(ICOPSBaseExporter):
 
     def _write(self, id, data):
         context = self.session.context or {}
-        if not self.backend_adapter._icops.on_write and 'icops' not in context:
+        if (not self.backend_adapter._icops.on_write and 'icops' not in context)\
+                and 'backward' not in context:
             raise osv.except_osv('ICOPS Error', 'Can\'t write')
         self.backend_adapter.write(id, data)
 
     def _confirm(self, id):
-        if not self.backend_adapter._icops.on_confirm:
+        context = self.session.context or {}
+        if (not self.backend_adapter._icops.on_confirm and 'icops' not in context)\
+                and 'backward' not in context:
             raise osv.except_osv('ICOPS Error', 'Can\'t confirm')
         self.backend_adapter.confirm(id)
 
     def _cancel(self, id):
-        if not self.backend_adapter._icops.on_cancel:
+        context = self.session.context or {}
+        if (not self.backend_adapter._icops.on_cancel and 'icops' not in context)\
+                and 'backward' not in context:
             raise osv.except_osv('ICOPS Error', 'Can\'t cancel')
         self.backend_adapter.cancel(id)
 
     def _delete(self, id):
+        context = self.session.context or {}
         if not self.backend_adapter._icops.on_unlink:
             raise osv.except_osv('ICOPS Error', 'Can\'t delete')
         self.backend_adapter.delete(id)

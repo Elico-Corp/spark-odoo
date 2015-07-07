@@ -106,10 +106,11 @@ class icops_model(orm.AbstractModel):
         for obj in self.browse(cr, uid, ids, context=context):
             if obj.temp_unlock:
                 return
-            elif obj.locked:
-                raise osv.except_osv(
-                    'ICOPS Error',
-                    'This object is locked by an intercompany process')
+            return
+            # elif obj.locked:
+            #     raise osv.except_osv(
+            #         'ICOPS Error',
+            #         'This object is locked by an intercompany process')
 
     _columns = {
         'locked': fields.function(
