@@ -183,28 +183,27 @@ class PurchaseOrderAdapter(ICOPSAdapter):
     def confirm(self, id):
         sess = self.session
         pool = self._get_pool()
+        uid = self._backend_to.icops_uid.id
         context = {'icops': True}
         if 'backward' in self.session.context:
             context.update({'backward': True})
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': True}, context=context)
-        # pool.action_wait(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     context=context)
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': False}, context=context)
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state not in ('draft', 'sent'):
+            return
+        pool.action_wait(
+            sess.cr, uid, [id],
+            context=context)
 
     def cancel(self, id):
         sess = self.session
         pool = self._get_pool()
         context = {'icops': True}
+        uid = self._backend_to.icops_uid.id
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state == 'cancel':
+            return
         if 'backward' in self.session.context:
             context.update({'backward': True})
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': True}, context=context)
         pool.action_cancel(
             sess.cr, self._backend_to.icops_uid.id, [id],
             context=context)
@@ -329,7 +328,7 @@ class PurchaseOrderLineExportMapper(ICOPSExportMapper):
         if not record.product_id:
             return {'price_unit': 0}
         sess = self.session
-        backend = sess.uid if self._backward else self._backend_to
+        backend = self._backend_to
         ic_uid = backend.icops_uid.id
         partner_pool = sess.pool.get('res.partner')
         partner_id = record.order_id.company_id.partner_id.id

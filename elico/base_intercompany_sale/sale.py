@@ -197,39 +197,35 @@ class SaleOrderAdapter(ICOPSAdapter):
         pool = self._get_pool()
         context = sess.context
         context = {'icops': True}
+        uid = self._backend_to.icops_uid.id
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state not in ('draft', 'sent'):
+            return
         if 'backward' in self.session.context:
             context.update({'backward': True})
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': True}, context)
-        # if hasattr(pool, 'wkf_confirm_order'):
-        #     pool.wkf_confirm_order(
-        #         sess.cr, self._backend_to.icops_uid.id, [id],
-        #         context=context)
-        # else:
-        #     pool.action_wait(
-        #         sess.cr, self._backend_to.icops_uid.id, [id],
-        #         context=context)
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': False}, context)
+        if hasattr(pool, 'wkf_confirm_order'):
+            pool.wkf_confirm_order(
+                sess.cr, uid, [id],
+                context=context)
+        else:
+            pool.action_wait(
+                sess.cr, uid, [id],
+                context=context)
 
     def cancel(self, id):
         sess = self.session
         pool = self._get_pool()
         context = sess.context
         context = {'icops': True}
+        uid = self._backend_to.icops_uid.id
+        obj = pool.browse(sess.cr, uid, id, context=context)
+        if obj.state == 'cancel':
+            return
         if 'backward' in self.session.context:
             context.update({'backward': True})
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': True}, context)
         pool.action_cancel(
             sess.cr, self._backend_to.icops_uid.id, [id],
             context=context)
-        # pool.write(
-        #     sess.cr, self._backend_to.icops_uid.id, [id],
-        #     {'temp_unlock': False}, context)
 
 
 @icops

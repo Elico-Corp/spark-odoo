@@ -100,9 +100,6 @@ class ICOPSExporter(ICOPSBaseExporter):
             icops = self.mapper._icops
             icops_id = None
             if backward:
-                concept = list(icops.concept.partition('2'))
-                concept.reverse()
-                concept = ''.join(concept)
                 icops_id = sess.pool.get(
                     self.binding_record.icops_model).browse(
                     sess.cr, 1, self.binding_record.icops_id).openerp_id.id
@@ -276,6 +273,7 @@ class ICOPSExporter(ICOPSBaseExporter):
         self.backend_adapter.cancel(id)
 
     def _delete(self, id):
+        context = self.session.context or {}
         if not self.backend_adapter._icops.on_unlink:
             raise osv.except_osv('ICOPS Error', 'Can\'t delete')
         self.backend_adapter.delete(id)
