@@ -62,9 +62,7 @@ class ReplenishmentTransferReport(report_sxw.rml_parse):
             moves belong.'''
         move_pool = self.pool['stock.move']
         # only filter out the internal stock moves
-        domain = [('location_id.usage', '=', 'internal'),
-                  ('location_dest_id.usage', '=', 'internal'),
-                  ('sale_shipment_id', '=', shipment_id)]
+        domain = [('sale_shipment_id', '=', shipment_id)]
         if src_location_id:
             domain.append(('location_id', '=', src_location_id.id))
         if dest_location_id:
