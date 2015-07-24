@@ -119,6 +119,10 @@ class MagentoImportSynchronizer(ImportSynchronizer):
         """ Create the OpenERP record """
         with self.session.change_context({'connector_no_export': True}):
             binding_id = self.session.create(self.model._name, data)
+            try:
+                self.session.write(self.model._name, binding_id, {'order_line': []})
+            except:
+                pass
         _logger.debug('%s %d created from magento %s',
                       self.model._name, binding_id, self.magento_id)
         return binding_id

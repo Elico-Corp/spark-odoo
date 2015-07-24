@@ -28,6 +28,7 @@ from openerp.addons.base_intercompany.unit.mapper import ICOPSExportMapper
 from openerp.addons.connector.unit.mapper import mapping
 from openerp.addons.connector.exception import MappingError
 from openerp.addons.base_intercompany.unit.backend_adapter import ICOPSAdapter
+from openerp import netsvc
 
 
 class sale_order(orm.Model):
@@ -70,7 +71,7 @@ class sale_order(orm.Model):
         self._check_icops(cr, uid, ids, context=context)
         res = super(sale_order, self).write(cr, uid, ids, data, context)
         # Could not find another way to support cascading.
-        if context.get('icops'):
+        if context.get('icops') or context.get('connector_no_export'):
             if context.get('written'):
                 context['written'] = False
             else:
@@ -82,17 +83,17 @@ class sale_order(orm.Model):
         self._check_icops(cr, uid, ids, context=context)
         return super(sale_order, self).unlink(cr, uid, ids, context)
 
-    def action_button_confirm(self, cr, uid, ids, context=None):
-        for so in self.browse(cr, uid, ids, context=context):
-            if so.locked:
-                # do not use the normal way of confirming them
-                del ids[ids.index(so.id)]
-                parent = so._get_icops_parent(context=context)
-                parent.action_button_confirm(context=context)
-        # do not super if nothing to confirm
-        if ids:
-            return super(sale_order, self).action_button_confirm(
-                cr, uid, ids, context=context)
+    #def action_button_confirm(self, cr, uid, ids, context=None):
+    #    for so in self.browse(cr, uid, ids, context=context):
+    #        if so.locked:
+    #            # do not use the normal way of confirming them
+    #            del ids[ids.index(so.id)]
+    #            parent = so._get_icops_parent(context=context)
+    #            parent.action_button_confirm(context=context)
+    #    # do not super if nothing to confirm
+    #    if ids:
+    #        return super(sale_order, self).action_button_confirm(
+    #            cr, uid, ids, context=context)
 
 
 class icops_sale_order(orm.Model):
@@ -199,7 +200,7 @@ class SaleOrderAdapter(ICOPSAdapter):
         context = {'icops': True}
         uid = self._backend_to.icops_uid.id
         obj = pool.browse(sess.cr, uid, id, context=context)
-        if obj.state not in ('draft', 'sent'):
+        if obj.state not in ('draft', 'sent') or not obj.order_line:
             return
         if 'backward' in self.session.context:
             context.update({'backward': True})
@@ -207,8 +208,13 @@ class SaleOrderAdapter(ICOPSAdapter):
             pool.wkf_confirm_order(
                 sess.cr, uid, [id],
                 context=context)
+            pool.action_picking_create(
+                sess.cr, uid, [id], context=context)
         else:
             pool.action_wait(
+                sess.cr, uid, [id],
+                context=context)
+            pool.action_button_confirm(
                 sess.cr, uid, [id],
                 context=context)
 
@@ -357,8 +363,8 @@ class SaleOrderExportMapper(ICOPSExportMapper):
 
     def so2so_state(self, record):
         state = record.state
-        if state in ['reservation', 'wishlist']:
-            state = 'draft'
+        #if state in ['reservation', 'wishlist']:
+        #    state = 'draft'
         return {'state': state}
 
     def so2po_partner(self, record):
@@ -438,7 +444,8 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
         return {
             'product_id': record.product_id.id,
             'product_uom': record.product_uom.id,
-            'product_uom_qty': record.product_uom_qty
+            'product_uom_qty': record.product_uom_qty,
+            'final_qty': record.final_qty
         }
 
     def so2po_price(self, record):
@@ -450,6 +457,12 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
             'product_uom': record.product_uom.id,
             'product_qty': record.product_uom_qty
         }
+
+    def so2so_sale_shipment(self, record):
+        res = {}
+        if record.sale_shipment_id:
+            res['sale_shipment_id'] = record.sale_shipment_id.id
+        return res
 
     def so2po_date_planned(self, record):
         sess = self.session

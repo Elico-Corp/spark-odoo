@@ -358,6 +358,8 @@ class WizardShipmentAllocation(orm.TransientModel):
                     {'final_qty': soline.product_uom_qty,
                      'sale_shipment_id': shipment_id},
                     context=context)
+            so_pool.action_wait(
+                cr, uid, [so.id], context=context)
             so_pool.action_button_confirm(
                 cr, uid, [so.id], context=context)
             sol_ids = [line.id for line in so.order_line]

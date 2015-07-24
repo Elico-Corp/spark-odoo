@@ -978,6 +978,10 @@ class WishlistLineImportMapper(SaleOrderLineImportMapper):
     def product_options(self, record):
         return {}
 
+    @mapping
+    def so_state(self, record):
+        return {'so_state': 'draft'}
+
 
 def _play_order_onchange(self, order):
     """ Play the onchange of the sale order

@@ -131,22 +131,22 @@ class ICOPSExporter(ICOPSBaseExporter):
         nb_records = 0
         icops_ids = {}
 
-        if self.binding_record.locked and 'backward' not in\
-                self.session.context:
-            self.session.context.update({'backward': True})
-            for icops in self._get_backward_icops():
-                backend = self._get_backend_with_permission(
-                    icops, backward=True)
-                self._set_icops(icops, backend, backward=True)
-                try:
-                    self._map_data(fields=fields)
-                except MappingError:
-                    continue
-                record = self.mapper.data
-                if not record:
-                    continue
-                self._validate_data(record)
-                self._routing(record, fields, backward=True)
+        #if self.binding_record.locked and 'backward' not in\
+        #        self.session.context:
+        #    self.session.context.update({'backward': True})
+        #    for icops in self._get_backward_icops():
+        #        backend = self._get_backend_with_permission(
+        #            icops, backward=True)
+        #        self._set_icops(icops, backend, backward=True)
+        #        try:
+        #            self._map_data(fields=fields)
+        #        except MappingError:
+        #            continue
+        #        record = self.mapper.data
+        #        if not record:
+        #            continue
+        #        self._validate_data(record)
+        #        self._routing(record, fields, backward=True)
 
         for icops in self._get_icops():
             backend = self._get_backend_with_permission(icops)

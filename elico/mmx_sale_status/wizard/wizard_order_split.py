@@ -140,8 +140,10 @@ class wizard_order_split (osv.osv_memory):
                     context=context)
             try:
                 so_pool.action_button_confirm(cr, uid, [so_id], context=context)
+                so_pool.action_wait(cr, uid, [so_id], context=context)
             except:
                 so_pool.action_button_confirm(cr, 1, [so_id], context=context)
+                so_pool.action_wait(cr, 1, [so_id], context=context)
             return True
 
         new_so_id = None
@@ -170,8 +172,7 @@ class wizard_order_split (osv.osv_memory):
                     {'order_line': [(1, soline.id, {'final_qty': final_qty})]},
                     context=context)
                 delay_export_so(
-                    session, 'sale.order', so_id, ['order_line'],
-                    context=context)
+                    session, 'sale.order', so_id, ['order_line'])
                 so_pool.write(
                     cr, uid, so_id,
                     {'order_line': [(

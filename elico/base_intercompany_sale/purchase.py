@@ -188,9 +188,9 @@ class PurchaseOrderAdapter(ICOPSAdapter):
         if 'backward' in self.session.context:
             context.update({'backward': True})
         obj = pool.browse(sess.cr, uid, id, context=context)
-        if obj.state not in ('draft', 'sent'):
+        if obj.state not in ('draft', 'sent') or not obj.order_line:
             return
-        pool.action_wait(
+        pool.action_button_confirm(
             sess.cr, uid, [id],
             context=context)
 

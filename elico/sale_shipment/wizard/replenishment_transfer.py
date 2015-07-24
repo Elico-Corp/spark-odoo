@@ -39,7 +39,7 @@ class WizardReplenishmentTransfer(orm.TransientModel):
             domain=[('usage', '=', 'internal')]),
         'dest_location_id': fields.many2one(
             'stock.location', 'Destination location',
-            domain=[('usage', '=', 'internal')]),
+            ),
         'shipment_ids': fields.function(
             _get_shipment_ids, store=True, type='char',
             string='Shipments')
