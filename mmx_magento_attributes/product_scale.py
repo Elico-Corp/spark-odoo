@@ -68,7 +68,7 @@ class MMXProductScale(orm.Model):
                     cr, uid, option_vals, context=context)
         else:
             msg = "You have not created magento attribute 'x_mmx_scale' yet !\n \
-            Please create one."
+            Please create one first."
             raise except_osv(('Warning !'), (msg))
 
         return res_id
