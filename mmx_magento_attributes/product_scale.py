@@ -67,7 +67,8 @@ class MMXProductScale(orm.Model):
                 self.pool.get('magento.attribute.option').create(
                     cr, uid, option_vals, context=context)
         else:
-            msg = "You haven't create magento attribute 'x_mmx_scale' yet !\nPlease create one."
+            msg = "You have not created magento attribute 'x_mmx_scale' yet !\n \
+            Please create one."
             raise except_osv(('Warning !'), (msg))
 
         return res_id
