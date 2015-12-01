@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="backend_ids" string="Backend"/>
-                    <field name="attribute_id" string="Magento Attribute"/>
+                    <field name="attribute_id" string="Magento Attribute" invisible="1"/>
                 </field>
             </field>
         </record>

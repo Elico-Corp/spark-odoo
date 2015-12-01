@@ -20,6 +20,7 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
+from openerp.osv.osv import except_osv
 
 
 class MMXProductScale(orm.Model):
@@ -35,7 +36,7 @@ class MMXProductScale(orm.Model):
             'backend_id',
             'Magento Backend'),
         'attribute_id': fields.many2one(
-            'magento.product.attribute', 'Magento Attribute', required=True),
+            'magento.product.attribute', 'Magento Attribute', required=False),
         'magento_bind_ids': fields.one2many(
             'magento.attribute.option', 'scale_id', 'Magento Option'),
     }
@@ -47,16 +48,26 @@ class MMXProductScale(orm.Model):
         backend_ids = self.resolve_2many_commands(
             cr, uid, 'backend_ids', vals['backend_ids'], ['id'], context)
 
-        for backend_id in backend_ids:
-            attribute_id = vals['attribute_id']
-            option_vals = {
-                'name': vals['name'],
-                'backend_id': backend_id.get('id'),
-                'magento_attribute_id': attribute_id,
-                'value': vals['name'],
-                'scale_id': res_id,
-            }
-            self.pool.get('magento.attribute.option').create(
-                cr, uid, option_vals, context=context)
+        default_attribute_ids = self.pool.get(
+            'magento.product.attribute').search(
+            cr, uid, [('attribute_code', '=', 'x_mmx_scale')])
+
+        if default_attribute_ids:
+            default_attribute_id = default_attribute_ids[0]
+
+            for backend_id in backend_ids:
+                attribute_id = default_attribute_id
+                option_vals = {
+                    'name': vals['name'],
+                    'backend_id': backend_id.get('id'),
+                    'magento_attribute_id': attribute_id,
+                    'value': vals['name'],
+                    'scale_id': res_id,
+                }
+                self.pool.get('magento.attribute.option').create(
+                    cr, uid, option_vals, context=context)
+        else:
+            msg = "You haven't create magento attribute 'x_mmx_scale' yet !\nPlease create one."
+            raise except_osv(('Warning !'), (msg))
 
         return res_id
