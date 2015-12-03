@@ -155,6 +155,9 @@ class magento_product_product(orm.Model):
         'product_type': 'simple',
         'manage_stock': 'use_default',
         'backorders': 'use_default',
+        'visibility': '4',
+        'tax_class': '0',
+        'status': '1',
     }
 
     _sql_constraints = [

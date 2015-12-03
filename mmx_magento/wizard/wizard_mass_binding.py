@@ -91,6 +91,9 @@ class wizard_customs_invoice_report(osv.osv_memory):
         'product_type': 'simple',
         'manage_stock': 'use_default',
         'backorders': 'use_default',
+        'tax_class': '0',
+        'status': '1',
+        'visibility': '4',
     }
 
     def assign(self, cr, uid, ids, context=None):
