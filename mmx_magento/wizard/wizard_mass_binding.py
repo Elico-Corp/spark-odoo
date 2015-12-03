@@ -96,6 +96,16 @@ class wizard_customs_invoice_report(osv.osv_memory):
         'visibility': '4',
     }
 
+    def onchange_backend_id(self, cr, uid, ids, backend_id):
+        result = {}
+        if backend_id:
+            websites = self.pool.get('magento.website').search(
+                cr, uid, [('backend_id', '=', backend_id)])
+            if websites:
+                result['website_ids'] = websites
+            return {'value': result}
+        return {}
+
     def assign(self, cr, uid, ids, context=None):
         if not context:
             context = {}

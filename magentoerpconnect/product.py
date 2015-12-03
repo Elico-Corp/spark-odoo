@@ -195,6 +195,16 @@ class magento_product_product(orm.Model):
                                 context=location_ctx)
         return product_stk[stock_field]
 
+    def onchange_backend_id(self, cr, uid, ids, backend_id):
+        result = {}
+        if backend_id:
+            websites = self.pool.get('magento.website').search(
+                cr, uid, [('backend_id', '=', backend_id)])
+            if websites:
+                result['website_ids'] = websites
+            return {'value': result}
+        return {}
+
 
 class product_product(orm.Model):
     _inherit = 'product.product'
