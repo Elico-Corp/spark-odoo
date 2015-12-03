@@ -9,7 +9,7 @@
                 <data>  
                     <field name="name" position="after">
                         <field name="attribute_id" invisible="1"/>
-                        <field name="backend_ids"/>
+                        <field name="backend_ids" groups="base.group_system"/>
                     </field>
                 </data>
             </field>
