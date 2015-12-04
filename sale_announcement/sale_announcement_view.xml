@@ -191,6 +191,16 @@
         </xpath>
     </field>
 </record>
+<record model="ir.ui.view" id="purchase_order_search_view">
+    <field name="name">purchase.order.search</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+    <field name="arch" type="xml">
+        <xpath expr="//group/filter[@string='Order Date']" position="after">
+                    <filter string="Sale Announcement" domain="[]" context="{'group_by':'announcement_id'}"/>
+        </xpath>
+    </field>
+</record>
     
 </data>
 </openerp>
