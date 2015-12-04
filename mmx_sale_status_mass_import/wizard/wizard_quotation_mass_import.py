@@ -304,12 +304,19 @@ class WizardQuotationMassImport(orm.TransientModel):
             quantity = 0
             try:
                 quantity = float(r.get('Quantity'))
-            except:
+            except TypeError:
                 raise orm.except_orm(
                     _('Quantity is empty !'),
-                    _('Line %s of your file has no quantity') % (
+                    _('Line %s of your file has no quantity.') % (
                         line_nb)
                 )
+            except Exception:
+                raise orm.except_orm(
+                    _('Something went wrong !'),
+                    _('Line %s seems wrong.') % (
+                        line_nb)
+                )
+
             product_ids = product_obj.search(
                 cr, uid, [('default_code', '=', product_code)],
                 context=context)
