@@ -155,6 +155,9 @@ class magento_product_product(orm.Model):
         'product_type': 'simple',
         'manage_stock': 'use_default',
         'backorders': 'use_default',
+        'visibility': '4',
+        'tax_class': '0',
+        'status': '1',
     }
 
     _sql_constraints = [
@@ -191,6 +194,16 @@ class magento_product_product(orm.Model):
                                 [stock_field],
                                 context=location_ctx)
         return product_stk[stock_field]
+
+    def onchange_backend_id(self, cr, uid, ids, backend_id):
+        result = {}
+        if backend_id:
+            websites = self.pool.get('magento.website').search(
+                cr, uid, [('backend_id', '=', backend_id)])
+            if websites:
+                result['website_ids'] = websites
+            return {'value': result}
+        return {}
 
 
 class product_product(orm.Model):

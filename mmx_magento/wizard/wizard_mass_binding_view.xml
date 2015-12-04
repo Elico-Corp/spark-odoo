@@ -7,15 +7,15 @@
             <field name="arch" type="xml">
                 <form string="Magento Product" version="7.0">
                     <group>
-                        <field name="backend_id"/>
-                        <field name="visibility" />
-                        <field name="tax_class" />
-                        <field name="status" />
-                        <field name="product_type" readonly="1"/>
-                        <field name="website_ids" />
+                        <field name="backend_id" on_change="onchange_backend_id(backend_id)"/>
+                        <field name="visibility" groups="base.group_system"/>
+                        <field name="tax_class" groups="base.group_system"/>
+                        <field name="status" groups="base.group_system"/>
+                        <field name="product_type" readonly="1" groups="base.group_system"/>
+                        <field name="website_ids" groups="base.group_system" domain="[('backend_id', '=', backend_id)]"/>
                         <field name="attribute_set_id" />
                     </group>
-                    <group string="Inventory Options">
+                    <group string="Inventory Options " groups="base.group_system">
                         <field name="manage_stock"/>
                         <field name="backorders"/>
                         <div class="oe_inline">
