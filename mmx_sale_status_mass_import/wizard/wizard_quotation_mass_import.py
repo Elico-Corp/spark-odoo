@@ -19,12 +19,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.addons.mmx_sale_status_mass_import.parser.csv_parser \
-    import CSVParser
-from openerp.tools.translate import _
-
-from openerp.osv import fields, orm
 import logging
+
+from openerp.addons.mmx_sale_status_mass_import.parser.csv_parser import \
+    CSVParser
+from openerp.osv import fields, orm
+from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -243,7 +243,9 @@ class WizardQuotationMassImport(orm.TransientModel):
 
         msg, parser = self.check_import_valid(cr, uid, wizard, context=context)
 
+        line_nb = 1
         for r in parser.result_row_list:
+            line_nb += 1
             # pass the invalid ones, this var is initialized when parse
             # this file.
             assert 'valid' in r, \
@@ -299,7 +301,22 @@ class WizardQuotationMassImport(orm.TransientModel):
 
             # prepare sol according to the data.
             product_code = r.get('Product Code')
-            quantity = float(r.get('Quantity'))
+            quantity = 0
+            try:
+                quantity = float(r.get('Quantity'))
+            except TypeError:
+                raise orm.except_orm(
+                    _('Quantity is empty !'),
+                    _('Line %s of your file has no quantity.') % (
+                        line_nb)
+                )
+            except Exception:
+                raise orm.except_orm(
+                    _('Something went wrong !'),
+                    _('Line %s seems wrong.') % (
+                        line_nb)
+                )
+
             product_ids = product_obj.search(
                 cr, uid, [('default_code', '=', product_code)],
                 context=context)
