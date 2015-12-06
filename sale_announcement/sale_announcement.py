@@ -272,6 +272,13 @@ class purchase_order(osv.osv):
             relation='sale.announcement',
             string='Announcement',
             store=True),
+        'announcement_sequence': fields.related(
+            'announcement_id',
+            'sequence',
+            type='text',
+            string="Announcement Sequence",
+            relation="sale.announcement",
+            store=True)
     }
 
 

@@ -188,6 +188,7 @@
         </xpath>
         <xpath expr="//field[@name='partner_ref']" position="after">
             <field name="announcement_id"/>
+            <field name="announcement_sequence" invisible="1"/>
         </xpath>
     </field>
 </record>
@@ -197,9 +198,7 @@
     <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
     <field name="arch" type="xml">
         <xpath expr="//field[@string='Reference']" position="after">
-            <!-- <filter name="announcement_id" string="Sale Announcement" domain="[]"/> -->
-            <field name="date_order" />
-            <!-- <filter name="announcement_id" string="Announcement Sequence" domain="[('announcement_id.id.sequence', 'like', self)]"/> -->
+            <field name="announcement_sequence" string="Announcement Sequence"/>
         </xpath>
         <xpath expr="//group/filter[@string='Order Date']" position="after">
                     <filter string="Sale Announcement" domain="[]" context="{'group_by':'announcement_id'}"/>
