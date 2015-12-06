@@ -263,6 +263,8 @@ class purchase_order(osv.osv):
                 res[po.id] = (
                     order_line[0].product_id.announcement_id and
                     order_line[0].product_id.announcement_id.id or False)
+            else:
+                res[po.id] = False
         return res
 
     _columns = {
