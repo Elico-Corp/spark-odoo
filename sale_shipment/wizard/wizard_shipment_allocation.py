@@ -195,7 +195,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             return data
         for sol in shipment.sol_ids:
             if sol.product_id.state == 'order' and \
-                    sol.state in ('draft', 'wishlist'):
+                    sol.state in ('draft', 'wishlist', 'reservation'):
                 line_vals = {
                     'product_id': sol.product_id.id,
                     'partner_id': sol.order_partner_id.id,
@@ -226,7 +226,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             'sale.shipment', "Shipment", readonly=True),
         'lines': fields.one2many(
             'wizard.shipment.allocation.line', 'wizard_id', 'SO Lines',
-            domain=[('state', 'in', ('draft', 'wishlist'))]),
+            domain=[('state', 'in', ('draft', 'wishlist', 'reservation'))]),
         'message': fields.text('Message')
     }
 
