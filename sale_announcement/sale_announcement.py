@@ -226,4 +226,62 @@ class sale_order_line(osv.osv):
             })
     }
 
+
+class purchase_order_line(osv.osv):
+    _inherit = 'purchase.order.line'
+
+    def _get_announcement(
+            self, cr, uid, ids, fieldname, arg=None,
+            context=None):
+        res = {}
+        for pol in self.browse(cr, uid, ids, context=context):
+            res[pol.id] = (pol.product_id.announcement_id
+                           and pol.product_id.announcement_id.id
+                           or False)
+        return res
+
+    _columns = {
+        'announcement_id': fields.function(
+            _get_announcement,
+            type='many2one',
+            relation='sale.announcement',
+            string='Announcement',
+            store=True),
+    }
+
+
+class purchase_order(osv.osv):
+    _inherit = 'purchase.order'
+
+    def _get_announcement(
+            self, cr, uid, ids, fieldname, arg=None,
+            context=None):
+        res = {}
+        for po in self.browse(cr, uid, ids, context=context):
+            order_line = po.order_line
+            if order_line and len(order_line) == 1:
+                res[po.id] = (
+                    order_line[0].product_id.announcement_id and
+                    order_line[0].product_id.announcement_id.id or False)
+            else:
+                res[po.id] = False
+        return res
+
+    _columns = {
+        'announcement_id': fields.function(
+            _get_announcement,
+            type='many2one',
+            relation='sale.announcement',
+            string='Announcement',
+            store=True),
+        'announcement_sequence': fields.related(
+            'announcement_id',
+            'sequence',
+            type='text',
+            string="Announcement Sequence",
+            relation="sale.announcement",
+            store=True)
+    }
+
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
