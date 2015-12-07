@@ -19,8 +19,8 @@ class purchase_order_line(orm.Model):
         for l in self.browse(cr, uid, ids, context=context):
             if not l.order_id.is_locked:
                 continue
-            # TODO only if the PO is locked
-            # if we change the purcahse order line
+            # Do only if the PO is locked
+            # if we change the purchase order line
             # we change the associated procurement qty
             if l.procurement_id and\
                     l.procurement_id.product_qty != l.product_qty:
