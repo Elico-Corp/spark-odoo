@@ -98,8 +98,9 @@ class sale_order(orm.Model):
         # switch to the official SO name sequence for confirmed Reservation
         for so in self.browse(cr, uid, so_ids, context=context):
             name = seq_pool.get(cr, uid, 'sale.order')
-            so.write({'name': name, 'magento_bind_ids': [(5,)]},
-                     context=context)
+            so.write(
+                {'name': name, 'magento_wishlist_bind_ids': [(5,)]},
+                context=context)
 
     def action_button_confirm(self, cr, uid, ids, context=None):
         self.update_reservation_name(cr, uid, ids, context)
