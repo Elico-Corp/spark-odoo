@@ -795,6 +795,13 @@ class WishlistAdapter(GenericAdapter):
         }
         return super(WishlistAdapter, self).search(arguments)
 
+    def write(self, id, data):
+        """ Update records on the external system """
+        # XXX actually only ol_catalog_product.update works
+        # the PHP connector maybe breaks the catalog_product.update
+        print "\n\n\n%s %s\n\n\n" % (id, data)
+        # return super(WishlistAdapter, self).write(id, data)
+
 
 @magento_sparkmodel
 class WishlistImportMapper(SaleOrderImportMapper):

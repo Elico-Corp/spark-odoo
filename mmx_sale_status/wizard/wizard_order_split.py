@@ -190,6 +190,7 @@ class wizard_order_split (osv.osv_memory):
                     cr, uid, so_id, {'order_line': [(2, soline.id)]},
                     context=context)
             if not new_so_id:
+                # prepare so data
                 new_so_data = so_pool.copy_data(
                     cr, uid, so_id, default={
                         'name': seq_pool.get(cr, uid, 'sale.order'),
