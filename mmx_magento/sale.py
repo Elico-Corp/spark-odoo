@@ -102,12 +102,12 @@ class sale_order(orm.Model):
                      context=context)
 
     def action_button_confirm(self, cr, uid, ids, context=None):
-        self.update_reservation_name(self, cr, uid, ids, context)
+        self.update_reservation_name(cr, uid, ids, context)
         return super(sale_order, self).action_button_confirm(
             cr, uid, ids, context=context)
 
     def action_wait(self, cr, uid, ids, context=None):
-        self.update_reservation_name(self, cr, uid, ids, context)
+        self.update_reservation_name(cr, uid, ids, context)
         return super(sale_order, self).action_wait(
             cr, uid, ids, context=context)
 
