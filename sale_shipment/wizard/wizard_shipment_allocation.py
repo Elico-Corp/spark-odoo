@@ -315,6 +315,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                 'origin': old_so['name'],
                 'order_line': False,
                 'sale_shipment_id': sale_shipment_id,
+                'magento_wishlist_bind_ids': [],
             })
 
     def _prepare_sol_data(
@@ -338,6 +339,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                 'final_qty': final_qty,
                 'order_id': so_id,
                 'sale_shipment_id': sale_shipment_id,
+                'magento_wishlist_bind_ids': [],
             })
         return res
 
