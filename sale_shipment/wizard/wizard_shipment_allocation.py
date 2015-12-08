@@ -297,7 +297,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                         'sale order line quantity.'))
         return True
 
-    def _prepare_new_so_date(
+    def _prepare_new_so_data(
             self, cr, uid, old_so, sale_shipment_id, context=None):
         '''prepare the data for creating new sale order.
 
@@ -369,7 +369,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             return [so.id], sol_ids
         # if not, then we need to create new SO
         # prepare the data of the new SO
-        new_so_data = self._prepare_new_so_date(
+        new_so_data = self._prepare_new_so_data(
             cr, uid, so, shipment_id, context=context)
         new_so_id = so_pool.create(
             cr, uid, new_so_data, context=context)
