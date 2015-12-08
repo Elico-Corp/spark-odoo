@@ -360,8 +360,11 @@ class WizardShipmentAllocation(orm.TransientModel):
                     context=context)
             so_pool.action_wait(
                 cr, uid, [so.id], context=context)
-            so_pool.action_button_confirm(
-                cr, uid, [so.id], context=context)
+            try:
+                so_pool.action_button_confirm(
+                    cr, uid, [so.id], context=context)
+            except:
+                pass
             sol_ids = [line.id for line in so.order_line]
             return [so.id], sol_ids
         # if not, then we need to create new SO

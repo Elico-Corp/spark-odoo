@@ -89,19 +89,6 @@ class sale_order(orm.Model):
             }),
     }
 
-    # def unlink(self, cr, uid, ids,
-    #            context=None, is_external=False, is_bidirectional=False):
-    #     sale_orders = self.read(cr, uid, ids, ['state'], context=context)
-    #     unlink_ids = []
-    #     for s in sale_orders:
-    #         if s['state'] in ['cart', 'draft', 'cancel']:
-    #             unlink_ids.append(s['id'])
-    #         else:
-    #             raise osv.except_osv(_('Invalid Action!'),
-    #                                  _('In order to delete a confirmed sales\
-    #                                    order, you must cancel it before !'))
-    #     return osv.osv.unlink(self, cr, uid, unlink_ids, context=context)
-
 
 class sale_order_line(orm.Model):
     _inherit = 'sale.order.line'
@@ -207,8 +194,9 @@ class magento_sale_cart(orm.Model):
         'total_amount_tax': fields.float(
             'Total amount w. tax',
             digits_compute=dp.get_precision('Account')),
-        'magento_cart_id': fields.integer('Magento Cart ID',
-                                          help="Cart identifier field in Magento"),
+        'magento_cart_id': fields.integer(
+            'Magento Cart ID',
+            help="Cart identifier field in Magento"),
         # when a sale order is modified, Magento creates a new one, cancels
         # the parent order and link the new one to the canceled parent
         'magento_parent_id': fields.many2one('magento.sale.order',
