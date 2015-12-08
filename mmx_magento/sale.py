@@ -89,6 +89,28 @@ class sale_order(orm.Model):
             }),
     }
 
+    def update_reservation_name(self, cr, uid, ids, context=None):
+        # sort bad ids
+        so_ids = self.search(
+            cr, uid, [('id', 'in', ids), ('state', '=', 'reservation')],
+            context=context)
+        seq_pool = self.pool['ir.sequence']
+        # switch to the official SO name sequence for confirmed Reservation
+        for so in self.browse(cr, uid, so_ids, context=context):
+            name = seq_pool.get(cr, uid, 'sale.order')
+            so.write({'name': name, 'magento_bind_ids': [(5,)]},
+                     context=context)
+
+    def action_button_confirm(self, cr, uid, ids, context=None):
+        self.update_reservation_name(self, cr, uid, ids, context)
+        return super(sale_order, self).action_button_confirm(
+            cr, uid, ids, context=context)
+
+    def action_wait(self, cr, uid, ids, context=None):
+        self.update_reservation_name(self, cr, uid, ids, context)
+        return super(sale_order, self).action_wait(
+            cr, uid, ids, context=context)
+
 
 class sale_order_line(orm.Model):
     _inherit = 'sale.order.line'

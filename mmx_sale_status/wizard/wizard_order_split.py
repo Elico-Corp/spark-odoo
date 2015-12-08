@@ -131,23 +131,15 @@ class wizard_order_split (osv.osv_memory):
                        and wizard.sale_shipment_id.id or False)
         self._check_split(wizard)
 
-        if self._check_confirm_all(wizard):
+        if self._check_confirm_all(wizard) and so['state'] != 'wishlist':
             for line in sol_pool.read(
                     cr, uid, so['order_line'], ['product_uom_qty']):
                 sol_pool.write(
                     cr, uid, line['id'],
                     {'final_qty': line['product_uom_qty']},
                     context=context)
-            # switch to the official SO name sequence for confirmed Reservation
-            so = so_pool.browse(cr, uid, so_id, context=context)
-            name = seq_pool.get(cr, uid, 'sale.order')
-            so_pool.write(
-                cr, uid, so_id,
-                {'name': name, 'magento_bind_ids': [(5,)]},
-                context=context)
             try:
-                so_pool.action_button_confirm(
-                    cr, uid, [so_id], context=context)
+                so_pool.action_button_confirm(cr, uid, [so_id], context=context)
                 so_pool.action_wait(cr, uid, [so_id], context=context)
             except:
                 so_pool.action_button_confirm(cr, 1, [so_id], context=context)
@@ -207,8 +199,11 @@ class wizard_order_split (osv.osv_memory):
                         'sale_shipment_id': shipment_id,
                         'purchase_id': None,
                         'sale_id': None}, context=context)
-                new_so_id = so_pool.create(
-                    cr, uid, new_so_data, context=context)
+                if so['state'] != 'wishlist':
+                    new_so_id = so_pool.create(
+                        cr, uid, new_so_data, context=context)
+                else:
+                    continue
             sol_data = sol_pool.copy_data(
                 cr, uid, soline.id,
                 default={'product_uom_qty': final_qty,
