@@ -29,7 +29,7 @@ from openerp.addons.connector.event import (on_record_write,
 import openerp.addons.magentoerpconnect.consumer as magentoerpconnect
 
 
-@on_record_write(model_names=['sale.order'])
+# @on_record_write(model_names=['sale.order'])
 def delay_export_so(session, model_name, record_id, fields=[]):
     order_pool = session.pool.get(model_name)
     order = order_pool.browse(session.cr, session.uid, record_id)

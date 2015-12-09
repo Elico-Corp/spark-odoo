@@ -337,6 +337,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         res = sol_pool.copy_data(
             cr, uid, old_sol.id, default={
                 'final_qty': final_qty,
+                'product_uom_qty': final_qty,
                 'order_id': so_id,
                 'sale_shipment_id': sale_shipment_id,
                 'magento_wishlist_bind_ids': [],
@@ -452,8 +453,12 @@ class WizardShipmentAllocation(orm.TransientModel):
         # confirm new sale orders
         for so_id in list(set(new_so_ids)):
             context['sale_shipment_id'] = shipment_id
-            so_pool.action_button_confirm(
-                cr, uid, [so_id], context=context)
+            try:
+                so_pool.action_button_confirm(
+                    cr, uid, [so_id], context=context)
+            except:
+                so_pool.action_wait(
+                    cr, uid, [so_id], context=context)
 
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
