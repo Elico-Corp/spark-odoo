@@ -139,7 +139,8 @@ class wizard_order_split (osv.osv_memory):
                     {'final_qty': line['product_uom_qty']},
                     context=context)
             try:
-                so_pool.action_button_confirm(cr, uid, [so_id], context=context)
+                so_pool.action_button_confirm(
+                    cr, uid, [so_id], context=context)
                 so_pool.action_wait(cr, uid, [so_id], context=context)
             except:
                 so_pool.action_button_confirm(cr, 1, [so_id], context=context)
@@ -189,6 +190,7 @@ class wizard_order_split (osv.osv_memory):
                     cr, uid, so_id, {'order_line': [(2, soline.id)]},
                     context=context)
             if not new_so_id:
+                # prepare so data
                 new_so_data = so_pool.copy_data(
                     cr, uid, so_id, default={
                         'name': seq_pool.get(cr, uid, 'sale.order'),
@@ -197,19 +199,16 @@ class wizard_order_split (osv.osv_memory):
                         'date_order': fields.date.context_today(
                             self, cr, uid, context=context),
                         'sale_shipment_id': shipment_id,
-                        'purchase_id': None,
-                        'sale_id': None}, context=context)
-                if so['state'] != 'wishlist':
-                    new_so_id = so_pool.create(
-                        cr, uid, new_so_data, context=context)
-                else:
-                    continue
+                        'magento_wishlist_bind_ids': []}, context=context)
+                new_so_id = so_pool.create(
+                    cr, uid, new_so_data, context=context)
             sol_data = sol_pool.copy_data(
                 cr, uid, soline.id,
                 default={'product_uom_qty': final_qty,
                          'final_qty': final_qty,
                          'order_id': new_so_id,
-                         'sale_shipment_id': shipment_id})
+                         'sale_shipment_id': shipment_id,
+                         'magento_wishlist_bind_ids': []})
             if sol_data:
                 sol_pool.create(cr, uid, sol_data, context=context)
 
@@ -217,8 +216,12 @@ class wizard_order_split (osv.osv_memory):
         if new_so_id:
             so_pool.write(cr, uid, [new_so_id], {}, context=context)
             context['sale_shipment_id'] = shipment_id or None
-            so_pool.action_button_confirm(
-                cr, uid, [new_so_id], context=context)
+            try:
+                so_pool.action_button_confirm(
+                    cr, uid, [new_so_id], context=context)
+            except:
+                so_pool.action_wait(
+                    cr, uid, [new_so_id], context=context)
             domain.append(new_so_id)
 
         return {

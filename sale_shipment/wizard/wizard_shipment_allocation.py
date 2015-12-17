@@ -297,7 +297,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                         'sale order line quantity.'))
         return True
 
-    def _prepare_new_so_date(
+    def _prepare_new_so_data(
             self, cr, uid, old_so, sale_shipment_id, context=None):
         '''prepare the data for creating new sale order.
 
@@ -315,6 +315,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                 'origin': old_so['name'],
                 'order_line': False,
                 'sale_shipment_id': sale_shipment_id,
+                'magento_wishlist_bind_ids': [],
             })
 
     def _prepare_sol_data(
@@ -336,8 +337,10 @@ class WizardShipmentAllocation(orm.TransientModel):
         res = sol_pool.copy_data(
             cr, uid, old_sol.id, default={
                 'final_qty': final_qty,
+                'product_uom_qty': final_qty,
                 'order_id': so_id,
                 'sale_shipment_id': sale_shipment_id,
+                'magento_wishlist_bind_ids': [],
             })
         return res
 
@@ -358,15 +361,20 @@ class WizardShipmentAllocation(orm.TransientModel):
                     {'final_qty': soline.product_uom_qty,
                      'sale_shipment_id': shipment_id},
                     context=context)
-            so_pool.action_wait(
-                cr, uid, [so.id], context=context)
-            so_pool.action_button_confirm(
-                cr, uid, [so.id], context=context)
+            try:
+                so_pool.action_button_confirm(
+                    cr, uid, [so.id], context=context)
+                so_pool.action_wait(
+                    cr, uid, [so.id], context=context)
+            except:
+                so_pool.action_wait(
+                    cr, uid, [so.id], context=context)
+
             sol_ids = [line.id for line in so.order_line]
             return [so.id], sol_ids
         # if not, then we need to create new SO
         # prepare the data of the new SO
-        new_so_data = self._prepare_new_so_date(
+        new_so_data = self._prepare_new_so_data(
             cr, uid, so, shipment_id, context=context)
         new_so_id = so_pool.create(
             cr, uid, new_so_data, context=context)
@@ -445,10 +453,23 @@ class WizardShipmentAllocation(orm.TransientModel):
                 new_sol_ids.extend(sol_ids)
 
         # confirm new sale orders
-        for so_id in list(set(new_so_ids)):
-            context['sale_shipment_id'] = shipment_id
-            so_pool.action_button_confirm(
+        context['sale_shipment_id'] = shipment_id
+        for so_id in  list(set(new_so_ids)):
+            so_pool.write(
+                cr, uid, [so_id], {}, context=context)
+            so_pool.action_wait(
                 cr, uid, [so_id], context=context)
+            try:
+            # since the SOL where created via SOL pool
+            # you need to write in the new SO for the SOL
+            # to be replicated through the ICOPS
+                so_pool.action_button_confirm(
+                    cr, uid, [so_id], context=context)
+                so_pool.action_wait(
+                    cr, uid, [so_id], context=context)
+            except:
+                so_pool.action_wait(
+                    cr, uid, [so_id], context=context)
 
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
