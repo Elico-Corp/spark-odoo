@@ -29,16 +29,24 @@ from openerp.addons.connector.event import (on_record_write,
 import openerp.addons.magentoerpconnect.consumer as magentoerpconnect
 
 
+@on_record_write(model_names=['sale.order'])
 def delay_export_so(session, model_name, record_id, fields=[]):
     order_pool = session.pool.get(model_name)
-    order = order_pool.browse(session.cr, session.uid, record_id)
-    if order.state not in ('wishlist', 'reservation'):
+    order = order_pool.browse(session.cr, session.uid, record_id, context=session.context)
+    if order.state != 'reservation':
         return False
 
-    mag_id = order.magento_wishlist_bind_ids[0].id
-    fields.append({'magento_order_lines_ids': order.order_line})
-    export_record(session, 'magento.sale.wishlist', mag_id, fields=fields)
+    try:
+        mag_id = order.magento_wishlist_bind_ids[0].id
+        magentoerpconnect.delay_export(session, 'magento.sale.wishlist', mag_id, fields=fields)
+    except Exception as e:
+        pass
     return True
+
+
+@on_record_unlink(model_names=['magento.sale.wishlist'])
+def delay_unlink(session, model_name, record_id):
+    magentoerpconnect.delay_unlink(session, model_name, record_id)
 
 
 @on_record_create(model_names=['magento.product.pricelist', 'magento.stock.move'])
