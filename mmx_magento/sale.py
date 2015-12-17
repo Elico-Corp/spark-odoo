@@ -452,13 +452,13 @@ class CartImportMapper(SaleOrderImportMapper):
         terms = self.get_terms(partner)
         return terms
 
-    @mapping
-    def invoice(self, record):
-        return {'partner_invoice_id': 1}
+    #@mapping
+    #def invoice(self, record):
+    #    return {'partner_invoice_id': 1}
 
-    @mapping
-    def shipping(self, record):
-        return {'partner_shipping_id': 1}
+    #@mapping
+    #def shipping(self, record):
+    #    return {'partner_shipping_id': 1}
 
 
 @magento_sparkmodel
@@ -795,12 +795,10 @@ class WishlistAdapter(GenericAdapter):
         }
         return super(WishlistAdapter, self).search(arguments)
 
-    def write(self, id, data):
-        """ Update records on the external system """
-        # XXX actually only ol_catalog_product.update works
-        # the PHP connector maybe breaks the catalog_product.update
-        print "\n\n\n%s %s\n\n\n" % (id, data)
-        # return super(WishlistAdapter, self).write(id, data)
+    def delete(self, id):
+	# empty the wishlist/reservation instead of deleting it on magento.
+        options = {'items':{}}
+        return self._call('%s.update' % self._magento_model, [int(id), options])
 
 
 @magento_sparkmodel
@@ -930,13 +928,13 @@ class WishlistImportMapper(SaleOrderImportMapper):
         terms = self.get_terms(partner)
         return terms
 
-    @mapping
-    def invoice(self, record):
-        return {'partner_invoice_id': 1}
+    #@mapping
+    #def invoice(self, record):
+    #    return {'partner_invoice_id': 1}
 
-    @mapping
-    def shipping(self, record):
-        return {'partner_shipping_id': 1}
+    #@mapping
+    #def shipping(self, record):
+    #    return {'partner_shipping_id': 1}
 
 
 @job
@@ -1074,7 +1072,7 @@ class WishlistExportMapper(ExportMapper):
                 [('backend_id', '=', self.backend_record.id),
                  ('openerp_id', '=', line.product_id.id)])
             product = product_pool.browse(sess.cr, sess.uid, product_ids[0])
-            result['items'][product.magento_id] = line.final_qty
+            result['items'][product.magento_id] = line.product_uom_qty
         return result
 
     @mapping

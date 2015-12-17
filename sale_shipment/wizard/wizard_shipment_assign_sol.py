@@ -34,9 +34,15 @@ class WizardShipmentAssignSOL(orm.TransientModel):
                 ('product_id.state', '=', 'order'),
                 ('so_state', 'in', ('reservation', 'draft')),
                 ('sale_shipment_id', '=', False)]),
+        'shipment_id': fields.many2one('sale.shipment', string='Shipment')
     }
 
-    def fields_get(self, cr, uid, fields=None, context=None):
+    _defaults = {
+        'shipment_id': lambda self, cr, uid, ctx: ctx and ctx.get('active_id', False)
+    }
+
+
+    def shipment_id_onchange(self, cr, uid, ids, shipment_id, context=None):
         '''creating dynamic domain
 
         You can have active_id and active_model only when the act_window
@@ -50,29 +56,28 @@ class WizardShipmentAssignSOL(orm.TransientModel):
             - the product is in the pre defined contained products
             of the shipment
         '''
-
-        res = super(WizardShipmentAssignSOL, self).fields_get(
-            cr, uid, fields, context)
+        res = {}
         domain, product_ids, sol_ids = [], [], []
+        shipment = self.pool.get('sale.shipment').browse(
+            cr, uid, shipment_id, context=context)
         # only apply on the specific model: sale shipment to be safe.
-        if context.get('active_id') and \
-                context.get('active_model') == 'sale.shipment':
-            shipment_pool = self.pool['sale.shipment']
-            shipment = shipment_pool.browse(
-                cr, uid, context.get('active_id'), context=context)
-            product_ids = [p.product_id.id
-                           for p in shipment.contained_product_info_ids]
-            sol_ids = [sol.id for sol in shipment.sol_ids]
+        product_ids = [p.product_id.id
+                       for p in shipment.contained_product_info_ids]
+        sol_ids = [sol.id for sol in shipment.sol_ids]
 
-            # empty the domain defining the product_id and sol_ids
-            # because it's possible of duplication.
-            domain = filter(lambda i: i[0] not in ('product_id', 'id'), domain)
+        # empty the domain defining the product_id and sol_ids
+        # because it's possible of duplication.
+        domain = filter(lambda i: i[0] not in ('product_id', 'id'), domain)
 
-            domain.append(('product_id', 'in', tuple(product_ids)))
-            if sol_ids:
-                domain.append(('id', 'not in', tuple(sol_ids)))
-        if domain:
-            res['sol_ids']['domain'].extend(domain)
+        domain.append(('product_id', 'in', tuple(product_ids)))
+        if sol_ids:
+            domain.append(('id', 'not in', tuple(sol_ids)))
+        domain += [
+            ('product_id.state', '=', 'order'),
+            ('so_state', 'in', ('reservation', 'draft')),
+            ('sale_shipment_id', '=', False)
+        ]
+        res['domain'] = {'sol_ids': domain}
         return res
 
     def shipment_assign_sol(self, cr, uid, ids, context=None):

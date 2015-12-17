@@ -361,13 +361,15 @@ class WizardShipmentAllocation(orm.TransientModel):
                     {'final_qty': soline.product_uom_qty,
                      'sale_shipment_id': shipment_id},
                     context=context)
-            so_pool.action_wait(
-                cr, uid, [so.id], context=context)
             try:
                 so_pool.action_button_confirm(
                     cr, uid, [so.id], context=context)
+                so_pool.action_wait(
+                    cr, uid, [so.id], context=context)
             except:
-                pass
+                so_pool.action_wait(
+                    cr, uid, [so.id], context=context)
+
             sol_ids = [line.id for line in so.order_line]
             return [so.id], sol_ids
         # if not, then we need to create new SO
@@ -451,10 +453,19 @@ class WizardShipmentAllocation(orm.TransientModel):
                 new_sol_ids.extend(sol_ids)
 
         # confirm new sale orders
-        for so_id in list(set(new_so_ids)):
-            context['sale_shipment_id'] = shipment_id
+        context['sale_shipment_id'] = shipment_id
+        for so_id in  list(set(new_so_ids)):
+            so_pool.write(
+                cr, uid, [so_id], {}, context=context)
+            so_pool.action_wait(
+                cr, uid, [so_id], context=context)
             try:
+            # since the SOL where created via SOL pool
+            # you need to write in the new SO for the SOL
+            # to be replicated through the ICOPS
                 so_pool.action_button_confirm(
+                    cr, uid, [so_id], context=context)
+                so_pool.action_wait(
                     cr, uid, [so_id], context=context)
             except:
                 so_pool.action_wait(

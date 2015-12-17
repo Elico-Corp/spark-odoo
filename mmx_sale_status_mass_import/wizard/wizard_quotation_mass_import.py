@@ -353,6 +353,7 @@ class WizardQuotationMassImport(orm.TransientModel):
                     cr, uid, so_id, product_id,
                     quantity, context=context)
                 r['sol_id'] = sol_id
+            so_record.write({}, context=context)
         # after the whole loop, check if there are so_line(quotation) that not
         # exists in the CSV file and with check box checked. If so, delete them
         file_so_ids = sale_obj.search(
@@ -462,7 +463,7 @@ class WizardQuotationMassImport(orm.TransientModel):
             self, cr, uid, so_id, product_id, quantity, sol_id, context=None):
         '''Update the existing quotation line'''
 
-        sol_obj = self.pool['sale.order.line']
+        so_obj = self.pool['sale.order']
         line_val = self.prepare_quotation_line_vals(
             cr, uid, so_id, product_id, quantity, context=context)
 
@@ -470,7 +471,7 @@ class WizardQuotationMassImport(orm.TransientModel):
         if 'name' in line_val:
             del line_val['name']
 
-        sol_id = sol_obj.write(cr, uid, sol_id, line_val, context=context)
+        so_obj.write(cr, uid, so_id, {'order_line': [(1, sol_id, line_val)]}, context=context)
         return sol_id
 
     def create_new_quotation_line(

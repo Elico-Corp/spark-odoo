@@ -16,6 +16,7 @@
                     <group colspan="4" >
                         <separator string="Sale order lines" colspan="4"/>
                         <newline/>
+                        <field name="shipment_id" invisible="1" on_change="shipment_id_onchange(shipment_id, context)" />
                         <field name="sol_ids" nolabel="1">
                             <tree string="Sale order lines" editable="top">
                                 <field name="name" readonly="1"/>
