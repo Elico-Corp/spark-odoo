@@ -15,7 +15,7 @@ class product_product(orm.Model):
                 [('key', '=', 'web.image.url')])
             if config_ids:
                 config = config_pool.browse(cr, uid, config_ids[0])
-                url = 'http://'+config.value+'/'+product.code+'.jpg'
+                url = config.value + '/' + product.code + '.jpg'
                 res[product.id] = url
             else:
                 res[product.id] = ''
