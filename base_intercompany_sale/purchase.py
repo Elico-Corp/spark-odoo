@@ -125,7 +125,7 @@ class purchase_order_line(orm.Model):
 class icops_purchase_order_line(orm.Model):
     _name = 'icops.purchase.order.line'
     _inherit = 'icops.binding'
-    _description = 'ICOPS Sale Order Line'
+    _description = 'ICOPS Purchase Order Line'
     _inherits = {'purchase.order.line': 'openerp_id'}
 
     def _get_lines_from_order(self, cr, uid, ids, context=None):
@@ -136,12 +136,12 @@ class icops_purchase_order_line(orm.Model):
 
     _columns = {
         'icops_order_id': fields.many2one('icops.purchase.order',
-                                          'ICOPS Sale Order',
+                                          'ICOPS Purchase Order',
                                           required=True,
                                           ondelete='cascade',
                                           select=True),
         'openerp_id': fields.many2one('purchase.order.line',
-                                      string='Sale Order Line',
+                                      string='Purchase Order Line',
                                       required=True,
                                       ondelete='cascade'),
         'backend_id': fields.related(
