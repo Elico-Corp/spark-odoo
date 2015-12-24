@@ -87,7 +87,7 @@
              
 		
 		<record id="action_sale_order_line" model="ir.actions.act_window">
-            <field name="name">Sales Order line"</field>
+            <field name="name">Sales Order Line</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order.line</field>
             <field name="context">{'search_default_sol_cancel':1}</field>
@@ -101,7 +101,7 @@
               </p>
             </field>
         </record>
-    	<menuitem id="menu_sale_line" name="Sales Order line" parent="base.menu_sales" action="action_sale_order_line" groups="base.group_sale_salesman,base.group_sale_manager" sequence="23"/>
+    	<menuitem id="menu_sale_line" name="Sales Order Line" parent="base.menu_sales" action="action_sale_order_line" groups="base.group_sale_salesman,base.group_sale_manager" sequence="23"/>
 		
 		
 		<record id="action_validate_solines" model="ir.actions.act_window">

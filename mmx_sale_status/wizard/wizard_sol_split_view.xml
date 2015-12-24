@@ -38,7 +38,7 @@
 		
 		
         <!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013 -->
-        <act_window id="action_wizard_sol_split" 
+<!--         <act_window id="action_wizard_sol_split" 
             name="Confirm Order Line" 
         	 multi="False" 
             key2="client_action_multi" 
@@ -46,7 +46,7 @@
             src_model="sale.order.line" 
             view_id="wizard_sol_split_from_view" 
             view_mode="form" 
-            target="new"/>
+            target="new"/> -->
 		
 	</data>
 </openerp>

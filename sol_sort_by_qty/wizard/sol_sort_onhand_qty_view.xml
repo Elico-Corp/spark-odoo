@@ -12,14 +12,14 @@
     </field>
 </record>
 
-<act_window id="action_sol_sort_onhand_qty"
+<!-- <act_window id="action_sol_sort_onhand_qty"
     multi="True"
     key2="client_action_multi" name="SOL Sort BY Onhand QTY"
     res_model="sol.sort.onhand_qty" 
     src_model="sale.order.line"
     view_mode="form"
     target="new"
-    view_type="form" />
+    view_type="form" /> -->
 
 </data>
 </openerp>
