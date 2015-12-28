@@ -53,7 +53,7 @@
                 </xpath>
                 <xpath expr="//tree" position="attributes">
                     <attribute name="colors">red:product_state=='Catalogue';#ff9900:product_state=='Announcement';green:product_state=='Order';red:product_state=='Sold out';</attribute>
-                    <attribute name="create">1</attribute>
+                    <attribute name="create">0</attribute>
                 </xpath>
             </field>
         </record>
@@ -82,7 +82,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="attributes">
                     <attribute name="colors">red:product_state=='Catalogue';#ff9900:product_state=='Announcement';green:product_state=='Order';red:product_state=='Sold out';</attribute>
-                    <attribute name="create">1</attribute>
+                    <attribute name="create">0</attribute>
                 </xpath>
                 <xpath expr="//tree/field[@name='virtual_available']" position="after">
                     <field name="final_qty" groups='base.group_sale_salesman'/>

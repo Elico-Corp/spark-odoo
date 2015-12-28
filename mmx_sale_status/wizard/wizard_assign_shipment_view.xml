@@ -33,16 +33,6 @@
     </field>
 </record>
 
-<!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013 -->
-<act_window id="action_wizard_assign_shipment" 
-    name="Assign Shipment" 
-	  multi="False" 
-    key2="client_action_multi" 
-    res_model="wizard.assign.shipment" 
-    src_model="sale.order.line" 
-    view_id="wizard_assign_shipment_from_view" 
-    view_mode="form" 
-    target="new"/>
 		
 </data>
 </openerp>

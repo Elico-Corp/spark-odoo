@@ -24,16 +24,5 @@
 	    </record>
 		
 		
-	    <!--wizard action  jon.chow#elico-corp.com Jun 25, 2013-->
-		<!-- wizard action  jon.chow#elico-corp.com Jun 25, 2013-->
-		<act_window id="action_wizard_sol2pol"
-		    name="Create POL accord SOL"
-		    multi="True"
-		    key2="client_action_multi"
-		    res_model="wizard.sol2pol"
-		    src_model="sale.order.line"
-		    target="new"
-		    view_mode="form" 
-		    view_type="form"/>
 	</data>
 </openerp>
