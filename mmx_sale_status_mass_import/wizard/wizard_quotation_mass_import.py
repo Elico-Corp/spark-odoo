@@ -244,6 +244,32 @@ class WizardQuotationMassImport(orm.TransientModel):
         msg, parser = self.check_import_valid(cr, uid, wizard, context=context)
 
         line_nb = 1
+
+        # get the partner list in the csv
+        partner_refs = [l.get(
+            'Partner Reference') for l in parser.result_row_list]
+        csv_partner_list = partner_obj.search(
+            cr, uid, [('ref', 'in', partner_refs)],
+            context=context)
+        # before the whole loop, check if there are so_line(quotation) in
+        # system
+        # whose partners exist in the CSV file and with check box checked.
+        # If so, delete them
+
+        file_so_ids = sale_obj.search(
+            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True), (
+                'partner_id', 'in', csv_partner_list)], context=context)
+
+        sol_to_delete_ids = sol_obj.search(
+            cr, uid,
+            [('order_id', 'in', file_so_ids),
+             ('so_state', '=', 'draft'), ('is_imported', '=', True)],
+            context=context)
+
+        if sol_to_delete_ids:
+            sol_obj.unlink(cr, uid, sol_to_delete_ids, context=context)
+        # finished clean up
+
         for r in parser.result_row_list:
             line_nb += 1
             # pass the invalid ones, this var is initialized when parse
@@ -354,30 +380,6 @@ class WizardQuotationMassImport(orm.TransientModel):
                     quantity, context=context)
                 r['sol_id'] = sol_id
             so_record.write({}, context=context)
-        # after the whole loop, check if there are so_line(quotation) that not
-        # exists in the CSV file and with check box checked. If so, delete them
-        csv_file_so_ids_redundancy = [
-            l.get('so_id') for l in parser.result_row_list if l.get('valid')]
-        csv_file_so_ids_distinct = list(set(csv_file_so_ids_redundancy))
-
-        file_so_ids = sale_obj.search(
-            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True), (
-                'id', 'in', csv_file_so_ids_distinct)], context=context)
-        sol_ids = sol_obj.search(
-            cr, uid,
-            [('order_id', 'in', file_so_ids),
-             ('so_state', '=', 'draft'), ('is_imported', '=', True)],
-            context=context)
-
-        # csv file sol ids
-        file_sol_ids = [
-            l.get('sol_id') for l in parser.result_row_list if l.get('valid')]
-        sol_to_delete_ids = []
-        for sol in sol_ids:
-            if sol not in file_sol_ids:
-                sol_to_delete_ids.append(sol)
-        if sol_to_delete_ids:
-            sol_obj.unlink(cr, uid, sol_to_delete_ids, context=context)
 
         # write back the log msg
         wizard.write(
