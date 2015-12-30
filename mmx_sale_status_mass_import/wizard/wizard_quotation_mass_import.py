@@ -356,12 +356,16 @@ class WizardQuotationMassImport(orm.TransientModel):
             so_record.write({}, context=context)
         # after the whole loop, check if there are so_line(quotation) that not
         # exists in the CSV file and with check box checked. If so, delete them
+        csv_file_so_ids_redundancy = [
+            l.get('so_id') for l in parser.result_row_list if l.get('valid')]
+        csv_file_so_ids_distinct = list(set(csv_file_so_ids_redundancy))
+
         file_so_ids = sale_obj.search(
-            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True)],
-            context=context)
+            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True), (
+                'id', 'in', csv_file_so_ids_distinct)], context=context)
         sol_ids = sol_obj.search(
             cr, uid,
-            ['|', ('order_id', 'in', file_so_ids),
+            [('order_id', 'in', file_so_ids),
              ('so_state', '=', 'draft'), ('is_imported', '=', True)],
             context=context)
 
