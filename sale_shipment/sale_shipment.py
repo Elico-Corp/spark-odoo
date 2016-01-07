@@ -86,7 +86,8 @@ class SaleShipment(orm.Model):
         'contained_product_info_ids': fields.one2many(
             'shipment.contained.product.info', 'sale_shipment_id',
             'Contained products', readonly=True,
-            states={'draft': [('readonly', False)]})
+            states={'draft': [('readonly', False)],
+                    'confirmed': [('readonly', False)]})
     }
     _defaults = {
         'sequence': _get_seq,
