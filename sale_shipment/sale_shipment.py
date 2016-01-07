@@ -336,10 +336,7 @@ class sale_order_line(orm.Model):
                         context=context)
                 else:
                     this.write({'sale_shipment_id': False}, context=context)
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
-        }
+        return True
 
     def copy(self, cr, uid, id, default=None, context=None):
         ''' Don't copy shipment during duplication.'''
