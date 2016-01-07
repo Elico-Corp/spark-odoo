@@ -42,7 +42,7 @@
                     <field name='so_ids' nolabel='1'/>
                 </page>
                 <page string='Sale Order Lines'>
-                    <field name='sol_ids' nolabel='1'>
+                    <field name='sol_ids' nolabel='1' options="{'reload_on_button': true'}">
                         <tree string="Sale order lines">
                             <field name="name" />
                             <field name="product_id" />
@@ -54,7 +54,7 @@
                             <field name="product_uom" />
                             <field name="so_state" />
                             <field name="state" />
-                            <button name="empty_sale_shipment" string="remove" type="object" states="draft,wishlist" icon="STOCK_CANCEL" confirm="Are You Sure to remove this sale order line from shipment?"/>
+                            <button name="empty_sale_shipment" string="remove" type="object" states="draft,wishlist" icon="STOCK_REMOVE" confirm="Are You Sure to remove this sale order line from shipment?"/>
                         </tree>
                     </field>
                 </page>
