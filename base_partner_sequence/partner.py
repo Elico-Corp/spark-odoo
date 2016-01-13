@@ -71,7 +71,7 @@ class ResPartner(orm.Model):
 
     _columns = {
         'ref': fields.char(
-            'Reference', size=64, readonly=True, required=True),
+            'Reference', size=64, readonly=True, required=True, select=True),
     }
 
     _defaults = {
