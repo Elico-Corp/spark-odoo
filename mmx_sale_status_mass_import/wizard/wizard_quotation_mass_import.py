@@ -251,12 +251,12 @@ class WizardQuotationMassImport(orm.TransientModel):
             address partner)
         If checkbox "New Quotation" is not checked:
             1- system will first check if there are SO
-            (quotation & quotation lines) in system whose whose
+            (quotation lines) in system whose whose
             partner exists in the CSV file and with "is_imported" check box
             checked, if so, delete them.
 
-            2- create new quotations per address partner based all the lines in
-            the csv file.
+            2- create new quotations or quotation lines per address partner
+            based all the lines in the csv file.
         '''
         partner_address_refs = [l.get(
             'Address Reference') for l in parser.result_row_list]
@@ -264,7 +264,7 @@ class WizardQuotationMassImport(orm.TransientModel):
             cr, uid, [('ref', 'in', partner_address_refs)],
             context=context)
         if not wizard.new_quotation:
-            # starting the clean up of old quotations
+            # starting the clean up of old quotations lines
             file_so_ids = sale_obj.search(
                 cr, uid, [('state', '=', 'draft'), (
                     'is_imported', '=', True),
