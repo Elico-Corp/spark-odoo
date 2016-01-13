@@ -282,6 +282,8 @@ class WizardQuotationMassImport(orm.TransientModel):
             # finished clean up
 
         line_nb = 1
+        # maintain a list of tuple {so_id:(partner_id, partner_shipping_id)}
+        p_addr_ids = {}
         for r in parser.result_row_list:
             line_nb += 1
             # pass the invalid ones, this var is initialized when parse
@@ -330,14 +332,26 @@ class WizardQuotationMassImport(orm.TransientModel):
                 r['so_id'] = so_id
                 # TODO log warning when more than 2 so are found
 
-            # create new quotation if we don't find any in system.
-            # or new_quotation is True
-            if not r['so_id'] or wizard.new_quotation:
-                so_id = self.create_new_quotation(
-                    cr, uid, partner_id, address_id,
-                    wizard.shop_id and wizard.shop_id.id,
-                    wizard.date, new_quotation=wizard.new_quotation,
-                    context=context)
+                # create new quotation if we don't find any in system.
+                # or new_quotation is True
+                if not r['so_id']:
+                    so_id = self.create_new_quotation(
+                        cr, uid, partner_id, address_id,
+                        wizard.shop_id and wizard.shop_id.id,
+                        wizard.date, new_quotation=wizard.new_quotation,
+                        context=context)
+            else:
+                so_id = None
+                for soid, partner_tupe in p_addr_ids.iteritems():
+                    if partner_tupe == (partner_id, address_id):
+                        so_id = soid
+                if not so_id:
+                    so_id = self.create_new_quotation(
+                        cr, uid, partner_id, address_id,
+                        wizard.shop_id and wizard.shop_id.id,
+                        wizard.date, new_quotation=wizard.new_quotation,
+                        context=context)
+                    p_addr_ids.update({so_id: (partner_id, address_id)})
 
             # prepare sol according to the data.
             product_code = r.get('Product Code')
