@@ -193,14 +193,16 @@ class WizardQuotationMassImport(orm.TransientModel):
             'Import file', required=True),
         'log_message': fields.text(
             'Log message'),
+        'new_quotation': fields.boolean("Create new quotation?")
     }
 
     _defaults = {
-        'date': fields.date.context_today
+        'date': fields.date.context_today,
+        'new_quotation': False
     }
 
     def check_import_valid(self, cr, uid, wizard, context=None):
-        '''This method is to check whether infomation is valid or not:
+        '''This method is to check whether information is valid or not:
         * product exists or not
         * partner exists or not
 
@@ -243,33 +245,43 @@ class WizardQuotationMassImport(orm.TransientModel):
 
         msg, parser = self.check_import_valid(cr, uid, wizard, context=context)
 
+        '''
+        If user has "new quotation" checkbox checked, system will create
+        New quotations for all the lines in the csv file.(one quotation per
+            address partner)
+        If checkbox "New Quotation" is not checked:
+            1- system will first check if there are SO
+            (quotation lines) in system whose whose
+            partner exists in the CSV file and with "is_imported" check box
+            checked, if so, delete them.
+
+            2- create new quotations or quotation lines per address partner
+            based all the lines in the csv file.
+        '''
+        partner_address_refs = [l.get(
+            'Address Reference') for l in parser.result_row_list]
+        csv_partner_address_list = partner_obj.search(
+            cr, uid, [('ref', 'in', partner_address_refs)],
+            context=context)
+        if not wizard.new_quotation:
+            # starting the clean up of old quotations lines
+            file_so_ids = sale_obj.search(
+                cr, uid, [('state', '=', 'draft'), (
+                    'is_imported', '=', True),
+                    ('partner_shipping_id', 'in', csv_partner_address_list)],
+                context=context)
+
+            sol_to_delete_ids = sol_obj.search(
+                cr, uid,
+                [('order_id', 'in', file_so_ids),
+                 ('so_state', '=', 'draft'), ('is_imported', '=', True)],
+                context=context)
+
+            if sol_to_delete_ids:
+                sol_obj.unlink(cr, uid, sol_to_delete_ids, context=context)
+            # finished clean up
+
         line_nb = 1
-
-        # get the partner list in the csv
-        partner_refs = [l.get(
-            'Partner Reference') for l in parser.result_row_list]
-        csv_partner_list = partner_obj.search(
-            cr, uid, [('ref', 'in', partner_refs)],
-            context=context)
-        # before the whole loop, check if there are so_line(quotation) in
-        # system
-        # whose partners exist in the CSV file and with check box checked.
-        # If so, delete them
-
-        file_so_ids = sale_obj.search(
-            cr, uid, [('state', '=', 'draft'), ('is_imported', '=', True), (
-                'partner_id', 'in', csv_partner_list)], context=context)
-
-        sol_to_delete_ids = sol_obj.search(
-            cr, uid,
-            [('order_id', 'in', file_so_ids),
-             ('so_state', '=', 'draft'), ('is_imported', '=', True)],
-            context=context)
-
-        if sol_to_delete_ids:
-            sol_obj.unlink(cr, uid, sol_to_delete_ids, context=context)
-        # finished clean up
-
         for r in parser.result_row_list:
             line_nb += 1
             # pass the invalid ones, this var is initialized when parse
@@ -303,27 +315,29 @@ class WizardQuotationMassImport(orm.TransientModel):
             # update the address_id for the self.result_row_list
             r['partner_id'] = partner_id
 
-            # search for the SOs to be updated.
-            # state is 'draft' and with check box checked.
-            so_ids = sale_obj.search(
-                cr, uid,
-                [
-                    ('state', '=', 'draft'),
-                    ('is_imported', '=', True),
-                    ('partner_shipping_id', '=', address_id)
-                ], context=context)
-            so_id = so_ids and so_ids[0] or False
-            # TODO log warning when more than 2 so are found
+            if not wizard.new_quotation:
+                # search for the SOs to be updated.
+                # state is 'draft' and with check box checked.
+                so_ids = sale_obj.search(
+                    cr, uid,
+                    [
+                        ('state', '=', 'draft'),
+                        ('is_imported', '=', True),
+                        ('partner_shipping_id', '=', address_id)
+                    ], context=context)
+                so_id = so_ids and so_ids[0] or False
+                # update the so_id for self.result_row_list
+                r['so_id'] = so_id
+                # TODO log warning when more than 2 so are found
 
             # create new quotation if we don't find any in system.
-            if not so_id:
+            # or new_quotation is True
+            if not r['so_id'] or wizard.new_quotation:
                 so_id = self.create_new_quotation(
                     cr, uid, partner_id, address_id,
                     wizard.shop_id and wizard.shop_id.id,
-                    wizard.date, context=context)
-
-            # update the so_id for self.result_row_list
-            r['so_id'] = so_id
+                    wizard.date, new_quotation=wizard.new_quotation,
+                    context=context)
 
             # prepare sol according to the data.
             product_code = r.get('Product Code')
@@ -351,33 +365,35 @@ class WizardQuotationMassImport(orm.TransientModel):
             # update the product_id for self.result_row_list
             r['product_id'] = product_id
 
-            # go through the so's sol
-            # check if product already existing in one of them.
             so_record = sale_obj.browse(
                 cr, uid, so_id, context=context)
-            for l in so_record.order_line:
-                # just for later checking.
-                if r.get('sol_id') != l.id:
-                    _logger.error(
-                        'There should not be existing '
-                        'data with another sol_id.')
-                    # TODO to save the file for checking the reason
+            if not wizard.new_quotation:
+                # go through the so's sol
+                # check if product already existing in one of them.
+                for l in so_record.order_line:
+                    # just for later checking.
+                    if r.get('sol_id') != l.id:
+                        _logger.error(
+                            'There should not be existing '
+                            'data with another sol_id.')
+                        # TODO to save the file for checking the reason
 
-                # if exists, update the quantity in the csv
-                assert l.product_id, 'The product is None in the sol!'
-                if l.product_id.id == product_id:
-                    self.update_quotation_line(
-                        cr, uid, so_id, product_id,
-                        quantity, l.id, context=context)
-                    # l.write({'product_uom_qty': quantity}, context=context)
-                    # update the sol_id for self.result_row_list
-                    r['sol_id'] = l.id
-                    break
+                    # if exists, update the quantity in the csv
+                    assert l.product_id, 'The product is None in the sol!'
+                    if l.product_id.id == product_id:
+                        self.update_quotation_line(
+                            cr, uid, so_id, product_id,
+                            quantity, l.id, context=context)
+                        # update the sol_id for self.result_row_list
+                        r['sol_id'] = l.id
+                        break
             # if line doesn't exist in system, create a new one
-            if not r.get('sol_id'):
+            # or new_quotation is True, create anyway
+            if not r.get('sol_id') or wizard.new_quotation:
                 sol_id = self.create_new_quotation_line(
                     cr, uid, so_id, product_id,
-                    quantity, context=context)
+                    quantity, new_quotation=wizard.new_quotation,
+                    context=context)
                 r['sol_id'] = sol_id
             so_record.write({}, context=context)
 
@@ -400,8 +416,12 @@ class WizardQuotationMassImport(orm.TransientModel):
 
     def prepare_quotation_vals(
             self, cr, uid, partner_id, address_id,
-            shop_id=False, date=None, context=None):
-        '''Prepare the updating data for quotation'''
+            shop_id=False, date=None, new_quotation=False, context=None):
+        '''Prepare the updating data for quotation.
+
+        if with checkbox: new quotation checked, we create all the sale
+        quotation per shipment address.(is_imported is False)
+        '''
         so_obj = self.pool['sale.order']
         so_val = so_obj.onchange_partner_id(
             cr, uid, [], partner_id, context=context)['value']
@@ -410,7 +430,7 @@ class WizardQuotationMassImport(orm.TransientModel):
             'partner_invoice_id': partner_id,
             'partner_shipping_id': address_id,
             'state': 'draft',
-            'is_imported': True
+            'is_imported': not new_quotation
         })
         if shop_id:
             so_val['shop_id'] = shop_id
@@ -420,13 +440,13 @@ class WizardQuotationMassImport(orm.TransientModel):
 
     def create_new_quotation(
             self, cr, uid, partner_id, address_id,
-            shop_id=False, date=None, context=None):
+            shop_id=False, date=None, new_quotation=False, context=None):
         '''create new empty quotation'''
 
         so_obj = self.pool['sale.order']
         vals = self.prepare_quotation_vals(
             cr, uid, partner_id, address_id, shop_id=shop_id,
-            date=date, context=context)
+            date=date, new_quotation=new_quotation, context=context)
         so_id = so_obj.create(cr, uid, vals, context=context)
         return so_id
 
@@ -444,8 +464,13 @@ class WizardQuotationMassImport(orm.TransientModel):
         return so_id
 
     def prepare_quotation_line_vals(
-            self, cr, uid, so_id, product_id, quantity, context=None):
-        '''Prepare the data to be update in the sol'''
+            self, cr, uid, so_id, product_id, quantity,
+            new_quotation=False, context=None):
+        '''Prepare the data to be update in the sol.
+
+        if with checkbox: new quotation checked, we create all the sale
+        quotation per shipment address.(is_imported is False)
+        '''
         assert so_id, 'Data error, must have SO id to get information'
         so_obj = self.pool['sale.order']
         sol_obj = self.pool['sale.order.line']
@@ -461,7 +486,7 @@ class WizardQuotationMassImport(orm.TransientModel):
             'order_id': so_id,
             'product_uom_qty': quantity,
             'so_state': 'draft',
-            'is_imported': True
+            'is_imported': not new_quotation
         })
         return line_val
 
@@ -477,14 +502,17 @@ class WizardQuotationMassImport(orm.TransientModel):
         if 'name' in line_val:
             del line_val['name']
 
-        so_obj.write(cr, uid, so_id, {'order_line': [(1, sol_id, line_val)]}, context=context)
+        so_obj.write(
+            cr, uid, so_id, {'order_line': [(1, sol_id, line_val)]},
+            context=context)
         return sol_id
 
     def create_new_quotation_line(
-            self, cr, uid, so_id, product_id, quantity, context=None):
-
+            self, cr, uid, so_id, product_id, quantity, new_quotation=None,
+            context=None):
         sol_obj = self.pool['sale.order.line']
         line_val = self.prepare_quotation_line_vals(
-            cr, uid, so_id, product_id, quantity, context=context)
+            cr, uid, so_id, product_id, quantity, new_quotation=new_quotation,
+            context=context)
         sol_id = sol_obj.create(cr, uid, line_val, context=context)
         return sol_id
