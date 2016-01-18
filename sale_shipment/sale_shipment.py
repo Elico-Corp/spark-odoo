@@ -29,7 +29,7 @@ from openerp import netsvc
 
 class SaleShipment(orm.Model):
     _name = 'sale.shipment'
-    _order = 'sequence'
+    _order = 'sequence desc'
 
     def action_assign_sale_order_lines(self, cr, uid, ids, context=None):
         context = context or None
