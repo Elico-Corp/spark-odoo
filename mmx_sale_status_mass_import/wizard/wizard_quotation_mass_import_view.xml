@@ -39,7 +39,7 @@
     target="new"/>
 
 <!-- menu for mass importing quotation -->
-<menuitem action="action_wizard_quotation_mass_import" name='Mass Import Quotations'  id="menu_mass_import_quotation" parent="mmx_magento.menu_online_sale" sequence="3" groups="base.group_sale_salesman,base.group_sale_manager"/>
+<menuitem action="action_wizard_quotation_mass_import" name='Mass Import Quotations'  id="menu_mass_import_quotation" parent="sale_menu.menu_sales_operations" sequence="51" groups="base.group_sale_salesman,base.group_sale_manager"/>
     
 </data>
 </openerp>
