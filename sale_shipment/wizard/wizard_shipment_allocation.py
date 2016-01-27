@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
 #    Alex Duan <alex.duan@elico-corp.com>
+#    Rona lin <rona.lin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -104,13 +105,13 @@ class WizardShipmentAllocation(orm.TransientModel):
         if not wizard or (not wizard.lines):
             return True
         for line in wizard.lines:
-            if line.final_qty > line.product_qty or \
+            if line.final_qty > line.max_qty or \
                     line.final_qty < 0:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('A sale order line final quantity is larger than '
-                        'its current quantity or the final quantity '
-                        'has a negative value.\n '
+                    _('A sale order line final quantity is larger than' 
+                        'its max quantity or the final quantity has a '
+                        'negative value.\n '
                         'Product: %s' % (line.product_id.name)))
         return True
 
@@ -289,12 +290,12 @@ class WizardShipmentAllocation(orm.TransientModel):
                 raise orm.except_orm(
                     _('Error!'),
                     _('Can not confirm if final quantity <= 0'))
-            if line.final_qty > line.sol_id.product_uom_qty:
+            if line.final_qty > line.max_qty:
                 raise orm.except_orm(
                     _('Error!'),
                     _('The final quantity cannot be confirmed '
                         'since it should be superior to the '
-                        'sale order line quantity.'))
+                        'max quantity.'))
         return True
 
     def _prepare_new_so_data(
@@ -346,8 +347,11 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
-            - final_qty = product quantity on sale order line
-            - final_qty < product quantity on sale order line'''
+            - final_qty >= product quantity on sale order line
+               delete the old_sol,and create a new sale order.
+            - final_qty < product quantity on sale order line
+              split the sale order,and update the old sale order 
+              line with the residual quantity .'''
         # if final_qty = product_qty, directly confirm this sale order
         sol_pool = self.pool['sale.order.line']
         so_pool = self.pool['sale.order']
@@ -379,46 +383,52 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_so_id = so_pool.create(
             cr, uid, new_so_data, context=context)
         # empty the shipment in the old sale order.
-        so.write({'sale_shipment_id': False})
-        new_so_ids.append(new_so_id)
+        try:
+            so.write({'sale_shipment_id': False})
+            new_so_ids.append(new_so_id)
 
-        # split the sol by going through the wizard lines.
-        # only split when the final qty is smaller than quantity
-        # in sale order line.
-        for wizard_line in wizard_lines:
-            sol = wizard_line.sol_id
-            final_qty = wizard_line.final_qty
-            res_qty = sol.product_uom_qty - final_qty
-            sol_data = self._prepare_sol_data(
-                cr, uid, sol, final_qty, shipment_id,
-                new_so_id, context=context)
-            # empty the shipment in the old sale order line.
-            sol.write({'sale_shipment_id': False})
-            if res_qty > 0:
-                # update the old sale order line with the residual quantity
-                # for the Compatibility with inter company module, you have to
-                # update the data this way instead of directly use the write
-                # from sale order line.
-                so_pool.write(
-                    cr, uid, so.id,
-                    {'order_line': [(1, sol.id, {
-                        'product_uom_qty': res_qty,
-                        'final_qty': 0
-                    })]})
-            elif res_qty == 0:
-                # delete the old sale order line.
-                so_pool.write(
-                    cr, uid, sol.order_id.id,
-                    {'order_line': [(2, sol.id)]}, context=context)
-            else:
-                raise orm.except_orm(
-                    _('Warning'),
-                    _('Final quantity cannot be larger than '
-                        'quantity on sale order line!'))
-            # create the new sale order line
-            new_sol_id = sol_pool.create(
-                cr, uid, sol_data, context=context)
-            new_sol_ids.append(new_sol_id)
+            # split the sol by going through the wizard lines.
+            # only split when the final qty is smaller than quantity
+            # in sale order line.
+            deleted_lines = []
+            for wizard_line in wizard_lines:
+                sol = wizard_line.sol_id
+                final_qty = wizard_line.final_qty
+                res_qty = sol.product_uom_qty - final_qty
+                sol_data = self._prepare_sol_data(
+                    cr, uid, sol, final_qty, shipment_id,
+                    new_so_id, context=context)
+                # empty the shipment in the old sale order line.
+                sol.write({'sale_shipment_id': False})
+                if res_qty > 0:
+                    # update the old sale order line with the residual quantity
+                    # for the Compatibility with inter company module, you have to
+                    # update the data this way instead of directly use the write
+                    # from sale order line.
+                    so_pool.write(
+                        cr, uid, so.id,
+                        {'order_line': [(1, sol.id, {
+                            'product_uom_qty': res_qty,
+                            'final_qty': 0
+                        })]})
+                elif res_qty <= 0:
+                    # delete the old sale order line.
+                    res = so_pool.write(
+                        cr, uid, sol.order_id.id,
+                        {'order_line': [(2, sol.id)]}, context=context)
+                    deleted_lines.append(sol.id)
+
+                # create the new sale order line
+                new_sol_id = sol_pool.create(
+                    cr, uid, sol_data, context=context)
+                new_sol_ids.append(new_sol_id)
+            #if there is no sale order line on origin quation,delete it. 
+            if len(so.order_line) == len(deleted_lines):
+                so_pool.unlink(cr, uid, [so.id], context=context)
+        except:
+            raise orm.except_orm(
+                _('Warning'),
+                _('Sales Order is already deleted!'))
         return new_so_ids, new_sol_ids
 
     def split_sol(self, cr, uid, ids, context=None):
