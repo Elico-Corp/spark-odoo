@@ -138,10 +138,4 @@ class sale_order_line(osv.osv):
         'so_state': 'draft'
     }
 
-    _sql_constraints = {
-        ('final_qty_valid', 'CHECK (final_qty<=product_uom_qty)',
-            'Final quantity should be smaller '
-            'than the quantity on sale order line!')
-    }
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
