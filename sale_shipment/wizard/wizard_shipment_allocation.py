@@ -104,13 +104,10 @@ class WizardShipmentAllocation(orm.TransientModel):
         if not wizard or (not wizard.lines):
             return True
         for line in wizard.lines:
-            if line.final_qty > line.product_qty or \
-                    line.final_qty < 0:
+            if line.final_qty < 0:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('A sale order line final quantity is larger than '
-                        'its current quantity or the final quantity '
-                        'has a negative value.\n '
+                    _('The final quantity has a negative value.\n '
                         'Product: %s' % (line.product_id.name)))
         return True
 
@@ -289,12 +286,6 @@ class WizardShipmentAllocation(orm.TransientModel):
                 raise orm.except_orm(
                     _('Error!'),
                     _('Can not confirm if final quantity <= 0'))
-            if line.final_qty > line.sol_id.product_uom_qty:
-                raise orm.except_orm(
-                    _('Error!'),
-                    _('The final quantity cannot be confirmed '
-                        'since it should be superior to the '
-                        'sale order line quantity.'))
         return True
 
     def _prepare_new_so_data(
@@ -347,7 +338,8 @@ class WizardShipmentAllocation(orm.TransientModel):
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
             - final_qty = product quantity on sale order line
-            - final_qty < product quantity on sale order line'''
+            - final_qty < product quantity on sale order line
+            - final_qty > product quantity on sale order line'''
         # if final_qty = product_qty, directly confirm this sale order
         sol_pool = self.pool['sale.order.line']
         so_pool = self.pool['sale.order']
@@ -385,6 +377,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         # split the sol by going through the wizard lines.
         # only split when the final qty is smaller than quantity
         # in sale order line.
+        deleted_lines = []
         for wizard_line in wizard_lines:
             sol = wizard_line.sol_id
             final_qty = wizard_line.final_qty
@@ -405,16 +398,18 @@ class WizardShipmentAllocation(orm.TransientModel):
                         'product_uom_qty': res_qty,
                         'final_qty': 0
                     })]})
-            elif res_qty == 0:
+            elif res_qty <= 0:
                 # delete the old sale order line.
-                so_pool.write(
+                res = so_pool.write(
                     cr, uid, sol.order_id.id,
                     {'order_line': [(2, sol.id)]}, context=context)
-            else:
-                raise orm.except_orm(
-                    _('Warning'),
-                    _('Final quantity cannot be larger than '
-                        'quantity on sale order line!'))
+                if res:
+                    deleted_lines.append(sol.id)
+                
+
+            if len(so.order_line) == len(deleted_lines):
+                so_pool.unlink(cr, uid, [so.id], context=context)
+
             # create the new sale order line
             new_sol_id = sol_pool.create(
                 cr, uid, sol_data, context=context)
