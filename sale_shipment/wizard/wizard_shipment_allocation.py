@@ -384,47 +384,47 @@ class WizardShipmentAllocation(orm.TransientModel):
             cr, uid, new_so_data, context=context)
         # empty the shipment in the old sale order.
         try:
-        so.write({'sale_shipment_id': False})
-        new_so_ids.append(new_so_id)
+            so.write({'sale_shipment_id': False})
+            new_so_ids.append(new_so_id)
 
-        # split the sol by going through the wizard lines.
-        # only split when the final qty is smaller than quantity
-        # in sale order line.
-        deleted_lines = []
-        for wizard_line in wizard_lines:
-            sol = wizard_line.sol_id
-            final_qty = wizard_line.final_qty
-            res_qty = sol.product_uom_qty - final_qty
-            sol_data = self._prepare_sol_data(
-                cr, uid, sol, final_qty, shipment_id,
-                new_so_id, context=context)
-            # empty the shipment in the old sale order line.
-            sol.write({'sale_shipment_id': False})
-            if res_qty > 0:
-                # update the old sale order line with the residual quantity
-                # for the Compatibility with inter company module, you have to
-                # update the data this way instead of directly use the write
-                # from sale order line.
-                so_pool.write(
-                    cr, uid, so.id,
-                    {'order_line': [(1, sol.id, {
-                        'product_uom_qty': res_qty,
-                        'final_qty': 0
-                    })]})
-            elif res_qty <= 0:
-                # delete the old sale order line.
-                res = so_pool.write(
-                    cr, uid, sol.order_id.id,
-                    {'order_line': [(2, sol.id)]}, context=context)
+            # split the sol by going through the wizard lines.
+            # only split when the final qty is smaller than quantity
+            # in sale order line.
+            deleted_lines = []
+            for wizard_line in wizard_lines:
+                sol = wizard_line.sol_id
+                final_qty = wizard_line.final_qty
+                res_qty = sol.product_uom_qty - final_qty
+                sol_data = self._prepare_sol_data(
+                    cr, uid, sol, final_qty, shipment_id,
+                    new_so_id, context=context)
+                # empty the shipment in the old sale order line.
+                sol.write({'sale_shipment_id': False})
+                if res_qty > 0:
+                    # update the old sale order line with the residual quantity
+                    # for the Compatibility with inter company module, you have to
+                    # update the data this way instead of directly use the write
+                    # from sale order line.
+                    so_pool.write(
+                        cr, uid, so.id,
+                        {'order_line': [(1, sol.id, {
+                            'product_uom_qty': res_qty,
+                            'final_qty': 0
+                        })]})
+                elif res_qty <= 0:
+                    # delete the old sale order line.
+                    res = so_pool.write(
+                        cr, uid, sol.order_id.id,
+                        {'order_line': [(2, sol.id)]}, context=context)
                     deleted_lines.append(sol.id)
 
-            # create the new sale order line
-            new_sol_id = sol_pool.create(
-                cr, uid, sol_data, context=context)
-            new_sol_ids.append(new_sol_id)
-        #if there is no sale order line on origin quation,delete it. 
-        if len(so.order_line) == len(deleted_lines):
-            so_pool.unlink(cr, uid, [so.id], context=context)
+                # create the new sale order line
+                new_sol_id = sol_pool.create(
+                    cr, uid, sol_data, context=context)
+                new_sol_ids.append(new_sol_id)
+            #if there is no sale order line on origin quation,delete it. 
+            if len(so.order_line) == len(deleted_lines):
+                so_pool.unlink(cr, uid, [so.id], context=context)
         except:
             raise orm.except_orm(
                 _('Warning'),
