@@ -290,6 +290,12 @@ class WizardShipmentAllocation(orm.TransientModel):
                 raise orm.except_orm(
                     _('Error!'),
                     _('Can not confirm if final quantity <= 0'))
+            if line.final_qty > line.max_qty:
+                raise orm.except_orm(
+                    _('Error!'),
+                    _('The final quantity cannot be confirmed '
+                        'since it should be superior to the '
+                        'max quantity.'))
         return True
 
     def _prepare_new_so_data(
@@ -377,6 +383,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_so_id = so_pool.create(
             cr, uid, new_so_data, context=context)
         # empty the shipment in the old sale order.
+        try:
         so.write({'sale_shipment_id': False})
         new_so_ids.append(new_so_id)
 
@@ -409,17 +416,19 @@ class WizardShipmentAllocation(orm.TransientModel):
                 res = so_pool.write(
                     cr, uid, sol.order_id.id,
                     {'order_line': [(2, sol.id)]}, context=context)
-                if res:
                     deleted_lines.append(sol.id)
-                
-            #if there is no sale order line on origin quation,delete it. 
-            if len(so.order_line) == len(deleted_lines):
-                so_pool.unlink(cr, uid, [so.id], context=context)
 
             # create the new sale order line
             new_sol_id = sol_pool.create(
                 cr, uid, sol_data, context=context)
             new_sol_ids.append(new_sol_id)
+        #if there is no sale order line on origin quation,delete it. 
+        if len(so.order_line) == len(deleted_lines):
+            so_pool.unlink(cr, uid, [so.id], context=context)
+        except:
+            raise orm.except_orm(
+                _('Warning'),
+                _('old sale order delete failed!'))
         return new_so_ids, new_sol_ids
 
     def split_sol(self, cr, uid, ids, context=None):
