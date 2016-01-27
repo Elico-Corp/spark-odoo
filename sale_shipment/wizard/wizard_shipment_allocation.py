@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
 #    Alex Duan <alex.duan@elico-corp.com>
+#    Rona lin <rona.lin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -337,9 +338,11 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
-            - final_qty = product quantity on sale order line
+            - final_qty >= product quantity on sale order line
+               delete the old_sol,and create a new sale order.
             - final_qty < product quantity on sale order line
-            - final_qty > product quantity on sale order line'''
+              split the sale order,and update the old sale order 
+              line with the residual quantity .'''
         # if final_qty = product_qty, directly confirm this sale order
         sol_pool = self.pool['sale.order.line']
         so_pool = self.pool['sale.order']
@@ -406,7 +409,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                 if res:
                     deleted_lines.append(sol.id)
                 
-
+            #if there is no sale order line on origin quation,delete it. 
             if len(so.order_line) == len(deleted_lines):
                 so_pool.unlink(cr, uid, [so.id], context=context)
 
