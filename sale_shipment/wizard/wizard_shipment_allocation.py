@@ -105,10 +105,13 @@ class WizardShipmentAllocation(orm.TransientModel):
         if not wizard or (not wizard.lines):
             return True
         for line in wizard.lines:
-            if line.final_qty < 0:
+            if line.final_qty > line.max_qty or \
+                    line.final_qty < 0:
                 raise orm.except_orm(
                     _('Warning'),
-                    _('The final quantity has a negative value.\n '
+                    _('A sale order line final quantity is larger than' 
+                        'its max quantity or the final quantity has a '
+                        'negative value.\n '
                         'Product: %s' % (line.product_id.name)))
         return True
 
