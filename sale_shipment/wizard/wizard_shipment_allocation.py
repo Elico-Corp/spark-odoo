@@ -428,7 +428,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         except:
             raise orm.except_orm(
                 _('Warning'),
-                _('old sale order delete failed!'))
+                _('Sales Order is already deleted!'))
         return new_so_ids, new_sol_ids
 
     def split_sol(self, cr, uid, ids, context=None):
