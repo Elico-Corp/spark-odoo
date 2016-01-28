@@ -137,5 +137,9 @@ class sale_order_line(osv.osv):
     _defaults = {
         'so_state': 'draft'
     }
+    _sql_constraints = {
+        ('final_qty_valid', 'CHECK (1>0)',
+            'Final quantity should not be a negative value!')
+    }
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
