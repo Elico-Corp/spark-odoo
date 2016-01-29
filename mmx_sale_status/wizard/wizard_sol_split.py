@@ -117,6 +117,8 @@ class wizard_sol_split(osv.osv_memory):
                     _('Error!'),
                     _('Final quantity cannot be set to 0'))
                 return False
+            if line.final_qty > line.sol_id.product_uom_qty:
+                return True
         return True
 
     def split_sol(self, cr, uid, ids, context=None):
