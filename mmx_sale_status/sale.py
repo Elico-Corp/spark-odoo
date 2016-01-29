@@ -137,6 +137,8 @@ class sale_order_line(osv.osv):
     _defaults = {
         'so_state': 'draft'
     }
+    # remove the final_qty < product_qty constraint in the database
+    # keep this constraint aways pass
     _sql_constraints = {
         ('final_qty_valid', 'CHECK (1>0)',
             'Final quantity should not be a negative value!')
