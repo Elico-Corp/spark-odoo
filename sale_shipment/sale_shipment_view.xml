@@ -42,7 +42,7 @@
                     </div>
                     <field name='contained_product_info_ids' nolabel='1'/>
                 </page>
-                <page string='Sale Orders'>
+                <page string='Sale Orders' >
                     <field name='so_ids' nolabel='1'/>
                 </page>
                 <page string='Sale Order Lines' >
