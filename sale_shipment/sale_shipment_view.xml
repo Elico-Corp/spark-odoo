@@ -45,7 +45,7 @@
                 <page string='Sale Orders'>
                     <field name='so_ids' nolabel='1'/>
                 </page>
-                <page string='Sale Order Lines'>
+                <page string='Sale Order Lines' >
                     <div class="oe_right">
                         <label string="Total:" for="saleorder_line_count"/>
                         <field name="saleorder_line_count" class="oe_inline"/>
