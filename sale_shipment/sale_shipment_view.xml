@@ -36,12 +36,20 @@
             </group>
             <notebook>
                 <page string='Contained Products' >
+                <div class="oe_right">
+                        <label string="Total:" for="product_line_count"/>
+                        <field name="product_line_count" class="oe_inline"/>
+                    </div>
                     <field name='contained_product_info_ids' nolabel='1'/>
                 </page>
                 <page string='Sale Orders' >
                     <field name='so_ids' nolabel='1'/>
                 </page>
-                <page string='Sale Order Lines'>
+                <page string='Sale Order Lines' >
+                    <div class="oe_right">
+                        <label string="Total:" for="saleorder_line_count"/>
+                        <field name="saleorder_line_count" class="oe_inline"/>
+                    </div>
                     <field name='sol_ids' nolabel='1' options="{'reload_on_button': true'}">
                         <tree string="Sale order lines">
                             <field name="name" />

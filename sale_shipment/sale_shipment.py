@@ -58,10 +58,28 @@ class SaleShipment(orm.Model):
     def _get_seq(self, cr, uid, context=None):
         return self.pool.get('ir.sequence').get(cr, uid, 'sale.shipment')
 
+    def _saleorder_line_count(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for sol in self.browse(cr, uid, ids, context=context):
+            res[sol.id] = len(sol.sol_ids)
+        return res
+
+    def _product_line_count(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for sol in self.browse(cr, uid, ids, context=context):
+            res[sol.id] = len(sol.contained_product_info_ids)
+        return res
+
     _columns = {
         'name': fields.char('Name', size=32),
         'sequence': fields.char('Sequence', size=32, select=1),
         'create_date': fields.date('Create Date', readonly=True),
+        'saleorder_line_count': fields.function(
+            _saleorder_line_count, string='Sale Order Line Count',
+            type='integer'),
+        'product_line_count': fields.function(
+            _product_line_count, string='Product Line Count',
+            type='integer'),
         'so_ids': fields.one2many(
             'sale.order',
             'sale_shipment_id',
