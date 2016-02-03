@@ -6,9 +6,6 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='origin']" position="after">
-                     <field name="picking_status_all_available"/>
-                </xpath>
                 <xpath expr="//button[@name='action_assign']" position="replace">
                     <button name="action_assign" attrs="{'invisible': ['|',('picking_status_all_available', '=', True),('state','not in',('assigned', 'confirmed'))]}" string="Check Availability" type="object" class="oe_highlight"/>
                 </xpath>
