@@ -88,17 +88,11 @@ class product_product (osv.osv):
         model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_module_demo')[1]
         return model_id
 
-    # def _default_has_default_race_ed_id(self, cr, uid, ids, context=None):
-    #     ir_model_data = self.pool.get('ir.model.data')
-    #     race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_demo')[1]
-    #     return race_ed_id
-
     _defaults={
         'year': lambda *a:  None,
         'company_id':lambda *a: None,
         'model_id': _default_has_default_model_id,
         'scale_id': _default_has_default_scale_id,
-        # 'race_ed_id': _default_has_default_race_ed_id,
     }
     
     def copy(self, cr, uid, id, default=None, context=None):
