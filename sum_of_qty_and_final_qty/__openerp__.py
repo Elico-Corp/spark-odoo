@@ -19,5 +19,4 @@
         'views/purchase_view.xml',
         'views/sale_view.xml',
     ]
-
 }
