@@ -85,7 +85,7 @@ class product_product (osv.osv):
 
     def _default_has_default_model_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
-        model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_module_demo')[1]
+        model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_demo')[1]
         return model_id
 
     _defaults={

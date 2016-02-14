@@ -13,7 +13,7 @@
         <record id="product.product_manufacturer_demo" model="product.manufacturer">
             <field name="name">N/A</field>
         </record>
-        <record id="product.product_module_demo" model="product.model">
+        <record id="product.product_model_demo" model="product.model">
             <field name="name">N/A</field>
             <field name="manufacturer_id" ref="product.product_manufacturer_demo"/>
         </record>
