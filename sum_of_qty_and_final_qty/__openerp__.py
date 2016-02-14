@@ -3,9 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 {
     "name": "Sum Of Qty And Final Qty",
-    "summary": "Module summary",
     "version": "7.0.1.0.1",
-    "category": "Stock",
     "website": "www.elico-corp.com",
     "author": "Elico corp",
     "license": "AGPL-3",
