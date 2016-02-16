@@ -178,8 +178,11 @@ class product_product (osv.osv):
                 result['description_sale']  = False
                 result['is_racing']         = False
             else:
-                ir_model_data = self.pool.get('ir.model.data')
-                race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_demo')[1]
+                try:
+                    ir_model_data = self.pool.get('ir.model.data')
+                    race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_demo')[1]
+                 except ValueError:
+                    race_ed_id = False
                 result['is_racing'] = True
                 result['race_ed_id'] = race_ed_id
             return {'value': result}
