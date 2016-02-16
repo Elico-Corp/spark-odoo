@@ -21,6 +21,7 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+import openerp.exceptions
 import time
 
 
@@ -80,12 +81,18 @@ class product_product (osv.osv):
 
     def _default_has_default_scale_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
-        scale_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_scale_demo')[1]
+        try:
+            scale_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_scale_demo')[1]
+        except ValueError:
+            scale_id = False
         return scale_id
 
     def _default_has_default_model_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
-        model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_demo')[1]
+        try:
+            model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_demo')[1]
+        except ValueError:
+            model_id = False
         return model_id
 
     _defaults={
