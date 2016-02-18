@@ -6,22 +6,22 @@
             <field name="name">Product Manager</field>
             <field name="users" eval="[(4, ref('base.user_root'))]"/>
         </record>
-        <!-- insert the default demo data  -->
-        <record id="product.product_scale_demo" model="product.scale">
+        <!-- insert the default default data  -->
+        <record id="product.product_scale_default" model="product.scale">
             <field name="name">N/A</field>
         </record>
-        <record id="product.product_manufacturer_demo" model="product.manufacturer">
+        <record id="product.product_manufacturer_default" model="product.manufacturer">
             <field name="name">N/A</field>
         </record>
-        <record id="product.product_model_demo" model="product.model">
+        <record id="product.product_model_default" model="product.model">
             <field name="name">N/A</field>
-            <field name="manufacturer_id" ref="product.product_manufacturer_demo"/>
+            <field name="manufacturer_id" ref="product.product_manufacturer_default"/>
         </record>
-        <record id="product.product_race_demo" model="product.race">
+        <record id="product.product_race_default" model="product.race">
             <field name="name">N/A</field>
         </record>
-        <record id="product.product_race_ed_demo" model="product.race.ed">
-            <field name="race_id" ref="product.product_race_demo"/>
+        <record id="product.product_race_ed_default" model="product.race.ed">
+            <field name="race_id" ref="product.product_race_default"/>
         </record>
     </data>
 </openerp>

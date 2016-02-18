@@ -82,7 +82,7 @@ class product_product (osv.osv):
     def _default_has_default_scale_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
         try:
-            scale_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_scale_demo')[1]
+            scale_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_scale_default')[1]
         except ValueError:
             scale_id = False
         return scale_id
@@ -90,7 +90,7 @@ class product_product (osv.osv):
     def _default_has_default_model_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
         try:
-            model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_demo')[1]
+            model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_default')[1]
         except ValueError:
             model_id = False
         return model_id
@@ -180,7 +180,7 @@ class product_product (osv.osv):
             else:
                 try:
                     ir_model_data = self.pool.get('ir.model.data')
-                    race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_demo')[1]
+                    race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_default')[1]
                 except ValueError:
                     race_ed_id = False
                 result['is_racing'] = True
