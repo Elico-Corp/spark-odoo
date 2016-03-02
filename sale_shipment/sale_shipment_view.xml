@@ -56,8 +56,8 @@
                             <field name="product_id" />
                             <field name="order_id" />
                             <field name="order_partner_id" />
-                            <field name="product_uom_qty" />
-                            <field name="final_qty" />
+                            <field name="product_uom_qty" sum="Total Product Qty"/>
+                            <field name="final_qty" sum="Total Final Qty"/>
                             <field name="cut_off_date" />
                             <field name="product_uom" />
                             <field name="so_state" />
@@ -77,7 +77,7 @@
                             <field name="origin"/>
                             <field name="create_date" invisible="1" groups="base.group_no_one"/>
                             <field name="product_id" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
-                            <field name="product_qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
+                            <field name="product_qty" sum="Total Product Qty" on_change="onchange_quantity(product_id, product_qty, product_uom, product_uos)"/>
                             <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
                             <field name="product_uos_qty" groups="product.group_uos"/>
                             <field name="product_uos" groups="product.group_uos"/>
