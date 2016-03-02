@@ -4,7 +4,7 @@
 {
     "name": "Partial Check Availability",
     "summary": "Module summary",
-    "version": "7.0.1.0.2",
+    "version": "7.0.1.0.3",
     "category": "Stock",
     "website": "www.elico-corp.com",
     "author": "Elico corp",

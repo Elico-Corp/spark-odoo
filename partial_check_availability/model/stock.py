@@ -41,3 +41,22 @@ class stock_picking_out(osv.osv):
         'picking_status_all_available': fields.function(_get_picking_status_all_available, type='boolean', string='Pack Operation Exists?', help='technical field for attrs in view'),     
 
     }
+
+class stock_picking_in(osv.osv):
+    _inherit = 'stock.picking.in'
+    _name = 'stock.picking.in'
+
+    def _get_picking_status_all_available(self, cr, uid, ids, field_name, arg, context=None):
+
+        res = {}
+        for pick in self.browse(cr, uid, ids):
+            for line in pick.move_lines:
+                if line.state != "assigned":
+                    res[pick.id] = False
+                    break
+            res[pick.id] = True
+        return res
+    _columns = {
+        'picking_status_all_available': fields.function(_get_picking_status_all_available, type='boolean', string='Pack Operation Exists?', help='technical field for attrs in view'),     
+
+    }
