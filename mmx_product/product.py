@@ -181,7 +181,6 @@ class product_product (osv.osv):
         if categ_id:
             categ = self.pool.get('product.category').browse(cr, uid, categ_id)
             if 'racing' not in categ.complete_name.lower():
-                # result['race_ed_id']        = False
                 result['classification_id'] = False
                 #result['model_id']          = False
                 result['description_sale']  = False
