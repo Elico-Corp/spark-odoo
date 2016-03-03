@@ -98,7 +98,7 @@ class product_product (osv.osv):
     def _default_has_default_race_ed_id(self, cr, uid, ids, context=None):
         ir_model_data = self.pool.get('ir.model.data')
         try:
-            race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_default')[1]
+            race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_id_default')[1]
         except ValueError:
             race_ed_id = False
         return race_ed_id

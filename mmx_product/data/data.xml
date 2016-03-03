@@ -20,7 +20,7 @@
         <record id="product.product_race_default" model="product.race">
             <field name="name">N/A</field>
         </record>
-        <record id="product.product_race_ed_default" model="product.race.ed">
+        <record id="product.product_race_ed_id_default" model="product.race.ed">
             <field name="race_id" ref="product.product_race_default"/>
         </record>
     </data>
