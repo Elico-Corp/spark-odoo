@@ -42,7 +42,6 @@ class stock_picking_out(osv.osv):
 
     }
 
-
 class stock_picking_in(osv.osv):
     _inherit = 'stock.picking.in'
     _name = 'stock.picking.in'
