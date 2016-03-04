@@ -34,7 +34,7 @@ install:
   - pip install --upgrade pycrypto babel
   - pip install erppeek pycrypto captcha simple-crypt python-ldap
   - npm install -g less less-plugin-clean-css
-  - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - git clone --depth=1 https://github.com/Elico-Corp/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
 
