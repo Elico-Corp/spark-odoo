@@ -550,7 +550,7 @@ class MagentoAttributeOption(orm.Model):
     }
 
     _defaults = {
-        'is_default': True,
+        'is_default': False,
     }
 
 

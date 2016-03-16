@@ -42,6 +42,8 @@ class MMXProductModel(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res_id = super(MMXProductModel, self).create(
             cr, uid, vals, context=context)
+        pro_model = self.pool.get('product.model')
+        pro_model_obj = pro_model.browse(cr, uid, res_id, context=context)
 
         backend_ids = self.resolve_2many_commands(
             cr, uid, 'backend_ids', vals['backend_ids'], ['id'], context)
@@ -56,7 +58,7 @@ class MMXProductModel(orm.Model):
             for backend_id in backend_ids:
                 attribute_id = default_attribute_id
                 option_vals = {
-                    'name': vals['name'],
+                    'name': ''.join([pro_model_obj.manufacturer_id.name, r'_', pro_model_obj.name]),
                     'backend_id': backend_id.get('id'),
                     'magento_attribute_id': attribute_id,
                     'value': vals['name'],
