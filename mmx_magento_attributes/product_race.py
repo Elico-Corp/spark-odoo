@@ -19,7 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields, orm
+from openerp.osv import orm, fields
 
 
 class MMXProductRace(orm.Model):
@@ -60,13 +60,3 @@ class MMXProductRace(orm.Model):
                 cr, uid, option_vals, context=context)
 
         return res_id
-
-    def _get_all_backends(self, cr, uid, context=None):
-        '''return all the backends'''
-        backend_pool = self.pool['magento.backend']
-        ids = backend_pool.search(cr, uid, [], context=context)
-        return ids
-
-    _defaults = {
-        'backend_ids': _get_all_backends
-    }
