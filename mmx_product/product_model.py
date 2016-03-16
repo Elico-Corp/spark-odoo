@@ -41,7 +41,7 @@ class product_model(osv.osv):
     }
 
     _sql_constraints=[
-        ('name_manufacturer_uniq', 'unique(name,manufacturer_id)','name and manufacturer cannot be repeated'),
+        ('name_manufacturer_uniq', 'unique(name,manufacturer_id)', 'Manufacturer + Model cannot be duplicated'),
     ]
     
     def name_get(self, cr, uid, ids, context=None):

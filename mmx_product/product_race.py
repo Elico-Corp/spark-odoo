@@ -34,7 +34,7 @@ class product_race(osv.osv):
     }
 
     _sql_constraints=[
-        ('name_uniq', 'unique(name)','name cannot be repeated' ),
+        ('name_uniq', 'unique(name)', 'Name cannot be duplicated'),
     ]
     
     def onchange_circuit(self,cr,uid,ids, circuit_id=None,context=None):
