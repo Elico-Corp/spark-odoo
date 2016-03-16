@@ -22,7 +22,7 @@
 
 
 {'name': 'Magento Connector - Catalog Attributes',
- 'version': '2.0.0',
+ 'version': '7.0.1.0.2',
  'category': 'Connector',
  'depends': ['magentoerpconnect',
              'product_custom_attributes',
@@ -55,7 +55,7 @@ Extension for **Magento Connector**, add management of the product's catalog:
         'product_scale_view.xml',
         # 'product_manufacturers_view.xml',
         'product_model_view.xml',
-        #'product_race_view.xml',
+        'product_race_view.xml',
         'product_driver_view.xml',
     ],
     'installable': True,

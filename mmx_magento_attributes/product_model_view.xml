@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <data>  
                     <field name="name" position="after">
-                        <field name="attribute_id" invisible="1"/>
+                        <field name="attribute_id" />
                         <field name="backend_ids" groups="base.group_system"/>
                     </field>
                 </data>
