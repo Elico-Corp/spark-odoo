@@ -22,7 +22,7 @@
 
 
 {'name': 'Magento Connector - Catalog Attributes',
- 'version': '7.0.1.0.2',
+ 'version': '7.0.1.0.3',
  'category': 'Connector',
  'depends': ['magentoerpconnect',
              'product_custom_attributes',
