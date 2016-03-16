@@ -104,7 +104,7 @@ class MagentoProductAttribute(orm.Model):
         if type(ids) != type([]):
             ids = [ids]
         for m in self.browse(cr, uid, ids, context=context):
-            result.append((m.id, "%s(%s)" % (m.attribute_code, m.backend_id.name)))
+            result.append((m.id, "%s (%s)" % (m.attribute_code, m.backend_id.name)))
         return result
 
     def _frontend_input(self, cr, uid, ids, field_names, arg, context=None):
