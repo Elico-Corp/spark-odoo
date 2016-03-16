@@ -62,6 +62,7 @@ class product_driver(osv.osv):
     }
     _sql_constraints=[
         ('title_2_digit', 'CHECK(wtitles  < 100)', 'World Titles must be 2 digits. Eg: "12"'),
+        ('name_surname_uniq', 'unique(name,surname)','name and surname cannot be repeated'),
     ]
     
     

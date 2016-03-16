@@ -32,6 +32,10 @@ class product_race(osv.osv):
         'circuit_id':       fields.many2one('product.circuit', 'Circuit', ondelete='restrict'),
         'country_id':       fields.related('circuit_id', 'country_id', type='many2one', relation='res.country', string='Country', readonly=True),
     }
+
+    _sql_constraints=[
+        ('name_uniq', 'unique(name)','name cannot be repeated' ),
+    ]
     
     def onchange_circuit(self,cr,uid,ids, circuit_id=None,context=None):
         if circuit_id:

@@ -30,6 +30,10 @@ class product_scale (osv.osv):
         'name': fields.char('Scale', size=8, required=True),
     }
 
+    _sql_constraints=[
+        ('name_uniq', 'unique(name)','name cannot be repeated'),
+    ]
+
 product_scale()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
