@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="mmx_product.product_scale_form_view" />
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="attribute_id" string="Magento Attribute" groups="base.group_system"/>
+                    <field name="attribute_id" required="True" string="Magento Attribute" groups="base.group_system"/>
                     <field name="backend_ids" string="Magento Backend" groups="base.group_system"/>
                 </field>
             </field>
