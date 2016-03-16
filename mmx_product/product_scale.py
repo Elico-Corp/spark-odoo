@@ -31,7 +31,7 @@ class product_scale (osv.osv):
     }
 
     _sql_constraints=[
-        ('name_uniq', 'unique(name)','name cannot be repeated'),
+        ('name_uniq', 'unique(name)', 'Name cannot be duplicated'),
     ]
 
 product_scale()
