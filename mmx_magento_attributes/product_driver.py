@@ -61,6 +61,19 @@ class MMXProductDriver(orm.Model):
 
         return res_id
 
+    def _get_default_attribute_ids(self, cr, uid, context=None):
+        """Get the default attribute_ids."""
+        res = []
+        attribute_ids = self.pool.get(
+            'magento.product.attribute').search(
+            cr, uid, [
+                ('attribute_code', '=', 'x_mmx_race_edition'),
+                ('backend_id', '=', 'MMX')
+            ])
+        if attribute_ids:
+            res = attribute_ids[0]
+        return res
+
     def _get_all_backends(self, cr, uid, context=None):
         '''return all the backends'''
         backend_pool = self.pool['magento.backend']
@@ -68,5 +81,6 @@ class MMXProductDriver(orm.Model):
         return ids
 
     _defaults = {
-        'backend_ids': _get_all_backends
+        'backend_ids': _get_all_backends,
+        'attribute_id': _get_default_attribute_ids,
     }
