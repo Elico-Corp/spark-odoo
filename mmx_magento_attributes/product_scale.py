@@ -74,12 +74,12 @@ class MMXProductScale(orm.Model):
         return res_id
 
     def _get_default_attribute_id(self, cr, uid, context=None):
-        """Get the x_mmx_race_edition(MMX)attribute_id as default value."""
+        """Get the x_mmx_scale(MMX)attribute_id as default value."""
         res = False
         attribute_id = self.pool.get(
             'magento.product.attribute').search(
             cr, uid, [
-                ('attribute_code', '=', 'x_mmx_race_edition'),
+                ('attribute_code', '=', 'x_mmx_scale'),
                 ('backend_id', '=', 'MMX')
             ])
         if attribute_id:
