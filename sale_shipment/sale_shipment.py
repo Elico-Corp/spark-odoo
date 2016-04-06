@@ -25,6 +25,7 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import netsvc
+from lxml import etree
 
 
 class SaleShipment(orm.Model):
@@ -213,6 +214,19 @@ class ShipmentContainedProductInfo(orm.Model):
                         res[contain_info.id] += sol.final_qty
         return res
 
+    def fields_view_get(self, cr, uid, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
+        res = super(ShipmentContainedProductInfo, self).fields_view_get(cr, uid, view_id, view_type, context, toolbar=toolbar, submenu=submenu)
+        if view_type == 'tree':
+            treev = res
+            doc = etree.XML(treev['arch'])
+            for node in doc.xpath("/tree/field"):
+                if node.get('name') == "max_qty":
+                # if current user is not a manager,set max_qty readonly
+                    if not self.pool['res.users'].has_group(cr, uid, 'base.group_sale_manager'):
+                        node.set('modifiers', '{"readonly":"True"}')
+            treev['arch'] = etree.tostring(doc)
+        return res
+
     _columns = {
         'product_id': fields.many2one(
             'product.product', 'Product'),
@@ -226,6 +240,10 @@ class ShipmentContainedProductInfo(orm.Model):
             digits_compute=dp.get_precision('Product Unit of Measure')),
         'sale_shipment_id': fields.many2one(
             'sale.shipment', 'Sale Shipment', required=True),
+    }
+
+    _defaults = {
+        'max_qty': 0,
     }
 
     def unlink(self, cr, uid, ids, context=None):
