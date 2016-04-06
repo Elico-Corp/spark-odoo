@@ -220,9 +220,9 @@ class ShipmentContainedProductInfo(orm.Model):
             treev = res
             doc = etree.XML(treev['arch'])
             for node in doc.xpath("/tree/field"):
-                if node.get('name') == "max_qty":
-                # if current user is not a manager,set max_qty readonly
-                    if not self.pool['res.users'].has_group(cr, uid, 'base.group_sale_manager'):
+                if not self.pool['res.users'].has_group(cr, uid, 'base.group_sale_manager'):
+                    if node.get('name') == "max_qty" or node.get('name') == "product_id":
+                        # If current user is not a manager,set max_qty readonly
                         node.set('modifiers', '{"readonly":"True"}')
             treev['arch'] = etree.tostring(doc)
         return res
