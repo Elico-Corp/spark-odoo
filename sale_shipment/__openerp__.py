@@ -39,7 +39,7 @@
     'data': [
         'wizard/wizard_shipment_allocation_view.xml',
         'wizard/wizard_shipment_assign_sol_view.xml',
-        'sale_shipment_user.xml',
+        'sale_shipment_max_qty_user_readonly.xml',
         'sale_shipment_report.xml',
         'sale_shipment_view.xml',
         'security/ir.model.access.csv',
