@@ -25,7 +25,6 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import netsvc
-from lxml import etree
 
 
 class SaleShipment(orm.Model):
@@ -214,7 +213,6 @@ class ShipmentContainedProductInfo(orm.Model):
                         res[contain_info.id] += sol.final_qty
         return res
 
-
     _columns = {
         'product_id': fields.many2one(
             'product.product', 'Product'),
@@ -229,7 +227,6 @@ class ShipmentContainedProductInfo(orm.Model):
         'sale_shipment_id': fields.many2one(
             'sale.shipment', 'Sale Shipment', required=True),
     }
-
 
     def unlink(self, cr, uid, ids, context=None):
         '''cannot be removed when there is already sale order line
