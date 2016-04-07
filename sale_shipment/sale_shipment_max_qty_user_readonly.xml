@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="only_manager_can_modified_the_max_qty_field" model="ir.ui.view">
+            <field name="name">shipment_contained_product_info_readonly_form</field>
+            <field name="model">sale.shipment</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_sale_manager')])]"/>
+            <field name="inherit_id" ref="sale_shipment.sale_shipment_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contained_product_info_ids']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
+
