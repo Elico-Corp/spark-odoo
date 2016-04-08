@@ -23,7 +23,7 @@
 
 {
     'name': 'Sale Shipment',
-    'version': '1.0',
+    'version': '7.0.1.0.2',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
@@ -39,6 +39,7 @@
     'data': [
         'wizard/wizard_shipment_allocation_view.xml',
         'wizard/wizard_shipment_assign_sol_view.xml',
+        'sale_shipment_max_qty_user_readonly.xml',
         'sale_shipment_report.xml',
         'sale_shipment_view.xml',
         'security/ir.model.access.csv',
