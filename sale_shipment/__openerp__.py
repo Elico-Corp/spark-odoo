@@ -24,7 +24,7 @@
 
 {
     'name': 'Sale Shipment',
-    'version': '7.0.1.0.3',
+    'version': '7.0.1.0.4',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
