@@ -104,6 +104,19 @@
         <field name="view_mode">tree,form</field>
     </record>   
 
+    <record id="view_sale_shipment_search" model="ir.ui.view">
+        <field name="name">sale.shipment.search</field>
+        <field name="model">sale.shipment</field>
+        <field name="arch" type="xml">
+            <search string="Sale Shipment">
+                <field name="state" string="State"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" icon="terp-go-home"  context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
     <menuitem id="menu_sale_shipment" name="Sale Shipment" parent="sale_menu.menu_sales_operations"  action='action_sale_shipment' sequence='52'/>
 
     <record model="ir.ui.view" id="inherit_sale_order">
