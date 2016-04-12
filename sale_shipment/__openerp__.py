@@ -5,6 +5,7 @@
 #    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
 #    Alex Duan <alex.duan@elico-corp.com>
 #    Rona Lin <rona.lin@elico-corp.com>
+#    Victor M. Martin <victor.martin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,7 +24,7 @@
 
 {
     'name': 'Sale Shipment',
-    'version': '7.0.1.0.2',
+    'version': '7.0.1.0.3',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',

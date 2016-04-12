@@ -206,7 +206,7 @@
             <field name="name">shipment.contained.product.info.tree.view</field>
             <field name="model">shipment.contained.product.info</field>
             <field name="arch" type="xml">
-                <tree string="Assigned products per shipment" editable="top">
+                <tree string="Assigned products per shipment" editable="bottom">
                     <field name="product_id" />
                     <field name="max_qty" />
                     <field name="assigned_qty" />
