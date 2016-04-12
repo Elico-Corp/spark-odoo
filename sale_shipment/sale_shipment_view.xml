@@ -111,7 +111,7 @@
             <search string="Sale Shipment">
                 <field name="state" string="State"/>
                 <group expand="0" string="Group By">
-                    <filter string="State" icon="terp-go-home"  context="{'group_by':'state'}"/>
+                    <filter string="State" icon="terp-go-home" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
