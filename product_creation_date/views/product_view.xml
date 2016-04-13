@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Information']/group[1]" position="after">
                     <group>
-                        <field name="create_date" string="Creation date" attrs="{'invisible': ['|', ('create_date','=',False)]}"/>
+                        <field name="create_date" string="Creation date" attrs="{'invisible': ['|', ('create_date', '=', False)]}"/>
                     </group>
                 </xpath>
             </field>
