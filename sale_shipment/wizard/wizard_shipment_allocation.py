@@ -424,6 +424,9 @@ class WizardShipmentAllocation(orm.TransientModel):
                 new_sol_ids.append(new_sol_id)
             #if there is no sale order line on origin quation,delete it. 
             if len(so.order_line) == len(deleted_lines):
+                so_pool.write(
+                    cr, uid, [so.id],
+                    {'state': "cancel"}, context=context)
                 so_pool.unlink(cr, uid, [so.id], context=context)
         except:
             raise orm.except_orm(
