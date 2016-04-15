@@ -71,7 +71,7 @@ class SaleShipment(orm.Model):
         return res
 
     _columns = {
-        'name': fields.char('Name', size=32),
+        'name': fields.text('Name'),
         'sequence': fields.char('Sequence', size=32, select=1),
         'create_date': fields.date('Create Date', readonly=True),
         'saleorder_line_count': fields.function(

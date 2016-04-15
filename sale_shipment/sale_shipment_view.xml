@@ -30,7 +30,7 @@
                 <field name="state" widget="statusbar" nolabel="1"/>
             </header>
             <group col='4'>
-                <field name='name' colspan='2'/>
+                <field name='name' widget="char" colspan='2'/>
                 <field name='create_date'/>
                 <field name='sequence' colspan='2'/>
             </group>
