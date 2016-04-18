@@ -54,7 +54,7 @@
                         <tree string="Sale order lines">
                             <field name="name" invisible="1"/>
                             <field name="comment"/>
-                            <field name ="product_default_code"/>
+                            <field name="product_default_code"/>
                             <field name="product_id" />
                             <field name="order_id" />
                             <field name="order_partner_id" />
