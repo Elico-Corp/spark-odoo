@@ -176,12 +176,7 @@ class SaleShipment(orm.Model):
         if not ids:
             return False
         wf_service = netsvc.LocalService('workflow')
-        user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         for this in self.browse(cr, uid, ids, context=context):
-            if not user.company_id.id == 3:
-                raise orm.except_orm(
-                    _('warning'),
-                    _('You have no permission to set shipment back to draft'))
             if this.sol_ids:
                 raise orm.except_orm(
                     _('warning'),
