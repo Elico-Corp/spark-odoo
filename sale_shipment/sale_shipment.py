@@ -112,6 +112,30 @@ class SaleShipment(orm.Model):
         'state': 'draft'
     }
 
+    def set_to_done(self, cr, uid, ids, context=None):
+        if not isinstance(ids, list):
+            ids = [ids]
+        if not ids:
+            ids = self.search(cr, uid, [], context=context)
+        user = self.pool['res.users'].browse(cr, uid, uid, context=context)
+        company_id = user.company_id.id
+        count = self.pool['stock.move'].search(
+            cr, uid,
+            [('sale_shipment_id', 'in', ids), ('state', '!=', 'done'),
+                ('company_id', '=', company_id)])
+
+        if not count:
+            self.write(cr, uid, ids, {'state': 'done'})
+
+            sale_orders = self.pool['sale.order'].search(
+                cr, uid,
+                [('sale_shipment_id', 'in', ids),
+                    ('state', '!=', 'done'), ('company_id', '=', company_id)])
+            if sale_orders:
+                self.pool['sale.order'].write(
+                    cr, uid, sale_orders, {'state': 'progress'})
+        return True
+
     def get_shipment_capacity_information(
             self, shipment, product):
         '''Get shipment capacity information:

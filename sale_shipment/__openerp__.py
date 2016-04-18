@@ -38,6 +38,7 @@
     'sequence': 10,
     'demo': [],
     'data': [
+        'data/sale_shipment_data.xml',
         'wizard/wizard_shipment_allocation_view.xml',
         'wizard/wizard_shipment_assign_sol_view.xml',
         'sale_shipment_max_qty_user_readonly.xml',
