@@ -23,7 +23,7 @@
 
 {
     'name':         'Purchase Order Line',
-    'version':      '7.0.1.0.1',
+    'version':      '7.0.1.0.2',
     'category':     'Purchase',
     'sequence':     19,
     'summary':      'Purchase Order Line',
