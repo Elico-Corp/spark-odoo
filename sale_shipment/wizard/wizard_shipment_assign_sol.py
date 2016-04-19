@@ -20,6 +20,8 @@
 #
 ##############################################################################
 from openerp.osv import orm, fields
+from openerp.tools.translate import _
+from collections import Counter
 
 
 class WizardShipmentAssignSOL(orm.TransientModel):
@@ -80,6 +82,19 @@ class WizardShipmentAssignSOL(orm.TransientModel):
         res['domain'] = {'sol_ids': domain}
         return res
 
+    def _is_product_ids_unique(self, wizard):
+        """
+        Check the product ids.
+        Products in SOL assigned to shipment, should be different.
+        """
+        if len(
+                [sol.product_id.id for sol in wizard.sol_ids]) > len(
+                    Counter([sol.product_id.id for sol in wizard.sol_ids])):
+            raise orm.except_orm(
+                _('Error!'),
+                _('You cannot have the same product twice'))
+        return True
+
     def shipment_assign_sol(self, cr, uid, ids, context=None):
         '''This method is used to assign the sale order lines to
         the sale shipment. It's used in the wizard'''
@@ -89,14 +104,15 @@ class WizardShipmentAssignSOL(orm.TransientModel):
         active_id = context.get('active_id', False)
         if not active_id:
             return False
-        for sol in wizard.sol_ids:
-            # to be compatible with inter company API
-            if sol.order_id:
-                sol.order_id.write(
-                    {'order_line':
-                        [(1, sol.id, {'sale_shipment_id': active_id})]},
-                    context=context)
-            else:
-                sol.write({
-                    'sale_shipment_id': active_id,
-                }, context=context)
+        if self._is_product_ids_unique(wizard):
+            for sol in wizard.sol_ids:
+                # to be compatible with inter company API
+                if sol.order_id:
+                    sol.order_id.write(
+                        {'order_line':
+                            [(1, sol.id, {'sale_shipment_id': active_id})]},
+                        context=context)
+                else:
+                    sol.write({
+                        'sale_shipment_id': active_id,
+                    }, context=context)
