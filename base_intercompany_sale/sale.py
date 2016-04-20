@@ -396,6 +396,11 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             state = 'draft'
         return {'state': state}
 
+    def so2so_sale_shipment(self, record):
+        res = {}
+        if record.sale_shipment_id:
+            res['sale_shipment_id'] = record.sale_shipment_id.id
+        return res
 
 @icops
 class SaleOrderLineExportMapper(ICOPSExportMapper):
@@ -462,6 +467,12 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
         res = {}
         if record.sale_shipment_id:
             res['sale_shipment_id'] = record.sale_shipment_id.id
+        return res
+
+    def so2so_comment(self, record):
+        res = {}
+        if record.comment:
+            res['comment'] = record.comment
         return res
 
     def so2po_date_planned(self, record):
