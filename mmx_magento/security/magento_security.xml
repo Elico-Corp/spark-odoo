@@ -5,5 +5,8 @@
             <field name="name">Connector user</field>
             <field name="category_id" ref="connector.module_category_connector"/>
         </record>
+        <record id="connector.group_connector_manager" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('base.group_sale_manager')), (4, ref('group_connector_user'))]"/>
+        </record>
     </data>
 </openerp>
