@@ -7,6 +7,13 @@ Sum Of Qty And Final Qty
 ========================
 
 This module add the sum at the bottom of Qty and Final Qty volume in SO/DO/PO.
+and also add the “Total number of lines” on top right of the flowing menu:
+* SO/Quotation line;
+* PO/Quotation line;
+* Delivery order line;
+* Incoming shipment line;
+* Internal move line;
+
 
 Installation
 ============
