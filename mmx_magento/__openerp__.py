@@ -22,7 +22,7 @@
 
 {
     'name': 'MMX Magento',
-    'version': '1.0.0',
+    'version': '7.0.1.0.2',
     'category': 'Connector',
     'depends': ['account',
                 'magentoerpconnect',
@@ -43,6 +43,7 @@
              'product_view.xml',
              'pricelist_view.xml',
              'company_view.xml',
+             'security/magento_security.xml',
              # 'stock_view.xml',
              'security/ir.model.access.csv',
              'wizard/wizard_mass_binding_view.xml'],
