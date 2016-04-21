@@ -113,23 +113,28 @@ class SaleShipment(orm.Model):
     }
 
     def set_to_done(self, cr, uid, context=None):
-        ids = self.pool['sale.shipment'].search(cr, uid, [], context=context)
+        """
+        Get all the SS which are in confirmed state.
+        set them to Done when all DOs are Done.
+        """
+        obj_ss = self.pool['sale.shipment']
+        ids = obj_ss.search(cr, uid, [
+            ('state', '=', 'confirmed')
+        ], context=context)
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
-        count = self.pool['stock.move'].search(
-            cr, uid,
-            [('sale_shipment_id', 'in', ids), ('state', '!=', 'done'),
-                ('company_id', '=', company_id)])
-        if not count:
-            self.write(cr, uid, ids, {'state': 'done'})
-
-            sale_orders = self.pool['sale.order'].search(
-                cr, uid,
-                [('sale_shipment_id', 'in', ids),
-                    ('state', '!=', 'done'), ('company_id', '=', company_id)])
-            if sale_orders:
-                self.pool['sale.order'].write(
-                    cr, uid, sale_orders, {'state': 'progress'})
+        objpickingout = self.pool['stock.picking.out']
+        for shipment_id in ids:
+            delivery_order_ids = objpickingout.search(cr, uid, [
+                ('sale_shipment_id', '=', shipment_id),
+                ('company_id', '=', company_id)
+            ])
+            if delivery_order_ids:
+                for move in objpickingout.browse(cr, uid, delivery_order_ids):
+                    if move.state != "done":
+                        break
+                    else:
+                        obj_ss.write(cr, uid, shipment_id, {'state': 'done'})
         return True
 
     def get_shipment_capacity_information(
