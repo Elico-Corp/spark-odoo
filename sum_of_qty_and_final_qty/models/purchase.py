@@ -10,8 +10,8 @@ class purchase_order(osv.osv):
 
     def _quotation_line_count(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
-        for sol in self.browse(cr, uid, ids, context=context):
-            res[sol.id] = len(sol.order_line)
+        for pol in self.browse(cr, uid, ids, context=context):
+            res[pol.id] = len(pol.order_line)
         return res
 
     _columns = {
