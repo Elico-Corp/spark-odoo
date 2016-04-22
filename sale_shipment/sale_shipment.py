@@ -25,6 +25,7 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import netsvc
+from collections import Counter
 
 
 class SaleShipment(orm.Model):
@@ -213,6 +214,15 @@ class ShipmentContainedProductInfo(orm.Model):
                         res[contain_info.id] += sol.final_qty
         return res
 
+    def _check_product_id(self, cr, uid, ids, context=None):
+        for scpi in self.browse(cr, uid, ids, context=context):
+            return Counter(
+                [
+                    p.product_id.id for p in
+                    scpi.sale_shipment_id.contained_product_info_ids
+                ])[scpi.product_id.id] < 2
+        return True
+
     _columns = {
         'product_id': fields.many2one(
             'product.product', 'Product'),
@@ -227,6 +237,14 @@ class ShipmentContainedProductInfo(orm.Model):
         'sale_shipment_id': fields.many2one(
             'sale.shipment', 'Sale Shipment', required=True),
     }
+
+    _constraints = [
+        (
+            _check_product_id,
+            'Please do not set a product that already is on the list',
+            ['product_id']
+        )
+    ]
 
     def unlink(self, cr, uid, ids, context=None):
         '''cannot be removed when there is already sale order line
