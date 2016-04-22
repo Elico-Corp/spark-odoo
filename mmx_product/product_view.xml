@@ -104,7 +104,7 @@
                             
                             <group colspan="2">
 	                           	<field name="product_manager"/>
-	                           	<field name="type" groups="base.group_system"/>
+	                           	<field name="type" groups="account.group_account_manager"/>
 	                           	<field name="dbox_approve"/>
 	                           	<field name="customs_description"/>
                             </group>
