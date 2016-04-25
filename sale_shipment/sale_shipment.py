@@ -215,12 +215,18 @@ class ShipmentContainedProductInfo(orm.Model):
         return res
 
     def _check_product_id(self, cr, uid, ids, context=None):
-        for scpi in self.browse(cr, uid, ids, context=context):
-            return Counter(
-                [
-                    p.product_id.id for p in
-                    scpi.sale_shipment_id.contained_product_info_ids
-                ])[scpi.product_id.id] < 2
+        for contained_info in self.browse(
+                cr, uid, ids, context=context):
+            ss_id = contained_info.sale_shipment_id
+            if ss_id:
+                prod_ids = ss_id.contained_product_info_ids
+                has_dupl = Counter(
+                    [
+                        product.product_id.id for product in prod_ids
+                    ]
+                )[contained_info.product_id.id] >= 2
+                if has_dupl:
+                    return False
         return True
 
     _columns = {
