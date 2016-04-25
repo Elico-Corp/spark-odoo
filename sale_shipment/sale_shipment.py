@@ -115,7 +115,7 @@ class SaleShipment(orm.Model):
     def set_to_done(self, cr, uid, context=None):
         """
         Get all the SS which are in confirmed state.
-        set them to Done when all DOs are Done.
+        set SS to Done when all SM are Done.
         """
         obj_ss = self.pool['sale.shipment']
         ids = obj_ss.search(cr, uid, [
@@ -123,19 +123,24 @@ class SaleShipment(orm.Model):
         ], context=context)
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
-        objpickingout = self.pool['stock.picking.out']
+        obj_stock_move = self.pool['stock.move']
         for shipment_id in ids:
-            delivery_order_ids = objpickingout.search(cr, uid, [
+            stock_move_ids = obj_stock_move.search(cr, uid, [
                 ('sale_shipment_id', '=', shipment_id),
                 ('company_id', '=', company_id)
-            ])
-            if delivery_order_ids:
-                for move in objpickingout.browse(cr, uid, delivery_order_ids):
+            ],
+                context=context)
+            if stock_move_ids:
+                all_confirmed = True
+                for move in obj_stock_move.browse(cr, uid, stock_move_ids):
                     if move.state != "done":
+                        all_confirmed = False
                         break
-                    else:
-                        obj_ss.write(cr, uid, shipment_id, {'state': 'done'})
-        return True
+                if all_confirmed:
+                    obj_ss.write(cr, uid, shipment_id, {'state': 'done'})
+                    return True
+            else:
+                return False
 
     def get_shipment_capacity_information(
             self, shipment, product):
