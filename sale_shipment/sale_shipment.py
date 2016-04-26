@@ -223,8 +223,7 @@ class ShipmentContainedProductInfo(orm.Model):
             if shipment:
                 products = shipment.contained_product_info_ids
                 prod_ids = [product.product_id.id for product in products]
-                has_dupl = Counter(prod_ids)[contained_info.product_id.id] > 1
-                if has_dupl:
+                if Counter(prod_ids)[contained_info.product_id.id] > 1:
                     return False
         return True
 
