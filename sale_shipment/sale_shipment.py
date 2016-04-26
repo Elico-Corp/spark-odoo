@@ -25,6 +25,7 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import netsvc
+from collections import Counter
 
 
 class SaleShipment(orm.Model):
@@ -213,6 +214,19 @@ class ShipmentContainedProductInfo(orm.Model):
                         res[contain_info.id] += sol.final_qty
         return res
 
+    def _check_product_id(self, cr, uid, ids, context=None):
+        for contained_info in self.browse(
+                cr, uid, ids, context=context):
+            if not contained_info.sale_shipment_id:
+                continue
+            shipment = contained_info.sale_shipment_id
+            if shipment:
+                products = shipment.contained_product_info_ids
+                prod_ids = [product.product_id.id for product in products]
+                if Counter(prod_ids)[contained_info.product_id.id] > 1:
+                    return False
+        return True
+
     _columns = {
         'product_id': fields.many2one(
             'product.product', 'Product'),
@@ -227,6 +241,14 @@ class ShipmentContainedProductInfo(orm.Model):
         'sale_shipment_id': fields.many2one(
             'sale.shipment', 'Sale Shipment', required=True),
     }
+
+    _constraints = [
+        (
+            _check_product_id,
+            'Please do not choose a product that already exist',
+            ['product_id']
+        )
+    ]
 
     def unlink(self, cr, uid, ids, context=None):
         '''cannot be removed when there is already sale order line
