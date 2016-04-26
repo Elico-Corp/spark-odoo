@@ -118,7 +118,7 @@ class SaleShipment(orm.Model):
         set SS to Done when all SM are Done.
         """
         obj_ss = self.pool['sale.shipment']
-        ids = obj_ss.search(
+        sale_shipment_ids = obj_ss.search(
             cr,
             uid,
             [
@@ -129,7 +129,7 @@ class SaleShipment(orm.Model):
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
         obj_stock_move = self.pool['stock.move']
-        for shipment_id in ids:
+        for shipment_id in sale_shipment_ids:
             stock_move_ids = obj_stock_move.search(
                 cr, uid, [
                     ('sale_shipment_id', '=', shipment_id),
