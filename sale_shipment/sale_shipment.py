@@ -118,18 +118,24 @@ class SaleShipment(orm.Model):
         set SS to Done when all SM are Done.
         """
         obj_ss = self.pool['sale.shipment']
-        ids = obj_ss.search(cr, uid, [
-            ('state', '=', 'confirmed')
-        ], context=context)
+        ids = obj_ss.search(
+            cr,
+            uid,
+            [
+                ('state', '=', 'confirmed')
+            ],
+            context=context
+        )
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
         obj_stock_move = self.pool['stock.move']
         for shipment_id in ids:
-            stock_move_ids = obj_stock_move.search(cr, uid, [
-                ('sale_shipment_id', '=', shipment_id),
-                ('company_id', '=', company_id)
-            ],
-                context=context)
+            stock_move_ids = obj_stock_move.search(
+                cr, uid, [
+                    ('sale_shipment_id', '=', shipment_id),
+                    ('company_id', '=', company_id)
+                ], context=context
+            )
             if stock_move_ids:
                 all_confirmed = True
                 for move in obj_stock_move.browse(cr, uid, stock_move_ids):
@@ -138,9 +144,6 @@ class SaleShipment(orm.Model):
                         break
                 if all_confirmed:
                     obj_ss.write(cr, uid, shipment_id, {'state': 'done'})
-                    return True
-            else:
-                return False
 
     def get_shipment_capacity_information(
             self, shipment, product):
