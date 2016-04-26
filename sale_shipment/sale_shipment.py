@@ -217,15 +217,13 @@ class ShipmentContainedProductInfo(orm.Model):
     def _check_product_id(self, cr, uid, ids, context=None):
         for contained_info in self.browse(
                 cr, uid, ids, context=context):
-            if contained_info.sale_shipment_id:
-                has_dupl = Counter(
-                    [
-                        product.product_id.id
-                        for product
-                        in contained_info.sale_shipment_id
-                        .contained_product_info_ids
-                    ]
-                )[contained_info.product_id.id] > 1
+            if not contained_info.sale_shipment_id:
+                continue
+            shipment = contained_info.sale_shipment_id
+            if shipment:
+                products = shipment.contained_product_info_ids
+                prod_ids = [product.product_id.id for product in products]
+                has_dupl = Counter(prod_ids)[contained_info.product_id.id] > 1
                 if has_dupl:
                     return False
         return True
