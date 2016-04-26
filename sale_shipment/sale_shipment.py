@@ -119,12 +119,7 @@ class SaleShipment(orm.Model):
         """
         obj_ss = self.pool['sale.shipment']
         sale_shipment_ids = obj_ss.search(
-            cr,
-            uid,
-            [
-                ('state', '=', 'confirmed')
-            ],
-            context=context
+            cr, uid, [('state', '=', 'confirmed')], context=context
         )
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
