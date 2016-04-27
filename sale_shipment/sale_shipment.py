@@ -124,6 +124,7 @@ class SaleShipment(orm.Model):
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_id = user.company_id.id
         obj_stock_move = self.pool['stock.move']
+        wf_service = netsvc.LocalService('workflow')
         for shipment_id in sale_shipment_ids:
             stock_move_ids = obj_stock_move.search(
                 cr, uid, [
@@ -138,7 +139,10 @@ class SaleShipment(orm.Model):
                         all_confirmed = False
                         break
                 if all_confirmed:
-                    obj_ss.write(cr, uid, shipment_id, {'state': 'done'})
+                    wf_service.trg_validate(
+                        uid, 'sale.shipment', shipment_id,
+                        'signal_shipment_close', cr
+                    )
 
     def get_shipment_capacity_information(
             self, shipment, product):
