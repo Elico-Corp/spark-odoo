@@ -32,9 +32,9 @@ id_group_product_manager_team,Product Manager team,mmx_product.model_product_tea
 id_group_product_manager_product,Product Manager Product,product.model_product_product,mmx_product.group_product_manager,1,1,1,1
 id_group_product_manager_product_template,Product Manager Product Template,product.model_product_template,mmx_product.group_product_manager,1,1,1,1
 ,,,,,,,
-product.access_product_product_sale_manager,Product Read Only salemanager,model_product_product,base.group_sale_manager,1,0,0,0
+product.access_product_product_sale_manager,product.product sale_manager,model_product_product,base.group_sale_manager,1,1,1,1
 stock.access_product_product_stock_manager,Product Read Only stock_manager,product.model_product_product,stock.group_stock_manager,1,0,0,0
-stock.access_product_product_stock_user,Product Read Only stock_user,product.model_product_product,stock.group_stock_user,1,0,0,0
+stock.access_product_product_stock_user,product.product sale_manager,product.model_product_product,stock.group_stock_user,1,1,1,1
 purchase.access_product_product_purchase_manager,Product Read Only purchase_manager,product.model_product_product,purchase.group_purchase_manager,1,0,0,0
 product.template salemanager,Product Template Read Only salemanager,account.model_product_template,base.group_sale_manager,1,0,0,0
 product.template stock_manager,Product Template Read Only stock_manager,account.model_product_template,stock.group_stock_manager,1,0,0,0
