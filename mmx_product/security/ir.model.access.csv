@@ -34,7 +34,7 @@ id_group_product_manager_product_template,Product Manager Product Template,produ
 ,,,,,,,
 product.access_product_product_sale_manager,product.product sale_manager,model_product_product,base.group_sale_manager,1,1,1,1
 stock.access_product_product_stock_manager,Product Read Only stock_manager,product.model_product_product,stock.group_stock_manager,1,0,0,0
-stock.access_product_product_stock_user,product.product sale_manager,product.model_product_product,stock.group_stock_user,1,1,1,1
+stock.access_product_product_stock_user,product.product stock_user,product.model_product_product,stock.group_stock_user,1,1,1,1
 purchase.access_product_product_purchase_manager,Product Read Only purchase_manager,product.model_product_product,purchase.group_purchase_manager,1,0,0,0
 product.template salemanager,Product Template Read Only salemanager,account.model_product_template,base.group_sale_manager,1,0,0,0
 product.template stock_manager,Product Template Read Only stock_manager,account.model_product_template,stock.group_stock_manager,1,0,0,0
