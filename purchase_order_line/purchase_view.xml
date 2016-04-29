@@ -22,7 +22,7 @@
                 <tree string="Purchase Order Lines" create="false" editable="top" colors="red:state=='draft';green:state=='confirmed';green:state=='done';gray:state=='cancel';">
                     <field name="order_id" 		  	readonly="1"/>
                      <button name="link_to_order" 	string="SO" type="object" icon="oe_m2o_open"/>
-                    <field name="name"/>
+                    <field name="name"              invisible="1"/>
                     <field name="comment"/>
                     <field name="job_number"/>
                     <field name="partner_id" 		string="Supplier" invisible="1"/>
