@@ -159,7 +159,7 @@
     <field name="model">sale.order.line</field>
     <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree_no_cart"/>
     <field name="arch" type="xml">
-        <xpath expr="//tree" position="inside">
+        <xpath expr="//tree/field[@name='sequence']" position="before">
             <field name="announcement_id"/>
             <field name="cut_off_date" />
         </xpath>
