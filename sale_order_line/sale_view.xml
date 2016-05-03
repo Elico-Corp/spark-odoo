@@ -9,7 +9,10 @@
             <field name="arch" type="xml">
                 <tree string="Sales Order Lines" editable="top" create="0" colors="red:state=='draft';green:state=='confirmed';grey:state=='done'">
                     <field name="order_id" readonly="1"/>
-                    <button name="link_to_order"        string="SO" type="object" icon="gtk-find"/>
+                    <button name="link_to_order"
+                        string="SO"
+                        type="object"
+                        icon="gtk-find"/>
                     <field name="order_partner_id" readonly="1"/>
                     <field name="product_default_code"/>
                     <field name="product_id" />
