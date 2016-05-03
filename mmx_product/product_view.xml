@@ -158,17 +158,5 @@
             	</xpath>
             </field>
         </record>
-
-        <record id="view_magento_product_form" model="ir.ui.view">
-            <field name="name">magento.product.product.form</field>
-            <field name="model">magento.product.product</field>
-            <field name="inherit_id" ref="magentoerpconnect.view_magento_product_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='magento_id']" position="attributes">
-                    <attribute name="groups">base.group_user</attribute>
-                </xpath>
-            </field>
-        </record>
-
 	</data>
 </openerp>
