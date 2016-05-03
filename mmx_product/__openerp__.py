@@ -29,7 +29,7 @@
     'description' : """
     This module contains all modification related to product except product State and MMX_type (MMX Product Advance)
         """,
-    'depends': ['base', 'product', 'stock', 'purchase'],
+    'depends': ['base','product', 'stock', 'purchase'],
     'category': '',
     'sequence': 10,
     'demo': [],
