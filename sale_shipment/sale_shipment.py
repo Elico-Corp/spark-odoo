@@ -99,6 +99,7 @@ class SaleShipment(orm.Model):
             'Stock Moves', readonly=True),
         'state': fields.selection(
             [('draft', 'Draft'),
+             ('assignment', ' SOL Assignment'),
              ('confirmed', 'Confirmed'),
              ('done', 'Done')],
             'State'),
@@ -139,6 +140,9 @@ class SaleShipment(orm.Model):
     # workflow related functions
     def shipment_draft(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'draft'}, context=context)
+
+    def shipment_assignment(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'assignment'}, context=context)
 
     def shipment_confirm(self, cr, uid, ids, context=None):
         '''used in the workflow activity'''

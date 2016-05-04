@@ -21,6 +21,7 @@
 #
 ##############################################################################
 from openerp.osv import fields, orm
+from openerp import netsvc
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
@@ -441,7 +442,6 @@ class WizardShipmentAllocation(orm.TransientModel):
         so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
         shipment_id = wizard.shipment_id and wizard.shipment_id.id or None,
-
         # check before splitting the sale order lines.
         self._check_split(wizard)
 
@@ -483,7 +483,10 @@ class WizardShipmentAllocation(orm.TransientModel):
             except:
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
-
+        if isinstance(shipment_id, (list, tuple)):
+            shipment_id = shipment_id[0]
+        wkf_service = netsvc.LocalService("workflow")
+        wkf_service.trg_validate(uid, 'sale.shipment', shipment_id, 'signal_shipment_confirm', cr)
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {
