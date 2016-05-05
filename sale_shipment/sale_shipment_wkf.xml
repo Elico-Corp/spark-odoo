@@ -17,8 +17,7 @@
 
         <record model="workflow.activity" id="act_assignment">
             <field name="wkf_id" ref="wkf_shipment" />
-            <field name="flow_start" eval="False"/>
-            <field name="name">draft</field>
+            <field name="name">assignment</field>
             <field name="kind">function</field>
             <field name="action">shipment_assignment()</field>
         </record>
