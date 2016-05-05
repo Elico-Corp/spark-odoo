@@ -489,7 +489,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             wkf_service.trg_validate(
                 uid,
                 'sale.shipment',
-                shipment_id.id,
+                shipment_id[0],
                 'signal_shipment_confirm',
                 cr
             )
