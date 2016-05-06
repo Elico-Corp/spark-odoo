@@ -48,24 +48,6 @@ class sale_order(osv.osv):
                     return False
         return True
 
-    def action_button_confirm_extend(self, cr, uid, ids, context=None):
-        """
-        open wizard, split the order,
-        in the wizard,you can split order and comfirm
-        """
-        need_wizard = True
-
-        if need_wizard:
-            return {
-                'type': 'ir.actions.act_window',
-                'name': _('Sales Order'),
-                'res_model': 'wizard.order.split',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'target': 'new',
-                'nodestroy': True,
-            }
-
 
 class sale_order_line(osv.osv):
     _inherit = 'sale.order.line'
