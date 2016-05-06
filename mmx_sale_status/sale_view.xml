@@ -27,7 +27,6 @@
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group" position="inside">
 			        <field name="final_qty"/>
 		        </xpath>
-		        <!-- Remove confirm button  rona.lin@elico-corp.com May 6th, 2016-->
 		        <xpath expr="//button[@name='action_button_confirm']"
                     position="replace">
 		        </xpath>

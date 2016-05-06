@@ -11,7 +11,7 @@
                         string="Unlock"
                         groups="base.group_sale_manager"
                         type="object"
-                        attrs="{'invisible':[('locked', '=', False)]}"
+                        attrs="{'invisible': [('locked', '=', False)]}"
                         class="oe_highlight"/>
                 </xpath>
                 <xpath expr="//page[last()]" position="after">
