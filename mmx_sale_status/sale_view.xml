@@ -28,7 +28,7 @@
 			        <field name="final_qty"/>
 		        </xpath>
 		        <xpath expr="//button[@name='action_button_confirm']"
-                        position="replace">
+                            position="replace">
 		        </xpath>
 		        
 		    </field>
