@@ -26,7 +26,11 @@
                 <button string="Assign SOL" name="action_assign_sale_order_lines" type="object" states="confirmed" class="oe_highlight"/>
                 <button name="%(action_shipment_allocation_wizard_qty_assign)d" string="Assign final quantity" type="action" states="confirmed"/>
                 <button name="%(action_shipment_allocation_wizard_sol_confirm)d" string="Confirm  All SOL" type="action" states="confirmed"/>
-                <button name="signal_shipment_close" string="Close shipment" states="confirmed" type="workflow"/>
+                <button name="signal_shipment_close"
+                    string="Close shipment"
+                    states="confirmed"
+                    type="workflow"
+                    invisible="1"/>
                 <field name="state" widget="statusbar" nolabel="1"/>
             </header>
             <group col='4'>
