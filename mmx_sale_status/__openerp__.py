@@ -22,7 +22,7 @@
 
 {
     'name': 'MMX Sale',
-    'version': '1.0',
+    'version': '7.0.1.1.0',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',

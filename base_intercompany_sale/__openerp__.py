@@ -23,7 +23,7 @@
 ##############################################################################
 
 {'name': 'Base Intercompany Sale',
- 'version': '7.0.1.0.4',
+ 'version': '7.0.1.0.5',
  'category': 'Sales Management',
  'depends': ['base_intercompany', 'sale', 'purchase'],
  'author': 'Elico Corp',
