@@ -24,8 +24,8 @@
                 <button string="Confirm Shipment"
                         name="signal_shipment_assignment"
                         states="draft"
-                        groups="sale_shipment.group_sale_shipment_manager"
-                        type="workflow"/>
+                        type="workflow"
+                        groups="sale_shipment.group_sale_shipment_manager"/>
                 <button name="back2draft" string="Back to Draft" type="object" states="assigned" groups="sale_shipment.group_sale_shipment_manager"/>
                 <button string="Assign SOL" name="action_assign_sale_order_lines" type="object" states="assigned" class="oe_highlight"/>
                 <button name="%(action_shipment_allocation_wizard_qty_assign)d" string="Assign final quantity" type="action" states="assigned"/>
@@ -37,8 +37,8 @@
                         groups="sale_shipment.group_sale_shipment_manager"/>
                 <button name="signal_shipment_close"
                         string="Close shipment"
-                        attrs="{'invisible': [('state','not in',('assigned', 'confirmed'))]}"
                         type="workflow"
+                        attrs="{'invisible': [('state','not in',('assigned', 'confirmed'))]}"
                         groups="sale_shipment.group_sale_shipment_manager"/>
                 <field name="state" widget="statusbar" nolabel="1"/>
             </header>
