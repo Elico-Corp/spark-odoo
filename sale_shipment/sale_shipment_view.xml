@@ -22,14 +22,17 @@
         <form string='Sale Shipment' version='7.0'>
             <header>
                 <button string="Confirm Shipment"
-                    name="signal_shipment_assignment"
-                    states="draft"
-                    type="workflow"/>
+                        name="signal_shipment_assignment"
+                        states="draft"
+                        type="workflow"/>
                 <button name="back2draft" string="Back to Draft" type="object" states="assigned" groups="sale_shipment.group_sale_shipment_manager"/>
                 <button string="Assign SOL" name="action_assign_sale_order_lines" type="object" states="assigned" class="oe_highlight"/>
                 <button name="%(action_shipment_allocation_wizard_qty_assign)d" string="Assign final quantity" type="action" states="assigned"/>
                 <button name="%(action_shipment_allocation_wizard_sol_confirm)d" string="Confirm  All SOL" type="action" states="assigned"/>
-                <button name="signal_shipment_close" string="Close shipment" states="assigned" type="workflow"/>
+                <button name="signal_shipment_close"
+                        string="Close shipment"
+                        attrs="{'invisible': [('state','not in',('assigned', 'confirmed'))]}"
+                        type="workflow"/>
                 <field name="state" widget="statusbar" nolabel="1"/>
             </header>
             <group col='4'>
