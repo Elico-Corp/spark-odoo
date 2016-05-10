@@ -67,7 +67,7 @@
                 <form string="Magento Product" version="7.0">
                     <group>
                         <field name="backend_id" on_change="onchange_backend_id(backend_id)"/>
-                        <field name="magento_id" groups="base.group_system"/>
+                        <field name="magento_id"/>
                         <field name="created_at" readonly="1" groups="base.group_system"/>
                         <field name="updated_at" readonly="1" groups="base.group_system"/>
                         <field name="visibility" groups="base.group_system"/>
