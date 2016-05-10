@@ -21,7 +21,11 @@
     <field name="arch" type="xml">
         <form string='Sale Shipment' version='7.0'>
             <header>
-                <button string="Confirm Shipment" name="signal_shipment_confirm" states="draft" type="workflow" groups="sale_shipment.group_sale_shipment_manager"/>
+                <button string="Confirm Shipment"
+                        name="signal_shipment_confirm"
+                        states="draft"
+                        type="workflow"
+                        groups="sale_shipment.group_sale_shipment_manager"/>
                 <button name="back2draft" string="Back to Draft" type="object" states="confirmed" groups="sale_shipment.group_sale_shipment_manager"/>
                 <button string="Assign SOL" name="action_assign_sale_order_lines" type="object" states="confirmed" class="oe_highlight"/>
                 <button name="%(action_shipment_allocation_wizard_qty_assign)d" string="Assign final quantity" type="action" states="confirmed"/>
