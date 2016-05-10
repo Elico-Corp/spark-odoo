@@ -52,6 +52,13 @@
             <field name="signal">signal_shipment_confirm</field>
         </record>
 
+        <!-- back to assigned t -->
+        <record model="workflow.transition" id="transition_confirm_to_assigned">
+            <field name="act_from" ref="act_confirm" />
+            <field name="act_to" ref="act_assignment" />
+            <field name="signal">signal_shipment_back_to_assigned</field>
+        </record>
+
         <!-- close the shipment -->
         <record model="workflow.transition" id="transition_confirm_close">
             <field name="act_from" ref="act_confirm" />

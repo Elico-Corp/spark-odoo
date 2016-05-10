@@ -198,6 +198,31 @@ class SaleShipment(orm.Model):
             wf_service.trg_create(uid, 'sale.shipment', this.id, cr)
         return True
 
+    def back2assigned(self, cr, uid, ids, context=None):
+        '''set back to assigned, condition:
+            - no delivery order line created.
+
+            This method cannot be used for massing setting back
+        to draft, so this method doesnt raise exception. '''
+        shipment_obj = self.browse(cr, uid, ids, context=context)
+        wkf_service = netsvc.LocalService("workflow")
+        if not ids:
+            return False
+        wf_service = netsvc.LocalService('workflow')
+        for this in shipment_obj:
+            if this.picking_ids:
+                raise orm.except_orm(
+                    _('warning'),
+                    _('You cannot set shipment back to assigned'
+                        ' if the delivery order already exists.'))
+            wkf_service.trg_validate(
+                uid,
+                'sale.shipment',
+                this.id,
+                'signal_shipment_back_to_assigned',
+                cr
+            )
+        return True
 
 class ShipmentContainedProductInfo(orm.Model):
     _name = 'shipment.contained.product.info'
