@@ -22,7 +22,6 @@
         <form string='Sale Shipment' version='7.0'>
             <header>
                 <button string="Confirm Shipment"
-<<<<<<< HEAD
                         name="signal_shipment_assignment"
                         states="draft"
                         type="workflow"
