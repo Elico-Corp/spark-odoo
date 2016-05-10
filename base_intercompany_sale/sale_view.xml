@@ -7,7 +7,12 @@
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <xpath expr="//header/button[last()]" position="after">
-                    <button name="action_unlock" string="Unlock" type="object" attrs="{'invisible':[('locked', '=', False)]}" class="oe_highlight" />
+                    <button name="action_unlock"
+                            string="Unlock"
+                            groups="base.group_sale_manager"
+                            type="object"
+                            attrs="{'invisible': [('locked', '=', False)]}"
+                            class="oe_highlight"/>
                 </xpath>
                 <xpath expr="//page[last()]" position="after">
                     <page string="ICOPS">

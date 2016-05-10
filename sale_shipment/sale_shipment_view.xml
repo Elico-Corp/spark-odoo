@@ -22,6 +22,7 @@
         <form string='Sale Shipment' version='7.0'>
             <header>
                 <button string="Confirm Shipment"
+<<<<<<< HEAD
                         name="signal_shipment_assignment"
                         states="draft"
                         type="workflow"
@@ -200,7 +201,7 @@
            <field name="model">sale.order.line</field>
            <field name="inherit_id" ref="sale_order_line.inherit_view_order_line_tree_no_cart"/>
            <field name="arch" type="xml">
-               <xpath expr="//tree" position="inside">
+               <xpath expr="//tree/field[@name='sequence']" position="after">
                    <field name="sale_shipment_id" readonly='1'/>
                </xpath>
         </field>
