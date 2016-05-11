@@ -487,11 +487,8 @@ class WizardShipmentAllocation(orm.TransientModel):
         if shipment_id:
             wkf_service = netsvc.LocalService("workflow")
             wkf_service.trg_validate(
-                uid,
-                'sale.shipment',
-                shipment_id[0],
-                'signal_shipment_confirm',
-                cr
+                uid, 'sale.shipment', shipment_id[0],
+                'signal_shipment_confirm', cr
             )
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]

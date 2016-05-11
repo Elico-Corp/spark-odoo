@@ -142,13 +142,7 @@ class SaleShipment(orm.Model):
         return self.write(cr, uid, ids, {'state': 'draft'}, context=context)
 
     def shipment_assignment(self, cr, uid, ids, context=None):
-        return self.write(
-            cr,
-            uid,
-            ids,
-            {'state': 'assigned'},
-            context=context
-        )
+        return self.write(cr, uid, ids, {'state': 'assigned'}, context=context)
 
     def shipment_confirm(self, cr, uid, ids, context=None):
         '''used in the workflow activity'''
@@ -210,17 +204,14 @@ class SaleShipment(orm.Model):
             return False
         wf_service = netsvc.LocalService('workflow')
         for this in shipment_obj:
-            if this.picking_ids:
+            if this.picking_ids or this.stock_move_ids:
                 raise orm.except_orm(
                     _('warning'),
                     _('You cannot set shipment back to assigned'
-                        ' if the delivery order already exists.'))
+                        ' if the Stock Move already exists.'))
             wkf_service.trg_validate(
-                uid,
-                'sale.shipment',
-                this.id,
-                'signal_shipment_back_to_assigned',
-                cr
+                uid, 'sale.shipment', this.id,
+                'signal_shipment_back_to_assigned', cr
             )
         return True
 
