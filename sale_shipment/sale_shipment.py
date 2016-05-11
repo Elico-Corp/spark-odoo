@@ -99,7 +99,7 @@ class SaleShipment(orm.Model):
             'Stock Moves', readonly=True),
         'state': fields.selection(
             [('draft', 'Draft'),
-             ('assigned', ' SOL Assignment'),
+            ('assigned', ' SOL Assignment'),
              ('confirmed', 'Confirmed'),
              ('done', 'Done')],
             'State'),
