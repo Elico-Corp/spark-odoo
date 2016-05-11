@@ -44,11 +44,6 @@
                         string="Confirm All SOL"
                         type="action"
                         states="assigned"/>
-                <button name="back2assigned"
-                        string="Back to assigned"
-                        type="object"
-                        states="confirmed"
-                        groups="sale_shipment.group_sale_shipment_manager"/>
                 <button name="signal_shipment_close"
                         string="Close shipment"
                         type="workflow"
