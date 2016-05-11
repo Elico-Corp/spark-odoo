@@ -41,7 +41,7 @@
                         type="action"
                         states="assigned"/>
                 <button name="%(action_shipment_allocation_wizard_sol_confirm)d"
-                        string="Confirm  All SOL"
+                        string="Confirm All SOL"
                         type="action"
                         states="assigned"/>
                 <button name="back2assigned"
