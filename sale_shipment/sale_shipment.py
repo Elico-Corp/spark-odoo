@@ -25,6 +25,7 @@ from openerp.osv import fields, orm
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 from openerp import netsvc
+from collections import Counter
 
 
 class SaleShipment(orm.Model):
@@ -58,10 +59,28 @@ class SaleShipment(orm.Model):
     def _get_seq(self, cr, uid, context=None):
         return self.pool.get('ir.sequence').get(cr, uid, 'sale.shipment')
 
+    def _saleorder_line_count(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for sol in self.browse(cr, uid, ids, context=context):
+            res[sol.id] = len(sol.sol_ids)
+        return res
+
+    def _product_line_count(self, cr, uid, ids, field_name, arg, context=None):
+        res = {}
+        for sol in self.browse(cr, uid, ids, context=context):
+            res[sol.id] = len(sol.contained_product_info_ids)
+        return res
+
     _columns = {
-        'name': fields.char('Name', size=32),
+        'name': fields.text('Name'),
         'sequence': fields.char('Sequence', size=32, select=1),
         'create_date': fields.date('Create Date', readonly=True),
+        'saleorder_line_count': fields.function(
+            _saleorder_line_count, string='Sale Order Line Count',
+            type='integer'),
+        'product_line_count': fields.function(
+            _product_line_count, string='Product Line Count',
+            type='integer'),
         'so_ids': fields.one2many(
             'sale.order',
             'sale_shipment_id',
@@ -195,6 +214,19 @@ class ShipmentContainedProductInfo(orm.Model):
                         res[contain_info.id] += sol.final_qty
         return res
 
+    def _check_product_id(self, cr, uid, ids, context=None):
+        for contained_info in self.browse(
+                cr, uid, ids, context=context):
+            if not contained_info.sale_shipment_id:
+                continue
+            shipment = contained_info.sale_shipment_id
+            if shipment:
+                products = shipment.contained_product_info_ids
+                prod_ids = [product.product_id.id for product in products]
+                if Counter(prod_ids)[contained_info.product_id.id] > 1:
+                    return False
+        return True
+
     _columns = {
         'product_id': fields.many2one(
             'product.product', 'Product'),
@@ -209,6 +241,14 @@ class ShipmentContainedProductInfo(orm.Model):
         'sale_shipment_id': fields.many2one(
             'sale.shipment', 'Sale Shipment', required=True),
     }
+
+    _constraints = [
+        (
+            _check_product_id,
+            'Please do not choose a product that already exist',
+            ['product_id']
+        )
+    ]
 
     def unlink(self, cr, uid, ids, context=None):
         '''cannot be removed when there is already sale order line

@@ -22,14 +22,12 @@
 		        </xpath>
 		        
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
-		        	<field name="final_qty"/>
+		        	<field name="final_qty" sum="Total Final Qty"/>
 		        </xpath>
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group" position="inside">
-			        <field name="final_qty" sum="Total Final Qty"/>
+			        <field name="final_qty"/>
 		        </xpath>
-		        <!-- new confirm button , replace the old confirm button  jon.chow#elico-corp.com Jul 4, 2013-->
 		        <xpath expr="//button[@name='action_button_confirm']" position="replace">
-		        	<button name="action_button_confirm_extend"  states='draft,wishlist,reservation' string="Confirm sale" class="oe_highlight" type="object"/>
 		        </xpath>
 		        
 		    </field>

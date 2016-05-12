@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_magento_product_race_form" model="ir.ui.view">
+            <field name="name">magento.product.race.form</field>
+            <field name="model">product.race</field>
+            <field name="inherit_id" ref="mmx_product.product_race_form_view" />
+            <field name="arch" type="xml">
+                <field name="country_id" position="after">
+                    <field name="attribute_id" string="Magento Attribute" groups="base.group_system"/>
+                    <field name="backend_ids" string="Magento Backend" groups="base.group_system"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

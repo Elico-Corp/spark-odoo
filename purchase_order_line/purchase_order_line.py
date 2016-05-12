@@ -32,8 +32,23 @@ class  purchase_order_line(osv.osv):
         for line in self.browse(cr,uid,ids):
             res[line.id]=dic[ line.product_id.mmx_type ]
         return res 
+
+    def _get_pdt_code(self, cr, uid, ids, field, arg=None, context=None):
+        res = {}
+        for line in self.browse(cr, uid, ids):
+            res[line.id] = line.product_id.default_code
+        return res
+
     _columns={
         'product_mmx_type':fields.function(_get_pdt_mmx_type,arg=None, string='Product Type', type='char',size=32,readonly=True,store=True),
+        'product_default_code': fields.function(_get_pdt_code,
+                                                arg=None,
+                                                string='Product Code',
+                                                type='char',
+                                                size=32,
+                                                readonly=True,
+                                                store=True),
+        'comment': fields.text('Comment', required=False),
     }
     def link_to_order(self,cr,uid,ids,context=None):
         pol=self.browse(cr,uid,ids[0])

@@ -22,6 +22,7 @@ from . import binder
 from . import connector
 from . import consumer
 from . import product_attribute
+from . import product_attribute_set
 from . import magento_model
 from . import product_scale
 from . import product_model

@@ -5,7 +5,8 @@
 #    Copyright (c) 2010-2014 Elico Corp. All Rights Reserved.
 #    Augustin Cisterne-Kaas <augustin.cisterne-kaas@elico-corp.com>
 #    Eric Caudal <eric.caudal@elico-corp.com>
-
+#    Victor M. Martin Torres <victor.martin@elico-corp.com>
+#
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
 #    published by the Free Software Foundation, either version 3 of the
@@ -22,7 +23,7 @@
 ##############################################################################
 
 {'name': 'Base Intercompany Sale',
- 'version': '0.3',
+ 'version': '7.0.1.0.5',
  'category': 'Sales Management',
  'depends': ['base_intercompany', 'sale', 'purchase'],
  'author': 'Elico Corp',

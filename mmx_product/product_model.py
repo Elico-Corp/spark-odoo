@@ -39,6 +39,10 @@ class product_model(osv.osv):
         'manufacturer_id': fields.many2one('product.manufacturer', 'Manufacturer', required=True, ondelete='restrict'),
         'fullname':        fields.function(_get_fullname, type='char', size=256, args=None, store=True, string='Full Name'),
     }
+
+    _sql_constraints=[
+        ('name_manufacturer_uniq', 'unique(name,manufacturer_id)', 'Manufacturer + Model cannot be duplicated'),
+    ]
     
     def name_get(self, cr, uid, ids, context=None):
         result = []

@@ -4,6 +4,8 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
 #    Alex Duan <alex.duan@elico-corp.com>
+#    Rona Lin <rona.lin@elico-corp.com>
+#    Victor M. Martin <victor.martin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +24,7 @@
 
 {
     'name': 'Sale Shipment',
-    'version': '1.0',
+    'version': '7.0.1.2.0',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
@@ -38,8 +40,10 @@
     'data': [
         'wizard/wizard_shipment_allocation_view.xml',
         'wizard/wizard_shipment_assign_sol_view.xml',
+        'sale_shipment_max_qty_user_readonly.xml',
         'sale_shipment_report.xml',
         'sale_shipment_view.xml',
+        'security/sale_shipment_security.xml',
         'security/ir.model.access.csv',
         'sale_shipment_data.xml',
         'wizard/replenishment_transfer_view.xml',

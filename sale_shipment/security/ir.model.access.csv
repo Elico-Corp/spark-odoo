@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-sale_shipment_user,sale_shipment_user,sale_shipment.model_sale_shipment,base.group_user,1,1,1,1
-sale_shipment_contained_product_all,sale_shipment_contained_products_all,sale_shipment.model_shipment_contained_product_info,,1,1,1,1
+access_sale_shipment_user,sale.shipment.user,model_sale_shipment,sale_shipment.group_sale_shipment_user,1,1,0,0
+access_sale_shipment_manager,sale.shipment.manager,model_sale_shipment,sale_shipment.group_sale_shipment_manager,1,1,1,1
+access_shipment_contained_product_info_user,shipment.contained.product.info.user,model_shipment_contained_product_info,sale_shipment.group_sale_shipment_user,1,1,1,0
+access_shipment_contained_product_info_manager,sale.shipment.contained.product.info.manager,model_shipment_contained_product_info,sale_shipment.group_sale_shipment_manager,1,1,1,1

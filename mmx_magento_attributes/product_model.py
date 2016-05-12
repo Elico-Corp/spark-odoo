@@ -42,6 +42,8 @@ class MMXProductModel(orm.Model):
     def create(self, cr, uid, vals, context=None):
         res_id = super(MMXProductModel, self).create(
             cr, uid, vals, context=context)
+        pro_model = self.pool.get('product.model')
+        pro_model_obj = pro_model.browse(cr, uid, res_id, context=context)
 
         backend_ids = self.resolve_2many_commands(
             cr, uid, 'backend_ids', vals['backend_ids'], ['id'], context)
@@ -56,7 +58,7 @@ class MMXProductModel(orm.Model):
             for backend_id in backend_ids:
                 attribute_id = default_attribute_id
                 option_vals = {
-                    'name': vals['name'],
+                    'name': ''.join([pro_model_obj.manufacturer_id.name, r'_', pro_model_obj.name]),
                     'backend_id': backend_id.get('id'),
                     'magento_attribute_id': attribute_id,
                     'value': vals['name'],
@@ -71,6 +73,19 @@ class MMXProductModel(orm.Model):
 
         return res_id
 
+    def _get_default_attribute_id(self, cr, uid, context=None):
+        """Get the x_mmx_model(MMX)attribute_id as default value."""
+        res = False
+        attribute_id = self.pool.get(
+            'magento.product.attribute').search(
+            cr, uid, [
+                ('attribute_code', '=', 'x_mmx_model'),
+                ('backend_id', '=', 'MMX')
+            ])
+        if attribute_id:
+            res = attribute_id[0]
+        return res
+
     def _get_all_backends(self, cr, uid, context=None):
         '''return all the backends'''
         backend_pool = self.pool['magento.backend']
@@ -78,5 +93,6 @@ class MMXProductModel(orm.Model):
         return ids
 
     _defaults = {
-        'backend_ids': _get_all_backends
+        'backend_ids': _get_all_backends,
+        'attribute_id': _get_default_attribute_id,
     }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_picking_form" model="ir.ui.view">
+            <field name="name">stock_picking_out</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="picking_status_all_available" invisible="1" />
+                </xpath>
+                <xpath expr="//button[@name='action_assign']" position="replace">
+                    <button name="action_assign" attrs="{'invisible': ['|',('picking_status_all_available', '=', True),('state','not in',('assigned', 'confirmed'))]}" string="Check Availability" type="object" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
+

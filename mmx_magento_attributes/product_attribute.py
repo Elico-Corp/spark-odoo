@@ -99,6 +99,14 @@ class MagentoProductAttribute(orm.Model):
         return super(MagentoProductAttribute, self).copy(
             cr, uid, id, default, context=context)
 
+    def name_get(self, cr, uid, ids, context=None):
+        result = []
+        if type(ids) != type([]):
+            ids = [ids]
+        for m in self.browse(cr, uid, ids, context=context):
+            result.append((m.id, "%s (%s)" % (m.attribute_code, m.backend_id.name)))
+        return result
+
     def _frontend_input(self, cr, uid, ids, field_names, arg, context=None):
         res = {}
         for elm in self.browse(cr, uid, ids):
@@ -550,7 +558,7 @@ class MagentoAttributeOption(orm.Model):
     }
 
     _defaults = {
-        'is_default': True,
+        'is_default': False,
     }
 
 

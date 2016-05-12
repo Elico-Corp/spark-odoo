@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+        <record id="purchase_order_form" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                    <field name="comment"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='comment']" position="after">
+                    <field name="product_default_code"/>
+                </xpath>
+            </field>
+        </record>
         <!-- POL Tree jon.chow#elico-corp.com Jun 6, 2013-->
         <record id="purchase_order_line_tree" model="ir.ui.view">
             <field name="name">purchase.order.line.tree</field>
@@ -10,8 +23,10 @@
                     <field name="order_id" 		  	readonly="1"/>
                      <button name="link_to_order" 	string="SO" type="object" icon="oe_m2o_open"/>
                     <field name="name" 				invisible="1"/>
+                    <field name="comment"/>
                     <field name="job_number"/>
                     <field name="partner_id" 		string="Supplier" invisible="1"/>
+                    <field name="product_default_code"/>
                     <field name="product_id" 		readonly="1"/>
                     <field name="price_unit" 		invisible="1"/>
                     <field name="product_qty" 		attrs="{'readonly':[('state','!=','draft')]}"/>

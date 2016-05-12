@@ -21,6 +21,7 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+import openerp.exceptions
 import time
 
 
@@ -49,13 +50,13 @@ class product_product (osv.osv):
         'default_code':         fields.char('Internal Reference',  size=64,    select=True, required=True),
         'brand_id':             fields.many2one('product.brand',   'Brand',    ondelete='restrict'),
         'archive_id':           fields.many2one('product.archive', 'Location', ondelete='restrict'),
-        'scale_id':             fields.many2one('product.scale',   'Scale',    ondelete='restrict'),
+        'scale_id':             fields.many2one('product.scale',   'Scale',    ondelete='restrict', required=True),
         
-        'model_id':             fields.many2one('product.model', 'Model', ondelete='restrict', required=False),
+        'model_id':             fields.many2one('product.model', 'Model', ondelete='restrict', required=True),
         'model_year':           fields.char('Model Year', size=4),
         'manufacturer_id':      fields.related('model_id', 'manufacturer_id', type='many2one', relation='product.manufacturer', string='Manufacturer', readonly=True),
         'year':                 fields.integer('Catalogue Year'),
-        'race_ed_id':           fields.many2one('product.race.ed', 'Race Edition'),
+        'race_ed_id':           fields.many2one('product.race.ed', 'Race Edition', required=True),
         
         'classification_id':    fields.many2one('product.classification', 'Car No', domain="[('race_ed_id','=',race_ed_id)]"),
         
@@ -77,9 +78,37 @@ class product_product (osv.osv):
         'do_not_allow_checkout': fields.boolean('Not allow to checkout'),
     
     }
+
+    def _default_has_default_scale_id(self, cr, uid, ids, context=None):
+        ir_model_data = self.pool.get('ir.model.data')
+        try:
+            scale_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_scale_default')[1]
+        except ValueError:
+            scale_id = False
+        return scale_id
+
+    def _default_has_default_model_id(self, cr, uid, ids, context=None):
+        ir_model_data = self.pool.get('ir.model.data')
+        try:
+            model_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_model_default')[1]
+        except ValueError:
+            model_id = False
+        return model_id
+
+    def _default_has_default_race_ed_id(self, cr, uid, ids, context=None):
+        ir_model_data = self.pool.get('ir.model.data')
+        try:
+            race_ed_id = ir_model_data.get_object_reference(cr, uid, 'product', 'product_race_ed_id_default')[1]
+        except ValueError:
+            race_ed_id = False
+        return race_ed_id
+
     _defaults={
         'year': lambda *a:  None,
         'company_id':lambda *a: None,
+        'model_id': _default_has_default_model_id,
+        'scale_id': _default_has_default_scale_id,
+        'race_ed_id': _default_has_default_race_ed_id,
     }
     
     def copy(self, cr, uid, id, default=None, context=None):
@@ -152,7 +181,6 @@ class product_product (osv.osv):
         if categ_id:
             categ = self.pool.get('product.category').browse(cr, uid, categ_id)
             if 'racing' not in categ.complete_name.lower():
-                result['race_ed_id']        = False
                 result['classification_id'] = False
                 #result['model_id']          = False
                 result['description_sale']  = False
