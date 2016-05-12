@@ -9,12 +9,6 @@
                 <xpath expr="//tree/field[@name='product_uom_qty']" position="attributes">
                     <attribute name="sum">Total Sale Qty</attribute>
                 </xpath>
-                <xpath expr="//field[@name='order_line']" position="before">
-                    <div class="oe_right">
-                        <label string="Total:" for="quotation_line_count"/>
-                        <field name="quotation_line_count" class="oe_inline"/>
-                    </div>
-                </xpath>
             </field>
         </record>
     </data>
