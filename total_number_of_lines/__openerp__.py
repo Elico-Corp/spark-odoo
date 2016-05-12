@@ -4,7 +4,7 @@
 {
     "name": "Total Number Of Lines",
     "summary": "Add the total lines on the right top at PO/SO/DO",
-    "version": "7.0.1.0.2",
+    "version": "7.0.1.1.2",
     "category": "tools",
     "website": "www.elico-corp.com",
     "author": "Elico corp",
