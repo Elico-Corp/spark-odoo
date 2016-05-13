@@ -47,9 +47,7 @@
                 <button name="signal_shipment_close"
                         string="Close shipment"
                         type="workflow"
-                        attrs="{'invisible': [
-                            ('state', 'not in', ('assigned', 'confirmed'))
-                        ]}"
+                        states="confirmed"
                         groups="sale_shipment.group_sale_shipment_manager"/>
                 <field name="state" widget="statusbar" nolabel="1"/>
             </header>

@@ -142,6 +142,23 @@ class SaleShipment(orm.Model):
         return self.write(cr, uid, ids, {'state': 'draft'}, context=context)
 
     def shipment_assignment(self, cr, uid, ids, context=None):
+        '''used in the workflow activity
+
+        You can only confirmed the shipment to state assigned with the product lines.
+
+        This method cannot confirmed the shipments to assigned if
+        there are exceptions.'''
+        import pdb
+        pdb.set_trace()
+        if not ids:
+            return
+        for this in self.browse(cr, uid, ids, context=context):
+            if not this.contained_product_info_ids:
+                raise orm.except_orm(
+                    _('warning'),
+                    _('You cannot confirmed shipment'
+                        ' without product in it!'))
+
         return self.write(cr, uid, ids, {'state': 'assigned'}, context=context)
 
     def shipment_confirm(self, cr, uid, ids, context=None):
