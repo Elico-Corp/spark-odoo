@@ -99,7 +99,7 @@ class SaleShipment(orm.Model):
             'Stock Moves', readonly=True),
         'state': fields.selection(
             [('draft', 'Draft'),
-            ('assigned', ' SOL Assignment'),
+            ('assignment', ' SOL Assignment'),
              ('confirmed', 'Confirmed'),
              ('done', 'Done')],
             'State'),
@@ -144,9 +144,9 @@ class SaleShipment(orm.Model):
     def shipment_assignment(self, cr, uid, ids, context=None):
         '''used in the workflow activity
 
-        You can only confirmed the shipment to state assigned with the product lines.
+        You can only confirmed the shipment to state assignment with the product lines.
 
-        This method cannot confirmed the shipments to assigned if
+        This method cannot confirmed the shipments to assignment if
         there are exceptions.'''
         if not ids:
             return
@@ -157,7 +157,7 @@ class SaleShipment(orm.Model):
                     _('You cannot confirmed shipment'
                         ' without product in it!'))
 
-        return self.write(cr, uid, ids, {'state': 'assigned'}, context=context)
+        return self.write(cr, uid, ids, {'state': 'assignment'}, context=context)
 
     def shipment_confirm(self, cr, uid, ids, context=None):
         '''used in the workflow activity'''

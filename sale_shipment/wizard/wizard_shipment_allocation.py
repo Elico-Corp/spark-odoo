@@ -460,8 +460,9 @@ class WizardShipmentAllocation(orm.TransientModel):
         else:
             raise orm.except_orm(
                 _('Warning'),
-                    'The the sale order line is empty! '
-                    'Please assign you sale order line first!'
+                    'The Sale Shipment doesnot contain'
+                    'any Sales Order Line.Please assign'
+                    'first at least one Sales Order Line'
                 )
         # go through sale order by sale order.
         for so in dic:
@@ -499,7 +500,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         else:
             raise orm.except_orm(
                 _('Warning'),
-                _('The shipment cannot be empty!'))
+                _('The Shipment field cannot be empty!'))
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {
