@@ -148,8 +148,6 @@ class SaleShipment(orm.Model):
 
         This method cannot confirmed the shipments to assigned if
         there are exceptions.'''
-        import pdb
-        pdb.set_trace()
         if not ids:
             return
         for this in self.browse(cr, uid, ids, context=context):

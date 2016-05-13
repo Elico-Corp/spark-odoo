@@ -490,8 +490,6 @@ class WizardShipmentAllocation(orm.TransientModel):
             except:
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
-        import pdb
-        pdb.set_trace()
         if wizard.shipment_id.name != False:
             wkf_service = netsvc.LocalService("workflow")
             wkf_service.trg_validate(
