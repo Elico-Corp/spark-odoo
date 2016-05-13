@@ -450,6 +450,10 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_sol_ids = []
         dic = {}
         # group the wizard lines by so_id
+        if wizard.shipment_id.name == False:
+            raise orm.except_orm(
+                _('Warning'),
+                _('The Shipment field cannot be empty!'))
         if wizard.lines:
             for wizard_line in wizard.lines:
                 so = wizard_line.so_id
@@ -461,9 +465,9 @@ class WizardShipmentAllocation(orm.TransientModel):
             raise orm.except_orm(
                 _('Warning'),
                     'The Sale Shipment doesnot contain'
-                    'any Sales Order Line.Please assign'
-                    'first at least one Sales Order Line'
-                )
+                    ' any Sales Order Line.Please assign'
+                    ' first at least one Sales Order Line'
+            )
         # go through sale order by sale order.
         for so in dic:
             wizard_lines = dic[so]
@@ -491,16 +495,11 @@ class WizardShipmentAllocation(orm.TransientModel):
             except:
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
-        if wizard.shipment_id.name != False:
-            wkf_service = netsvc.LocalService("workflow")
-            wkf_service.trg_validate(
-                uid, 'sale.shipment', shipment_id[0],
-                'signal_shipment_confirm', cr
-            )
-        else:
-            raise orm.except_orm(
-                _('Warning'),
-                _('The Shipment field cannot be empty!'))
+        wkf_service = netsvc.LocalService("workflow")
+        wkf_service.trg_validate(
+            uid, 'sale.shipment', shipment_id[0],
+            'signal_shipment_confirm', cr
+        )
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {

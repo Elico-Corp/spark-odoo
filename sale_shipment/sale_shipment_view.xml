@@ -29,21 +29,21 @@
                 <button name="back2draft"
                         string="Back to Draft"
                         type="object"
-                        states="assigned"
+                        states="assignment"
                         groups="sale_shipment.group_sale_shipment_manager"/>
                 <button string="Assign SOL"
                         name="action_assign_sale_order_lines"
                         type="object"
-                        states="assigned"
+                        states="assignment"
                         class="oe_highlight"/>
                 <button name="%(action_shipment_allocation_wizard_qty_assign)d"
                         string="Assign final quantity"
                         type="action"
-                        states="assigned"/>
+                        states="assignment"/>
                 <button name="%(action_shipment_allocation_wizard_sol_confirm)d"
                         string="Confirm All SOL"
                         type="action"
-                        states="assigned"/>
+                        states="assignment"/>
                 <button name="signal_shipment_close"
                         string="Close shipment"
                         type="workflow"
@@ -112,7 +112,7 @@
                             <field name="date" groups="base.group_no_one"/>
                             <field name="date_expected"/>
                             <field name="state"/>
-                            <button name="action_done" states="confirmed,assigned" string="Process" type="object" icon="gtk-go-forward" help="Done"/>
+                            <button name="action_done" states="confirmed,assignment" string="Process" type="object" icon="gtk-go-forward" help="Done"/>
                         </tree>
                     </field>
                 </page>
