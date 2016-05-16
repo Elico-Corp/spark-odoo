@@ -76,7 +76,7 @@ class product_product (osv.osv):
         'customs_description':  fields.char('Customs description', size=64),
         'availability_date':    fields.date('Availability Date'), 
         'do_not_allow_checkout': fields.boolean('Not allow to checkout'),
-    
+        'create_date': fields.datetime('Creation date', readonly=True),
     }
 
     def _default_has_default_scale_id(self, cr, uid, ids, context=None):
