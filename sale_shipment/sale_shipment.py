@@ -72,8 +72,9 @@ class SaleShipment(orm.Model):
         return res
 
     _columns = {
-        'name': fields.text('Name'),
+        'name': fields.text('Name', readonly=True),
         'sequence': fields.char('Sequence', size=32, select=1),
+        'description': fields.text('Description'),
         'create_date': fields.date('Create Date', readonly=True),
         'saleorder_line_count': fields.function(
             _saleorder_line_count, string='Sale Order Line Count',
@@ -110,7 +111,7 @@ class SaleShipment(orm.Model):
                     'confirmed': [('readonly', False)]})
     }
     _defaults = {
-        'sequence': _get_seq,
+        'name': _get_seq,
         'state': 'draft'
     }
 
