@@ -441,7 +441,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             return True
         so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
-        shipment_id = wizard.shipment_id and wizard.shipment_id.id or None,
+        shipment_id = wizard.shipment_id and wizard.shipment_id.id,
 
         # check before splitting the sale order lines.
         self._check_split(wizard)
@@ -450,10 +450,6 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_sol_ids = []
         dic = {}
         # group the wizard lines by so_id
-        if wizard.shipment_id.name == False:
-            raise orm.except_orm(
-                _('Warning'),
-                _('The Shipment field cannot be empty!'))
         if wizard.lines:
             for wizard_line in wizard.lines:
                 so = wizard_line.so_id
