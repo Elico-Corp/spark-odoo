@@ -146,7 +146,13 @@ class product_product (osv.osv):
         if classification_id:
             classification = self.pool.get('product.classification').browse(cr, uid, classification_id)
             driver_ids     = [d.id for d in classification.driver_ids]
-            return {'value': {'rank_id':classification.rank_id and classification.rank_id.id, 'driver_ids':driver_ids}}
+            return {
+                'value': {
+                    'rank_id': classification.rank_id and
+                    classification.rank_id.id or False,
+                    'driver_ids': driver_ids
+                }
+            }
         else:
             return {'value': {'rank_id':False, 'driver_ids':False}}
     
