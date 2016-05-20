@@ -10,10 +10,22 @@
 		    <field name="arch" type="xml">
 		        <!-- jon  SO Lines can't select product that state is draft or sold-out  -->
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
-		            <attribute name="domain">[('state','in',['private','catalogue','preorder','order'])]</attribute>
+		            <attribute name="domain">[
+                        ('state', 'in', [
+                            'private', 'catalogue', 'preorder',
+                            'produced', 'order'
+                        ])
+                    ]
+                    </attribute>
 		        </xpath>
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-		            <attribute name="domain">[('state','in',['private','catalogue','preorder','order'])]</attribute>
+		            <attribute name="domain">[
+                        ('state', 'in', [
+                            'private', 'catalogue', 'preorder',
+                            'produced', 'order'
+                        ])
+                    ]
+                    </attribute>
 		        </xpath>
 		      	
 		        <!-- related the product state  jon.chow#elico-corp.com Jul 4, 2013-->
