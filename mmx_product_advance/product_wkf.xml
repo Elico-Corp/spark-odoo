@@ -37,6 +37,14 @@
 		    <field name="kind">function</field>
 		    <field name="action">write({'state':'preorder'})</field>
 		</record> 
+
+		<record id="act_produced" model="workflow.activity">
+		    <field name="wkf_id" ref="wkf_product_product"/>
+		    <field name="name">produced</field>
+		    <field name="kind">function</field>
+		    <field name="action">write({'state':'produced'})</field>
+		</record>
+
 		<record id="act_order" model="workflow.activity">
 		    <field name="wkf_id" ref="wkf_product_product"/>
 		    <field name="name">order</field>
@@ -102,16 +110,29 @@
 		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
 		</record>
 		
-		
-		<record id="trans_preorder_order" model="workflow.transition">
+		<record id="trans_preorder_produced" model="workflow.transition">
 		    <field name="act_from" ref="act_preorder"/>
+		    <field name="act_to" ref="act_produced"/>
+		    <field name="signal">approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+
+		<record id="trans_produced_preorder" model="workflow.transition">
+		    <field name="act_from" ref="act_produced"/>
+		    <field name="act_to" ref="act_preorder"/>
+		    <field name="signal">back_approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+
+		<record id="trans_preorder_order" model="workflow.transition">
+		    <field name="act_from" ref="act_produced"/>
 		    <field name="act_to" ref="act_order"/>
 		    <field name="signal">approve</field>
 		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
 		</record>
-		<record id="trans_order_preorder" model="workflow.transition">
+		<record id="trans_order_produced" model="workflow.transition">
 		    <field name="act_from" ref="act_order"/>
-		    <field name="act_to" ref="act_preorder"/>
+		    <field name="act_to" ref="act_produced"/>
 		    <field name="signal">back_approve</field>
 		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
 		</record>

@@ -32,6 +32,7 @@ class product_product(osv.osv):
         ('private', 'Development'),
         ('catalogue', 'Catalogue'),
         ('preorder', 'Announcement'),
+        ('produced', 'To be produced'),
         ('order', 'Order'),
         ('solded', 'Sold Out'),
         ('done', 'Done'),
