@@ -6,6 +6,7 @@
 # ('private','Private'),
 # ('catalogue','Catalogue'),
 # ('preorder','Preorder'),
+# ('produced', 'To be produced')
 # ('order','Order'),
 # ('solded','Sold out'),
 
@@ -24,12 +25,26 @@
 					<header>
 						<button name="create_wkf"   string="Create wkf for all" groups="base.group_system" type="object"/>
 						<button name="approve"      string="Confirm MMX Type"   groups="mmx_product.group_product_manager" states="draft"                                              type="workflow" class="oe_highlight"/>
-						<button name="back_approve" string="Previous Stage"     groups="mmx_product.group_product_manager" states="private,catalogue,preorder,order,solded"  type="workflow" class="oe_highlight"/>
-						<button name="approve"      string="Next Stage"         groups="mmx_product.group_product_manager" states="private,catalogue,preorder,order,solded"  type="workflow" class="oe_highlight"/>
-						
-						<field name="state"  widget="statusbar"  readonly="1"
-						       statusbar_visible="private,catalogue,preorder,order,solded"   
-						       statusbar_colors='{"draft":"blue","private":"blue","catalogue":"red","preorder":"#ff9900","order":"green","solded":"black"}'/>
+						<button name="back_approve"
+                                string="Previous Stage"
+                                groups="mmx_product.group_product_manager"
+                                states="private,catalogue,preorder,produced,order,solded"  type="workflow"
+                                class="oe_highlight"/>
+						<button name="approve"
+                                string="Next Stage"
+                                groups="mmx_product.group_product_manager"
+                                states="private,catalogue,preorder,produced,order,solded"  type="workflow"
+                                class="oe_highlight"/>
+						<field name="state"
+                               widget="statusbar"
+                               clickabe= 'True'
+                               readonly="1"
+						       statusbar_visible="private,catalogue,preorder,produced,order,solded"
+						       statusbar_colors='{
+                                   "draft":"blue","private":"blue",
+                                   "catalogue":"red","preorder":"#ff9900",
+                                   "produced":"blue","order":"green",
+                                   "solded":"black"}'/>
 					</header>
 				</xpath>
 			</field>

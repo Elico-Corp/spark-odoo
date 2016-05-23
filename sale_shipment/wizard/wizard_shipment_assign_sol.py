@@ -31,7 +31,7 @@ class WizardShipmentAssignSOL(orm.TransientModel):
             'sale.order.line', 'sale_order_line_group_rel',
             'wizard_id', 'sol_id', 'Sale order lines',
             domain=[
-                ('product_id.state', '=', 'order'),
+                ('product_id.state', 'in', ('produced', 'order')),
                 ('so_state', 'in', ('reservation', 'draft', 'sent')),
                 ('sale_shipment_id', '=', False)]),
         'shipment_id': fields.many2one('sale.shipment', string='Shipment')
@@ -73,7 +73,7 @@ class WizardShipmentAssignSOL(orm.TransientModel):
         if sol_ids:
             domain.append(('id', 'not in', tuple(sol_ids)))
         domain += [
-            ('product_id.state', '=', 'order'),
+            ('product_id.state', 'in', ('produced', 'order')),
             ('so_state', 'in', ('reservation', 'draft', 'sent')),
             ('sale_shipment_id', '=', False)
         ]
