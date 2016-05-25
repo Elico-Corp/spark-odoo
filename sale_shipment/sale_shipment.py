@@ -156,7 +156,7 @@ class SaleShipment(orm.Model):
                 raise orm.except_orm(
                     _('warning'),
                     _('You cannot confirmed shipment'
-                        ' without product in it!'))
+                        ' without any product line.'))
 
         return self.write(cr, uid, ids, {'state': 'assignment'}, context=context)
 

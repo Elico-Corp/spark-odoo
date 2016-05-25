@@ -461,8 +461,8 @@ class WizardShipmentAllocation(orm.TransientModel):
             raise orm.except_orm(
                 _('Warning'),
                     'The Sale Shipment doesnot contain'
-                    ' any Sales Order Line.Please assign'
-                    ' first at least one Sales Order Line'
+                    ' any Sales Order Line. Please assign'
+                    ' first at least one Sales Order Line.'
             )
         # go through sale order by sale order.
         for so in dic:
