@@ -1,8 +1,12 @@
 import erppeek
 
 
-client = erppeek.Client("http://localhost:7071", "odoo7_mmx_trunk_160523_test", "admin", "321")
+SERVER = 'https://trunk.sparkmodel.com'
+DADABASE = 'stable_mmx'
+USER = 'admin'
+PASSWORD = 'MMX3licoC0rp'
 
+client = erppeek.Client(SERVER, DADABASE, USER, PASSWORD)
 dd = client.model('product.driver').search([])
 dd_id = client.model('product.driver').browse(dd)
 for d in dd_id:
