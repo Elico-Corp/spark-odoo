@@ -80,17 +80,17 @@
                         <field name='sol_ids' nolabel='1' options="{'reload_on_button': true'}">
                             <tree string="Sale order lines">
                                 <field name="name" invisible="1"/>
-                                <field name="comment"/>
+                                <field name="order_partner_id" />
                                 <field name="product_default_code"/>
                                 <field name="product_id" />
-                                <field name="order_id" />
-                                <field name="order_partner_id" />
+                                <field name="comment"/>
                                 <field name="product_uom_qty" sum="Total Product Qty"/>
                                 <field name="final_qty" sum="Total Final Qty"/>
                                 <field name="cut_off_date" />
-                                <field name="product_uom" />
+                                <field name="product_uom" invisible="1"/>
                                 <field name="so_state" />
                                 <field name="state" />
+                                <field name="order_id" />
                                 <button name="empty_sale_shipment" string="remove" type="object" states="draft,wishlist" icon="STOCK_REMOVE" confirm="Are You Sure to remove this sale order line from shipment?"/>
                             </tree>
                         </field>
