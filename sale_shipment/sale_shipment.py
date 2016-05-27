@@ -72,8 +72,9 @@ class SaleShipment(orm.Model):
         return res
 
     _columns = {
-        'name': fields.text('Name'),
+        'name': fields.text('Name', readonly=True),
         'sequence': fields.char('Sequence', size=32, select=1),
+        'description': fields.text('Description'),
         'create_date': fields.date('Create Date', readonly=True),
         'saleorder_line_count': fields.function(
             _saleorder_line_count, string='Sale Order Line Count',
@@ -99,6 +100,7 @@ class SaleShipment(orm.Model):
             'Stock Moves', readonly=True),
         'state': fields.selection(
             [('draft', 'Draft'),
+            ('assignment', ' SOL Assignment'),
              ('confirmed', 'Confirmed'),
              ('done', 'Done')],
             'State'),
@@ -109,7 +111,7 @@ class SaleShipment(orm.Model):
                     'confirmed': [('readonly', False)]})
     }
     _defaults = {
-        'sequence': _get_seq,
+        'name': _get_seq,
         'state': 'draft'
     }
 
@@ -139,6 +141,24 @@ class SaleShipment(orm.Model):
     # workflow related functions
     def shipment_draft(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'draft'}, context=context)
+
+    def shipment_assignment(self, cr, uid, ids, context=None):
+        '''used in the workflow activity
+
+        You can only confirmed the shipment to state assignment with the product lines.
+
+        This method cannot confirmed the shipments to assignment if
+        there are exceptions.'''
+        if not ids:
+            return
+        for this in self.browse(cr, uid, ids, context=context):
+            if not this.contained_product_info_ids:
+                raise orm.except_orm(
+                    _('warning'),
+                    _('You cannot confirmed shipment'
+                        ' without any product line.'))
+
+        return self.write(cr, uid, ids, {'state': 'assignment'}, context=context)
 
     def shipment_confirm(self, cr, uid, ids, context=None):
         '''used in the workflow activity'''

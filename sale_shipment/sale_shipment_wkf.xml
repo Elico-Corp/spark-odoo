@@ -15,6 +15,13 @@
             <field name="action">shipment_draft()</field>
         </record>
 
+        <record model="workflow.activity" id="act_assignment">
+            <field name="wkf_id" ref="wkf_shipment" />
+            <field name="name">assignment</field>
+            <field name="kind">function</field>
+            <field name="action">shipment_assignment()</field>
+        </record>
+
         <record model="workflow.activity" id="act_confirm">
             <field name="wkf_id" ref="wkf_shipment" />
             <field name="name">Confirmed</field>
@@ -31,9 +38,16 @@
             <field name="flow_stop" eval="True"/>
         </record>
 
+        <!-- assign the shipment -->
+        <record model="workflow.transition" id="transition_assignment">
+            <field name="act_from" ref="act_draft" />
+            <field name="act_to" ref="act_assignment" />
+            <field name="signal">signal_shipment_assignment</field>
+        </record>
+
         <!-- confirm the shipment -->
         <record model="workflow.transition" id="transition_confirm">
-            <field name="act_from" ref="act_draft" />
+            <field name="act_from" ref="act_assignment" />
             <field name="act_to" ref="act_confirm" />
             <field name="signal">signal_shipment_confirm</field>
         </record>
