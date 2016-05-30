@@ -294,7 +294,7 @@
                 <tree string="Assigned products per shipment" editable="bottom">
                     <field name="product_id" />
                     <field name="max_qty" />
-                    <field name="assigned_qty" string="Quantity"/>
+                    <field name="assigned_qty" string="Qty"/>
                 </tree>
             </field>
         </record>
