@@ -48,7 +48,7 @@ class  purchase_order_line(osv.osv):
                                                 size=32,
                                                 readonly=True,
                                                 store=True),
-        'comment': fields.text('Comment', required=True),
+        'comment': fields.text('Comment', required=False),
     }
     def link_to_order(self,cr,uid,ids,context=None):
         pol=self.browse(cr,uid,ids[0])

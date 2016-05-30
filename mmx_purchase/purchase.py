@@ -21,6 +21,7 @@
 ##############################################################################
 
 from openerp.osv import fields, osv
+from openerp import netsvc
 
 
 class purchase_order_line(osv.osv):
@@ -36,6 +37,27 @@ class purchase_order_line(osv.osv):
     ]
 
 purchase_order_line()
+
+
+class purchase_order(osv.osv):
+    _inherit = 'purchase.order'
+    _name = 'purchase.order'
+
+
+    def wkf_confirm_order(self, cr, uid, ids, context=None):
+        result = super(purchase_order, self).wkf_confirm_order(cr, uid, ids, context=None)
+        product_obj = self.pool.get('product.product')
+        pos = self.browse(cr, uid, ids, context=None)
+        wkf_service = netsvc.LocalService("workflow")
+        for po in pos:
+            product_ids = [l.product_id for l in po.order_line]
+            for product_id in product_ids:
+                if product_id.state == 'preorder':
+                    wkf_service.trg_validate(uid, 'product.product',
+                                             product_id.id, 'approve', cr)
+        return result
+
+purchase_order()
 
 
 class stock_move(osv.osv):

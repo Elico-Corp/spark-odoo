@@ -24,7 +24,11 @@
 
 {
     'name': 'Sale Shipment',
+<<<<<<< HEAD
     'version': '7.0.1.0.8',
+=======
+    'version': '7.0.1.2.1',
+>>>>>>> upstream/7.0
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
@@ -44,8 +48,8 @@
         'sale_shipment_max_qty_user_readonly.xml',
         'sale_shipment_report.xml',
         'sale_shipment_view.xml',
-        'security/ir.model.access.csv',
         'security/sale_shipment_security.xml',
+        'security/ir.model.access.csv',
         'sale_shipment_data.xml',
         'wizard/replenishment_transfer_view.xml',
         'sale_shipment_wkf.xml'

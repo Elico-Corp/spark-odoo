@@ -21,6 +21,7 @@
 #
 ##############################################################################
 from openerp.osv import fields, orm
+from openerp import netsvc
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
@@ -440,7 +441,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             return True
         so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
-        shipment_id = wizard.shipment_id and wizard.shipment_id.id or None,
+        shipment_id = wizard.shipment_id and wizard.shipment_id.id,
 
         # check before splitting the sale order lines.
         self._check_split(wizard)
@@ -449,13 +450,20 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_sol_ids = []
         dic = {}
         # group the wizard lines by so_id
-        for wizard_line in wizard.lines:
-            so = wizard_line.so_id
-            if dic.get(so):
-                dic[so].append(wizard_line)
-            else:
-                dic.update({so: [wizard_line]})
-
+        if wizard.lines:
+            for wizard_line in wizard.lines:
+                so = wizard_line.so_id
+                if dic.get(so):
+                    dic[so].append(wizard_line)
+                else:
+                    dic.update({so: [wizard_line]})
+        else:
+            raise orm.except_orm(
+                _('Warning'),
+                    'The Sale Shipment doesnot contain'
+                    ' any Sales Order Line. Please assign'
+                    ' first at least one Sales Order Line.'
+            )
         # go through sale order by sale order.
         for so in dic:
             wizard_lines = dic[so]
@@ -483,7 +491,11 @@ class WizardShipmentAllocation(orm.TransientModel):
             except:
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
-
+        wkf_service = netsvc.LocalService("workflow")
+        wkf_service.trg_validate(
+            uid, 'sale.shipment', shipment_id[0],
+            'signal_shipment_confirm', cr
+        )
         # return both old and new sale order lines.
         old_soline_ids = [x.sol_id.id for x in wizard.lines]
         return {

@@ -86,6 +86,7 @@ class stock_picking(orm.Model):
             cr, uid, ids, context=context)
 
 
+
 class stock_picking_out(orm.Model):
     _inherit = 'stock.picking.out'
 
@@ -104,6 +105,18 @@ class stock_picking_out(orm.Model):
         'qc_approve_modify_date': fields.datetime(
             "Time of updating QC Approved", readonly=True),
     }
+
+    def approved_qc(self, cr, uid, ids, context=None):
+        if not ids:
+            return False
+        context = context or {}
+        self.write(cr, uid, ids, {'qc_approved': True}, context=context)
+
+    def unapproved_qc(self, cr, uid, ids, context=None):
+        if not ids:
+            return False
+        context = context or {}
+        self.write(cr, uid, ids, {'qc_approved': False}, context=context)
 
     def write(self, cr, uid, ids, vals, context=None):
         '''when we change the on_hold or qc_approved, we `force` change the
@@ -151,6 +164,7 @@ class stock_picking_out(orm.Model):
                 'qc_approve_modify_date')
             return super(stock_picking_out, self).write(
                 cr, uid, ids, vals=vals, context=context)
+
 
     _defaults = {
         'on_hold': False,

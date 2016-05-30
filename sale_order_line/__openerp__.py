@@ -23,7 +23,7 @@
 
 {
     'name': 'Sale Order Line',
-    'version': '7.0.1.0.1',
+    'version': '7.0.1.1.2',
     'category': 'Sales',
     'sequence': 19,
     'summary': 'Sale Order Line',

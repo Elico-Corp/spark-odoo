@@ -58,6 +58,7 @@
                                 </div>
                                 <field name="color_ids" widget="many2many_tags"/>
                                 <field name="availability_date"/>
+                                <field name="create_date"/>
                             </group>
                         </group>
 						
@@ -104,7 +105,7 @@
                             
                             <group colspan="2">
 	                           	<field name="product_manager"/>
-	                           	<field name="type" groups="base.group_system"/>
+	                           	<field name="type" groups="account.group_account_manager"/>
 	                           	<field name="dbox_approve"/>
 	                           	<field name="customs_description"/>
                             </group>
@@ -152,6 +153,7 @@
             <field name="arch" type="xml">
             	<xpath expr="//search/field[@name='name']" position="after">
             		<field name="year"/>
+                    <field name="create_date"/>
             	</xpath>
             	<xpath expr="//search/group/filter[@string='Category']" position="after">
             		<filter string="Catalogue Year" domain="[]" context="{'group_by':'year'}"/>

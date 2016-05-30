@@ -67,7 +67,7 @@ class sale_order_line(osv.osv):
             'product_id', 'virtual_available', type='float',
             string='Forecasted Quantity',),
         'comment': fields.text(
-            'Comment', required=True, readonly=True,
+            'Comment', required=False, readonly=True,
             states={'draft': [('readonly', False)]}),
     }
     _sql_constraints = [
