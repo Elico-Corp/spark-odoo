@@ -9,6 +9,7 @@
             <tree string='Sale Shipment'>
                 <field name='sequence' widget="handle"/>
                 <field name='name'/>
+                <field name='description'/>
                 <field name='create_date'/>
                 <field name='state'/>
             </tree>
