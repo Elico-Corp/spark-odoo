@@ -85,7 +85,7 @@
                                 <field name="product_id" />
                                 <field name="comment"/>
                                 <field name="product_uom_qty"
-                                       string="SO quantity"
+                                       string="SO Qty"
                                        sum="Total Product Qty"/>
                                 <field name="final_qty" sum="Total Final Qty"/>
                                 <field name="cut_off_date" />
