@@ -24,11 +24,7 @@
 
 {
     'name': 'Sale Shipment',
-<<<<<<< HEAD
-    'version': '7.0.1.0.8',
-=======
     'version': '7.0.1.2.1',
->>>>>>> upstream/7.0
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
