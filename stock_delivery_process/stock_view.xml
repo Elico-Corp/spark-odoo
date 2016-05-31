@@ -61,6 +61,12 @@
                         <field name="qc_approved" />
                     </group>
                 </xpath>
+                <xpath expr="//form" position="inside">
+                    <footer>
+                        <button name="write" string="Save" class="oe_highlight" type="object"/>
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </xpath>
             </field>
         </record>
         <!-- add a new on the left of "product" with a box "QC approved"  -->
@@ -71,6 +77,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="before">
                     <field name="qc_approved" />
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+                <xpath expr="//tree" position="inside">
+                    <button name="view_stock_move_form" help="Stock Move Details" icon="gtk-find" type="object"/>
                 </xpath>
             </field>
         </record>

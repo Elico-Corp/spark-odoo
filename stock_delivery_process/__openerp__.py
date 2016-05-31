@@ -21,7 +21,7 @@
 ##############################################################################
 
 {'name': 'Stock Delivery Process',
- 'version': '7.0.1.2.0',
+ 'version': '7.0.1.3.0',
  'category': 'Generic Modules',
  'depends': ['stock'],
  'author': 'Elico Corp',

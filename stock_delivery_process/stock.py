@@ -309,6 +309,26 @@ class stock_move(orm.Model):
         return super(stock_move, self).create(
             cr, uid, vals, context=context)
 
+    def view_stock_move_form(self, cr, uid, ids, context=None):
+        mod_obj = self.pool.get('ir.model.data')
+        model, view_id = mod_obj.get_object_reference(
+            cr, uid, 'stock_delivery_process', 'inherit_stock_move_view')
+
+        action = {
+            'name': 'Stock Move',
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'stock.move',
+            'views': [(view_id, 'form')],
+            'view_id': view_id,
+            'target': 'new',
+            'res_id': ids and ids[0],
+            'context': context,
+        }
+
+        return action
+
 
 class stock_partial_move(orm.TransientModel):
     _inherit = "stock.partial.move"
