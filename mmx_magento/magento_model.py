@@ -89,7 +89,7 @@ class magento_backend(orm.Model):
                 website.import_carts()
         return True
 
-    def import_wishlist(self, cr, uid, ids, context=None):
+    def import_wishlist(self, cr, uid, ids=False, context=None):
         if not hasattr(ids, '__iter__'):
             ids = [ids]
         self.check_magento_structure(cr, uid, ids, context=context)
@@ -99,6 +99,11 @@ class magento_backend(orm.Model):
         return True
 
     def import_reservation(self, cr, uid, ids, context=None):
+        self.cron_job_import_reservation(cr, uid, ids, context=context)
+
+    def cron_job_import_reservation(self, cr, uid, ids, context=None):
+        if not ids:
+            ids = self.search(cr, uid, [("id", "!=", False)])
         if not context:
             context = {}
         context.update(
@@ -124,8 +129,12 @@ class magento_website(orm.Model):
     def import_partners(self, cr, uid, ids, context=None):
         if not hasattr(ids, '__iter__'):
             ids = [ids]
-        session = ConnectorSession(cr, uid, context=context)
+        return self.cron_job_import_partners(cr, uid, ids, context=context)
 
+    def cron_job_import_partners(self, cr, uid, ids, context=None):
+        if not ids:
+            ids = self.search(cr, uid, [("id", "!=", False)])
+        session = ConnectorSession(cr, uid, context=context)
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         for website in self.browse(cr, uid, ids, context=context):
             if(not self._authorized_company(
