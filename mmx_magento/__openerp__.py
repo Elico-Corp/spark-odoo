@@ -37,7 +37,8 @@
     Custom Magento module
         """,
     'sequence': 10,
-    'data': ['magento_model_view.xml',
+    'data': ['data/import_cron_job.xml',
+             'magento_model_view.xml',
              'sale_view.xml',
              'magento_view.xml',
              'product_view.xml',

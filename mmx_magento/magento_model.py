@@ -105,6 +105,11 @@ class magento_backend(orm.Model):
             {'reservation': True})
         self.import_wishlist(cr, uid, ids, context=context)
 
+    def cron_job_import_reservation(self, cr, uid, ids, context=None):
+        if not ids:
+            ids = self.search(cr, uid, [("id", "!=", False)])
+        return self.import_reservation(cr, uid, ids, context=context)
+
 
 class magento_website(orm.Model):
     _inherit = 'magento.website'
@@ -143,6 +148,11 @@ class magento_website(orm.Model):
                 {'magento_website_id': website.magento_id,
                  'from_date': from_date})
         return True
+
+    def cron_job_import_partners(self, cr, uid, ids, context=None):
+        if not ids:
+            ids = self.search(cr, uid, [("id", "!=", False)])
+        return self.import_partners(cr, uid, ids, context=context)
 
     def import_carts(self, cr, uid, ids, context=None):
         if not hasattr(ids, '__iter__'):
