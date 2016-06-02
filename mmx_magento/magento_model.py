@@ -92,8 +92,6 @@ class magento_backend(orm.Model):
     def import_wishlist(self, cr, uid, ids, context=None):
         if not hasattr(ids, '__iter__'):
             ids = [ids]
-        import pdb
-        pdb.set_trace()
         self.check_magento_structure(cr, uid, ids, context=context)
         for backend in self.browse(cr, uid, ids, context=context):
             for website in backend.website_ids:
