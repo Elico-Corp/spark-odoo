@@ -41,12 +41,10 @@ import re
 class product_driver(osv.osv):
     _name = 'product.driver'
     
-    def _get_fullname(self,cr,uid,ids, fields_name,args=None,context=None):
+    def _get_fullname(self, cr, uid, ids, fields_name, args=None, context=None):
         res = {}
         for driver in self.browse(cr, uid, ids):
-            words = re.split('\s+', driver.name)
-            pre   = '. '.join([w[0].upper() for w in words])
-            fname = ''.join([pre, r'. ', driver.surname]) 
+            fname = ''.join([driver.name, r' ', driver.surname])
             res[driver.id] = fname
         return res
     
