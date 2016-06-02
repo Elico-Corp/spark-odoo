@@ -76,6 +76,12 @@ class SaleShipment(orm.Model):
         'sequence': fields.char('Sequence', size=32, select=1),
         'description': fields.text('Description'),
         'create_date': fields.date('Create Date', readonly=True),
+        'company_rule': fields.selection(
+            [('mmx2japan', 'MMX TO JAPAN'),
+             ('mmx2mix', ' MMX TO MIX'),
+             ('mmx2max', 'MMX TO MAX'),
+             ('mmx2others', 'MMX TO OTHRES')],
+            'Company Rules', readonly=True),
         'saleorder_line_count': fields.function(
             _saleorder_line_count, string='Sale Order Line Count',
             type='integer'),
