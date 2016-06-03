@@ -78,10 +78,10 @@ class SaleShipment(orm.Model):
         'create_date': fields.date('Create Date', readonly=True),
         'company_rule': fields.selection(
             [('mmx2japan', 'MMX TO JAPAN'),
-             ('mmx2mix', ' MMX TO MIX'),
+             ('mmx2mix', 'MMX TO MIX'),
              ('mmx2max', 'MMX TO MAX'),
              ('mmx2others', 'MMX TO OTHRES')],
-            'Company Rules', readonly=True),
+            'Company Rules', required=True, readonly=True),
         'saleorder_line_count': fields.function(
             _saleorder_line_count, string='Sale Order Line Count',
             type='integer'),
@@ -118,7 +118,8 @@ class SaleShipment(orm.Model):
     }
     _defaults = {
         'name': _get_seq,
-        'state': 'draft'
+        'state': 'draft',
+        'company_rule': 'mmx2japan'
     }
 
     def get_shipment_capacity_information(

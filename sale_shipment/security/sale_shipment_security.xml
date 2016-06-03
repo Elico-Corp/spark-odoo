@@ -48,7 +48,7 @@
             <field name="groups" eval="[(4, ref('sale_shipment.group_sale_shipment_company_rules_2'))]"/>
             <field name="domain_force">[('company_rule','=','mmx2mix')]</field>
         </record>
-        <record model="ir.rule" id="sale_shipment_m2j_rule">
+        <record model="ir.rule" id="sale_shipment_m2a_rule">
             <field name="name">Sale Shipment MMX TO MAX</field>
             <field name="model_id" search="[('model','=','sale.shipment')]" model="ir.model"/>
             <field name="global" eval="False"/>
@@ -59,7 +59,7 @@
             <field name="name">Sale Shipment MMX TO OTHERS</field>
             <field name="model_id" search="[('model','=','sale.shipment')]" model="ir.model"/>
             <field name="global" eval="False"/>
-            <field name="groups" eval="[(4, ref('sale_shipment.group_sale_shipment_company_rules_1'))]"/>
+            <field name="groups" eval="[(4, ref('sale_shipment.group_sale_shipment_company_rules_4'))]"/>
             <field name="domain_force">[('company_rule','=','mmx2others')]</field>
         </record>
 </data>
