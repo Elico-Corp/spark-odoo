@@ -32,7 +32,17 @@ print USER
 print PASSWORD
 
 client = erppeek.Client(SERVER, DADABASE, USER, PASSWORD)
+
 dd = client.model('product.driver').search([])
 dd_id = client.model('product.driver').browse(dd)
 for d in dd_id:
     d.write({'name': d.name})
+
+xx = client.model('magento.attribute.option').search([('driver_id', '!=', False)])
+xx_ids = client.model('magento.attribute.option').browse(xx)
+for x in xx_ids:
+    a = x.driver_id.name_get()[1]
+    x.write({'value': a})
+    print x.value
+
+print "finished the script."
