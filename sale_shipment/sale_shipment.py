@@ -76,12 +76,12 @@ class SaleShipment(orm.Model):
         'sequence': fields.char('Sequence', size=32, select=1),
         'description': fields.text('Description'),
         'create_date': fields.date('Create Date', readonly=True),
-        'company_rule': fields.selection(
-            [('mmx2japan', 'MMX TO JAPAN'),
-             ('mmx2mix', 'MMX TO MIX'),
-             ('mmx2max', 'MMX TO MAX'),
-             ('mmx2others', 'MMX TO OTHRES')],
-            'Company Rules', required=True, readonly=True),
+        'shipment_route': fields.selection(
+            [('mmx2japan', 'Minimax -> Japan'),
+             ('mmx2mix', 'Minimax -> Mix'),
+             ('mmx2max', 'Minimax -> Max'),
+             ('mmx2other', 'Minimax -> Other')],
+            'Shipment Route', required=True, readonly=True),
         'saleorder_line_count': fields.function(
             _saleorder_line_count, string='Sale Order Line Count',
             type='integer'),
@@ -119,7 +119,7 @@ class SaleShipment(orm.Model):
     _defaults = {
         'name': _get_seq,
         'state': 'draft',
-        'company_rule': 'mmx2japan'
+        'shipment_route': 'mmx2japan'
     }
 
     def get_shipment_capacity_information(

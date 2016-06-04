@@ -58,7 +58,7 @@
                 </h1>
                 <group>
                     <field name='description'/>
-                    <field name='company_rule'/>
+                    <field name='shipment_route'/>
                 </group>
                 <group>
                     <field name='create_date'/>
@@ -131,13 +131,13 @@
     </field>
 </record>
 
-    <record id="only_shipment_manager_can_modified_the_company_rule_field" model="ir.ui.view">
-        <field name="name">Comany Rule Readonly Form</field>
+    <record id="only_shipment_manager_can_modified_the_shipment_route_field" model="ir.ui.view">
+        <field name="name">Shipment Route Readonly Form</field>
         <field name="model">sale.shipment</field>
         <field name="groups_id" eval="[(6, 0, [ref('sale_shipment.group_sale_shipment_manager')])]"/>
         <field name="inherit_id" ref="sale_shipment.sale_shipment_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='company_rule']" position="attributes">
+            <xpath expr="//field[@name='shipment_route']" position="attributes">
                 <attribute name="readonly">0</attribute>
             </xpath>
         </field>
