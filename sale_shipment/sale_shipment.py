@@ -118,7 +118,7 @@ class SaleShipment(orm.Model):
     def set_to_done(self, cr, uid, context=None):
         """
         Get all the SS which are in confirmed state.
-        set SS to Done when all SM are Done.
+        Set SS to Done when all SM of Minamax are Done.
         """
         obj_ss = self.pool['sale.shipment']
         sale_shipment_ids = obj_ss.search(
@@ -131,8 +131,7 @@ class SaleShipment(orm.Model):
         for shipment_id in sale_shipment_ids:
             stock_move_ids = obj_stock_move.search(
                 cr, uid, [
-                    ('sale_shipment_id', '=', shipment_id),
-                    ('company_id', '=', company_id)
+                    ('sale_shipment_id', '=', shipment_id)
                 ], context=context
             )
             if stock_move_ids:

@@ -465,7 +465,7 @@ class SaleOrderLineExportMapper(ICOPSExportMapper):
 
     def so2so_sale_shipment(self, record):
         """
-        when split the sol ,the old sol should not relate to the shipment_id.
+        When split the sol, the old sol should not relate to the shipment_id.
         """
         res = {}
         if record.sale_shipment_id:
