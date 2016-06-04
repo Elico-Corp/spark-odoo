@@ -22,7 +22,7 @@
 
 {
     'name': 'MMX Product',
-    'version': '7.0.1.1.1',
+    'version': '7.0.1.1.2',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
