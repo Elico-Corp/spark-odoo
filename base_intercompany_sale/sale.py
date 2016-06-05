@@ -342,6 +342,9 @@ class SaleOrderExportMapper(ICOPSExportMapper):
             'shop_id': shop.id
         }
 
+    def so2so_date(self, record):
+        return {'date_order': record.date_order}
+
     def so2so_partner(self, record):
         return self._partner(record)
 
