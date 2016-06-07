@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
 #    Author: Augustin Cisterne-Kaas <augustin.cisterne-kaas@elico-corp.com>
+#            Rona Lin <rona.lin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +23,7 @@
 
 {
     'name': 'MMX Magento',
-    'version': '7.0.1.0.4',
+    'version': '7.0.1.0.5',
     'category': 'Connector',
     'depends': ['account',
                 'magentoerpconnect',
