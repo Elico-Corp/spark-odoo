@@ -11,10 +11,10 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": [
-        "sale_shipment",
-    ],
+    "depends": [],
     "data": [
         'report/report_sale_shipment_xls.xml',
-    ]
+    ],
+    'install_requires': ['pandas', 'numpy', ],
+
 }
