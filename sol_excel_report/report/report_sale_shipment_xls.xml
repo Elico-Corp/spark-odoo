@@ -3,7 +3,7 @@
   <data>
 
     <record id="action_sale_shipment_xls" model="ir.actions.report.xml">
-      <field name="name">Print Pivot Table</field>
+      <field name="name">Print Sales Shipment Details</field>
       <field name="model">sale.shipment</field>
       <field name="type">ir.actions.report.xml</field>
       <field name="report_name">sale.shipment.xls</field>
@@ -12,7 +12,7 @@
     </record>
 
     <record model="ir.values" id="action_sale_order_list_xls_values">
-      <field name="name">Print Pivot Table</field>
+      <field name="name">Print Sales Shipment Details</field>
       <field name="key2">client_action_multi</field>
       <field name="value"
              eval="'ir.actions.report.xml,' + str(ref('action_sale_shipment_xls'))" />
