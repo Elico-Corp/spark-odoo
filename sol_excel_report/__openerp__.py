@@ -2,7 +2,7 @@
 # © 2016 Elico Corp (www.elico-corp.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 {
-    "name": "Sale order line report",
+    "name": "SOL Excel Pivot Table",
     "summary": "excel report",
     "version": "7.0.1.0.1",
     "category": "report",

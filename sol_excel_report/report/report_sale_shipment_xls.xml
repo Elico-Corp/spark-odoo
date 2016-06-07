@@ -11,7 +11,7 @@
       <field name="auto" eval="False"/>
     </record>
 
-    <record model="ir.values" id="action_sale_order_list_xls_values">
+    <record id="action_sale_order_list_xls_values" model="ir.values">
       <field name="name">Print Pivot Table</field>
       <field name="key2">client_action_multi</field>
       <field name="value"
