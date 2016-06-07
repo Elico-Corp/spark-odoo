@@ -172,6 +172,7 @@ class MMXProductProductExportMapper(ProductProductExportMapper):
             'preorder': 6,
             'order': 5,
             'backorder': 4,
+            'produced': 8,
             'solded': 3,
             'done': 3
         }
