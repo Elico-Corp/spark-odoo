@@ -8,6 +8,10 @@
 		    <field name="type">form</field>
 		    <field name="inherit_id" ref="sale.view_order_form"/>
 		    <field name="arch" type="xml">
+                <!-- Add the sum of qty on sale order tree view -->
+                <xpath expr="//tree/field[@name='product_uom_qty']" position="attributes">
+                    <attribute name="sum">Total Sale Qty</attribute>
+                </xpath>
 		        <!-- jon  SO Lines can't select product that state is draft or sold-out  -->
 		        <xpath expr="//form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
 		            <attribute name="domain">[
