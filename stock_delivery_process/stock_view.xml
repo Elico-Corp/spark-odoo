@@ -84,6 +84,9 @@
                 <xpath expr="//tree" position="inside">
                     <button name="view_stock_move_form" help="Stock Move Details" icon="gtk-find" type="object"/>
                 </xpath>
+                <xpath expr="//tree/field[@name='product_qty']" position="attributes">
+                    <attribute name="sum">Total Qty</attribute>
+                </xpath>
             </field>
         </record>
         <!-- filter the on hold and qc_approved -->
