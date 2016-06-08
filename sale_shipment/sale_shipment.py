@@ -114,7 +114,7 @@ class SaleShipment(orm.Model):
             'shipment.contained.product.info', 'sale_shipment_id',
             'Contained products', readonly=True,
             states={'draft': [('readonly', False)],
-                    'confirmed': [('readonly', False)]})
+                    'assignment': [('readonly', False)]})
     }
     _defaults = {
         'name': _get_seq,
