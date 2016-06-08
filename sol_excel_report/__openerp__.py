@@ -5,7 +5,7 @@
     "name": "SOL Excel Pivot Table",
     "summary": "excel report",
     "version": "7.0.1.0.1",
-    "category": "report",
+    "category": "Warehouse",
     "website": "www.elico-corp.com",
     "author": "Elico corp",
     "license": "AGPL-3",

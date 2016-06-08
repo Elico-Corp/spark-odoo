@@ -58,14 +58,12 @@ class sale_order_list_xls(report_xls):
                 result.append(sol_obj)
 
         df = pd.DataFrame(result)
-        ws = wb.add_sheet('Pivot table SO Qty')
-        self._create_pivot_sheet(ws, df, "product_uom_qty", 'Sum - SO Qty')
-        ws = wb.add_sheet('Pivot table Final Qty')
-        self._create_pivot_sheet(ws, df, "final_qty", 'Sum - Final Qty')
-        ws = wb.add_sheet('SOL List')
-        self._create_sol_list_sheet(ws, result)
+        self._create_pivot_sheet(wb, df, "product_uom_qty", 'Sum - SO Qty')
+        self._create_pivot_sheet(wb, df, "final_qty", 'Sum - Final Qty')
+        self._create_sol_list_sheet(wb, result)
 
-    def _create_pivot_sheet(self, ws, df, value, tab_name):
+    def _create_pivot_sheet(self, wb, df, value, tab_name):
+        ws = wb.add_sheet(tab_name)
         table_SO_df = pd.pivot_table(
             df,
             index=["product_default_code", "product_id"],
@@ -104,7 +102,8 @@ class sale_order_list_xls(report_xls):
             for j, data in enumerate(sums):
                 ws.write(i + 2, j + 2, data, style2)
 
-    def _create_sol_list_sheet(self, ws, result):
+    def _create_sol_list_sheet(self, wb, result):
+        ws = wb.add_sheet('SOL List')
         ws.portrait = False
         style2 = xlwt.XFStyle()
         ws.set_fit_num_pages(1)
