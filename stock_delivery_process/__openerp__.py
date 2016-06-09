@@ -4,6 +4,8 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2010-2014 Elico Corp (<http://www.elico-corp.com>)
 #    Alex Duan <alex.duan@elico-corp.com>
+#    Rona Lin <rona.lin@elico-corp.com>
+#    Water Zhang <water.zhang@elico-corp.com>
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,7 +23,7 @@
 ##############################################################################
 
 {'name': 'Stock Delivery Process',
- 'version': '7.0.1.4.0',
+ 'version': '7.0.1.3.0',
  'category': 'Generic Modules',
  'depends': ['stock'],
  'author': 'Elico Corp',
