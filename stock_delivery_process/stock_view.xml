@@ -59,6 +59,7 @@
                     <group name="process_grp" string="Logistics process">
                         <field name="on_hold" />
                         <field name="qc_approved" />
+                        <field name="comment" />
                     </group>
                 </xpath>
                 <xpath expr="//form" position="inside">
@@ -77,6 +78,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="before">
                     <field name="qc_approved" />
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="comment" />
                 </xpath>
                 <xpath expr="//tree" position="attributes">
                     <attribute name="editable">bottom</attribute>

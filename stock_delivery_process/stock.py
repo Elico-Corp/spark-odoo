@@ -179,6 +179,7 @@ class stock_move(orm.Model):
             'On Hold', write=["stock_delivery_process.on_hold_group"]),
         'qc_approved': fields.boolean(
             'QC Approved', write=["stock_delivery_process.qc_approve_group"]),
+        'comment': fields.text('Comment', required=False),
     }
 
     def _check_if_process(self, move):
@@ -298,6 +299,13 @@ class stock_move(orm.Model):
     def create(self, cr, uid, vals, context=None):
         ''' get the value of on_hold and qc_approved when creating
         the stock move from related picking.'''
+        if vals.get('sale_line_id'):
+            sol_pool = self.pool['sale.order.line']
+            sol = sol_pool.browse(
+                cr, uid, vals['sale_line_id'], context=context)
+            vals.update({
+                'comment': sol.comment,
+            })
         if vals.get('picking_id'):
             picking_pool = self.pool['stock.picking']
             picking = picking_pool.browse(
