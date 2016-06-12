@@ -49,20 +49,20 @@ class sale_order_list_xls(report_xls):
     def generate_xls_report(self, _p, _xs, data, saleshipment_objects, wb):
         result = []
         for sols in saleshipment_objects.sol_ids:
-            if len(sols):
-                for sol in sols:
-                    obj_dict = {}
-                    obj_dict['product_default_code'] = sol.product_default_code
-                    obj_dict['product_id'] = sol.product_id.name
-                    obj_dict['order_partner_id'] = sol.order_partner_id.name
-                    obj_dict['product_uom_qty'] = sol.product_uom_qty
-                    obj_dict['final_qty'] = sol.final_qty
-                    sol_obj = OrderedDict(obj_dict)
-                    result.append(sol_obj)
-            else:
+            if len(sols) == 0:
                 raise osv.except_osv(
-                    _('Empty Sale Order Line !'),
-                    _('Please Assign Sale Order Line to Sale Shipment first!'))
+                    _('Empty Sale Order Line!'),
+                    _('Please assign Sale Order Line to Sale Shipment first!'))
+            for sol in sols:
+                obj_dict = {}
+                obj_dict['product_default_code'] = sol.product_default_code
+                obj_dict['product_id'] = sol.product_id.name
+                obj_dict['order_partner_id'] = sol.order_partner_id.name
+                obj_dict['product_uom_qty'] = sol.product_uom_qty
+                obj_dict['final_qty'] = sol.final_qty
+                sol_obj = OrderedDict(obj_dict)
+                result.append(sol_obj)
+
         df = pd.DataFrame(result)
         self._create_pivot_sheet(wb, df, "product_uom_qty", 'Sum - SO Qty')
         self._create_pivot_sheet(wb, df, "final_qty", 'Sum - Final Qty')
