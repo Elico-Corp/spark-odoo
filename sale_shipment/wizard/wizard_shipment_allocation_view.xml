@@ -9,6 +9,7 @@
                 <form string="Sale shipment allocation" version="7.0">
                     <group>
                         <label string="Confirm the sale order line."/>
+                        <field name="propmt_products" nolabel="1"/>
                     </group>
                     <group>
                         <field name="date"/>
