@@ -20,7 +20,7 @@ from datetime import datetime
 from collections import OrderedDict
 from openerp.report import report_sxw
 from openerp.addons.report_xls.report_xls import report_xls
-from osv import osv, fields
+from osv import osv
 from tools.translate import _
 
 _ir_translation_name = 'sale.shipment.xls'
@@ -51,8 +51,8 @@ class sale_order_list_xls(report_xls):
         for sols in saleshipment_objects.sol_ids:
             if len(sols) == 0:
                 raise osv.except_osv(
-                    _('Empty Sale Order Line!'),
-                    _('Please assign Sale Order Line to Sale Shipment first!'))
+                    _('Empty Sale Shipment!'),
+                    _('Please assign Sale Order Line to Sale Shipment first.'))
             for sol in sols:
                 obj_dict = {}
                 obj_dict['product_default_code'] = sol.product_default_code
