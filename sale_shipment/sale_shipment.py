@@ -249,8 +249,8 @@ class SaleShipment(orm.Model):
     def get_unassigned_products(self, cr, uid, ids, context=None):
         sale_shipment = self.browse(cr, uid, ids, context=context)[0]
         res = ''
-        unassigned_products = []
         products = ''
+        unassigned_products = []
         contained_product_ids = sale_shipment.contained_product_info_ids
         for contained_product_id in contained_product_ids:
             if contained_product_id.assigned_qty == 0:
@@ -258,12 +258,12 @@ class SaleShipment(orm.Model):
                 unassigned_products.append(product_code)
         if unassigned_products:
             for i, product in enumerate(unassigned_products):
-                products += '- ' + str(product) + '<br/>'
-            print products
+                products += '<li>' + str(product) + '</li>'
             res = '''
-                This Sale Shipment contains some products that do not have
-                any quantity assigned:<br/>
-                %s
+                The following products do not have any quantity assigned:<br/>
+                <ul>
+                    %s
+                </ul>
             ''' % products
         return res
 
