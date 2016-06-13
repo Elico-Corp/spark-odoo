@@ -249,20 +249,22 @@ class SaleShipment(orm.Model):
     def get_unassigned_products(self, cr, uid, ids, context=None):
         sale_shipment = self.browse(cr, uid, ids, context=context)[0]
         res = ''
-        left_product = []
+        unassigned_products = []
         products = ''
         contained_product_ids = sale_shipment.contained_product_info_ids
         for contained_product_id in contained_product_ids:
             if contained_product_id.assigned_qty == 0:
                 product_code = contained_product_id.product_id.default_code
-                left_product.append(product_code)
-        if left_product:
-            for i in range(len(left_product)):
-                products += left_product[i] + ' '
+                unassigned_products.append(product_code)
+        if unassigned_products:
+            for i, product in enumerate(unassigned_products):
+                products += '- ' + str(product) + '<br/>'
+            print products
             res = '''
-                Noted: This Sale Shipment has some products that do not have assigned any Qty.<br/>
-                %s.
-            ''' % str(products)
+                This Sale Shipment contains some products that do not have
+                any quantity assigned:<br/>
+                %s
+            ''' % products
         return res
 
     def action_shipment_allocation_wizard_sol_confirm(self, cr, uid, ids, context=None):
