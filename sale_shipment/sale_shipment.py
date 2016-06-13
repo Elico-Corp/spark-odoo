@@ -266,13 +266,16 @@ class SaleShipment(orm.Model):
         return res
 
     def action_shipment_allocation_wizard_sol_confirm(self, cr, uid, ids, context=None):
-        default_propmt_products = self.get_unassigned_products(cr, uid, ids, context=None)
-        context['default_propmt_products'] = default_propmt_products
+        default_unassigned_products = self.get_unassigned_products(cr, uid, ids, context=None)
+        context['default_unassigned_products'] = default_unassigned_products
         action = {
             'name': _('Confirm Order Line'),
             'view_type': 'form',
             "view_mode": 'form',
-            'view_id': self.pool.get('ir.model.data').get_object_reference(cr, uid, 'sale_shipment', 'wizard_shipment_allocation_sol_confirm_from_view')[1],
+            'view_id': self.pool.get('ir.model.data').get_object_reference(
+                cr, uid,
+                'sale_shipment',
+                'wizard_shipment_allocation_sol_confirm_from_view')[1],
             'res_model': 'wizard.shipment.allocation',
             'type': 'ir.actions.act_window',
             'target': 'new',

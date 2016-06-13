@@ -223,7 +223,7 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     _columns = {
         'name': fields.char('Name', required=False, size=32),
-        'propmt_products': fields.html('propmt_products'),
+        'unassigned_products': fields.html('Unassigned Products'),
         'date': fields.date('Date', required=True),
         'shipment_id': fields.many2one(
             'sale.shipment', "Shipment", readonly=True),
