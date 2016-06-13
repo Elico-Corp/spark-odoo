@@ -248,7 +248,6 @@ class SaleShipment(orm.Model):
 
     def get_unassigned_products(self, cr, uid, ids, context=None):
         res = ''
-        products = ''
         unassigned_products = []
         sale_shipment = self.browse(cr, uid, ids, context=context)[0]
         contained_product_ids = sale_shipment.contained_product_info_ids
@@ -257,6 +256,7 @@ class SaleShipment(orm.Model):
                 product_code = contained_product_id.product_id.default_code
                 unassigned_products.append(product_code)
         if unassigned_products:
+            products = ''
             for i, product in enumerate(unassigned_products):
                 products += '<li>' + str(product) + '</li>'
             res = '''
