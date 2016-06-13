@@ -246,9 +246,9 @@ class SaleShipment(orm.Model):
             wf_service.trg_create(uid, 'sale.shipment', this.id, cr)
         return True
 
-    def get_products(self, cr, uid, ids, context=None):
+    def get_unassigned_products(self, cr, uid, ids, context=None):
         sale_shipment = self.browse(cr, uid, ids, context=context)[0]
-        aa = ''
+        res = ''
         left_product = []
         products = ''
         contained_product_ids = sale_shipment.contained_product_info_ids
@@ -259,14 +259,14 @@ class SaleShipment(orm.Model):
         if left_product:
             for i in range(len(left_product)):
                 products += left_product[i] + ' '
-            aa = '''
+            res = '''
                 Noted: This Sale Shipment has some products that do not have assigned any Qty.<br/>
                 %s.
             ''' % str(products)
-        return aa
+        return res
 
     def action_shipment_allocation_wizard_sol_confirm(self, cr, uid, ids, context=None):
-        default_propmt_products = self.get_products(cr, uid, ids, context=None)
+        default_propmt_products = self.get_unassigned_products(cr, uid, ids, context=None)
         context['default_propmt_products'] = default_propmt_products
         action = {
             'name': _('Confirm Order Line'),
