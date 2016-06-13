@@ -247,10 +247,10 @@ class SaleShipment(orm.Model):
         return True
 
     def get_unassigned_products(self, cr, uid, ids, context=None):
-        sale_shipment = self.browse(cr, uid, ids, context=context)[0]
         res = ''
         products = ''
         unassigned_products = []
+        sale_shipment = self.browse(cr, uid, ids, context=context)[0]
         contained_product_ids = sale_shipment.contained_product_info_ids
         for contained_product_id in contained_product_ids:
             if contained_product_id.assigned_qty == 0:
