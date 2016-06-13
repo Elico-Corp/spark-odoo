@@ -41,9 +41,9 @@
                         string="Assign final quantity"
                         type="action"
                         states="assignment"/>
-                <button name="%(action_shipment_allocation_wizard_sol_confirm)d"
+                <button name="action_shipment_allocation_wizard_sol_confirm"
                         string="Confirm All SOL"
-                        type="action"
+                        type="object"
                         states="assignment"/>
                 <button name="signal_shipment_close"
                         string="Close shipment"

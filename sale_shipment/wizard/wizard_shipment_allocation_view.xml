@@ -9,8 +9,10 @@
                 <form string="Sale shipment allocation" version="7.0">
                     <group>
                         <label string="Confirm the sale order line."/>
-                        <field name="propmt_products" nolabel="1"/>
                     </group>
+                    <div>
+                        <field name="propmt_products" readonly='1' nolabel="1"  style="margin:0; color:red"/>
+                    </div>
                     <group>
                         <field name="date"/>
                         <field name="shipment_id" />

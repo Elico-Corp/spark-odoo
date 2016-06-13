@@ -223,6 +223,7 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     _columns = {
         'name': fields.char('Name', required=False, size=32),
+        'propmt_products': fields.html('propmt_products'),
         'date': fields.date('Date', required=True),
         'shipment_id': fields.many2one(
             'sale.shipment', "Shipment", readonly=True),
@@ -442,22 +443,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
         shipment_id = wizard.shipment_id and wizard.shipment_id.id,
-        sale_shipment = self.pool[context.get('active_model')].browse(cr, uid, context.get('active_id'))
-        contained_product_ids = sale_shipment.contained_product_info_ids
-        left_product = []
-        products = ''
-        for contained_product_id in contained_product_ids:
-            if contained_product_id.assigned_qty == 0:
-                product_code = contained_product_id.product_id.default_code
-                left_product.append(product_code)
-        if left_product:
-            for i in range(len(left_product)):
-                products += left_product[i] + ','
-            raise orm.except_orm(
-                _('Warning'),
-                ' Here are the product list did not assigned.'
-                ' Products: %s' % str(products)
-            )
+
         # check before splitting the sale order lines.
         self._check_split(wizard)
 

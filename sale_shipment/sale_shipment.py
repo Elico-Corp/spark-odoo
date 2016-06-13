@@ -246,6 +246,40 @@ class SaleShipment(orm.Model):
             wf_service.trg_create(uid, 'sale.shipment', this.id, cr)
         return True
 
+    def get_products(self, cr, uid, ids, context=None):
+        sale_shipment = self.browse(cr, uid, ids, context=context)[0]
+        aa = ''
+        left_product = []
+        products = ''
+        contained_product_ids = sale_shipment.contained_product_info_ids
+        for contained_product_id in contained_product_ids:
+            if contained_product_id.assigned_qty == 0:
+                product_code = contained_product_id.product_id.default_code
+                left_product.append(product_code)
+        if left_product:
+            for i in range(len(left_product)):
+                products += left_product[i] + ' '
+            aa = '''
+                Noted: This Sale Shipment has some products that do not have assigned any Qty.<br/>
+                %s.
+            ''' % str(products)
+        return aa
+
+    def action_shipment_allocation_wizard_sol_confirm(self, cr, uid, ids, context=None):
+        default_propmt_products = self.get_products(cr, uid, ids, context=None)
+        context['default_propmt_products'] = default_propmt_products
+        action = {
+            'name': _('Confirm Order Line'),
+            'view_type': 'form',
+            "view_mode": 'form',
+            'view_id': self.pool.get('ir.model.data').get_object_reference(cr, uid, 'sale_shipment', 'wizard_shipment_allocation_sol_confirm_from_view')[1],
+            'res_model': 'wizard.shipment.allocation',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'context': context
+        }
+        return action
+
 
 class ShipmentContainedProductInfo(orm.Model):
     _name = 'shipment.contained.product.info'
