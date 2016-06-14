@@ -246,6 +246,45 @@ class SaleShipment(orm.Model):
             wf_service.trg_create(uid, 'sale.shipment', this.id, cr)
         return True
 
+    def get_unassigned_products(self, cr, uid, ids, context=None):
+        res = ''
+        unassigned_products = []
+        sale_shipment = self.browse(cr, uid, ids, context=context)[0]
+        contained_product_ids = sale_shipment.contained_product_info_ids
+        for contained_product_id in contained_product_ids:
+            if contained_product_id.assigned_qty == 0:
+                product_code = contained_product_id.product_id.default_code
+                unassigned_products.append(product_code)
+        if unassigned_products:
+            products = ''
+            for product in unassigned_products:
+                products += '<li>' + str(product) + '</li>'
+            res = '''
+                The following products do not have any quantity assigned:<br/>
+                <ul>
+                    %s
+                </ul>
+            ''' % products
+        return res
+
+    def action_shipment_allocation_wizard_sol_confirm(self, cr, uid, ids, context=None):
+        default_unassigned_products = self.get_unassigned_products(cr, uid, ids, context=None)
+        context['default_unassigned_products'] = default_unassigned_products
+        action = {
+            'name': _('Confirm Order Line'),
+            'view_type': 'form',
+            "view_mode": 'form',
+            'view_id': self.pool.get('ir.model.data').get_object_reference(
+                cr, uid,
+                'sale_shipment',
+                'wizard_shipment_allocation_sol_confirm_from_view')[1],
+            'res_model': 'wizard.shipment.allocation',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'context': context
+        }
+        return action
+
 
 class ShipmentContainedProductInfo(orm.Model):
     _name = 'shipment.contained.product.info'
