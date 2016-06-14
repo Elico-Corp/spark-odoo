@@ -257,7 +257,7 @@ class SaleShipment(orm.Model):
                 unassigned_products.append(product_code)
         if unassigned_products:
             products = ''
-            for i, product in enumerate(unassigned_products):
+            for product in unassigned_products:
                 products += '<li>' + str(product) + '</li>'
             res = '''
                 The following products do not have any quantity assigned:<br/>
