@@ -12,8 +12,8 @@
                     </group>
                     <div>
                         <field name="unassigned_products"
-                               readonly='1' nolabel="1"
-                               style="margin:0; color:red"/>
+                               readonly="1" nolabel="1"
+                               style="margin: 0; color: red"/>
                     </div>
                     <group>
                         <field name="date"/>
