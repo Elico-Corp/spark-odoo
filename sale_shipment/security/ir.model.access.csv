@@ -3,7 +3,7 @@ access_sale_shipment_user,sale.shipment.user,model_sale_shipment,sale_shipment.g
 access_sale_shipment_manager,sale.shipment.manager,model_sale_shipment,sale_shipment.group_sale_shipment_manager,1,1,1,1
 access_shipment_contained_product_info_user,shipment.contained.product.info.user,model_shipment_contained_product_info,sale_shipment.group_sale_shipment_user,1,1,1,0
 access_shipment_contained_product_info_manager,sale.shipment.contained.product.info.manager,model_shipment_contained_product_info,sale_shipment.group_sale_shipment_manager,1,1,1,1
-access_shipment_sale_order_manager,sale order for shipment manager,sale.model_sale_order,sale_shipment.group_sale_shipment_manager,1,1,1,0
-access_shipment_sale_order_user,sale order for shipment user,sale.model_sale_order,sale_shipment.group_sale_shipment_user,1,1,1,0
-access_shipment_stock_picking_out_manager,delivery order for shipment manager,stock.model_stock_picking_out,sale_shipment.group_sale_shipment_manager,1,0,0,0
-access_shipment_stock_picking_out_user,delivery order for shipment user,stock.model_stock_picking_out,sale_shipment.group_sale_shipment_user,1,0,0,0
+access_shipment_sale_order_manager,Sale Order for Sale Shipment Manager,sale.model_sale_order,sale_shipment.group_sale_shipment_manager,1,1,1,0
+access_shipment_sale_order_user,Sale Order for Sale Shipment User,sale.model_sale_order,sale_shipment.group_sale_shipment_user,1,1,1,0
+access_shipment_stock_picking_out_manager,Delivery Order for Sale Shipment Manager,stock.model_stock_picking_out,sale_shipment.group_sale_shipment_manager,1,0,0,0
+access_shipment_stock_picking_out_user,Delivery Order for Sale Shipment User,stock.model_stock_picking_out,sale_shipment.group_sale_shipment_user,1,0,0,0
