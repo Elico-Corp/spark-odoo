@@ -23,7 +23,7 @@
 
 {
     'name': 'MMX Magento',
-    'version': '7.0.1.0.6',
+    'version': '7.0.1.0.7',
     'category': 'Connector',
     'depends': ['account',
                 'magentoerpconnect',
