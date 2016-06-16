@@ -196,7 +196,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         if not shipment.sol_ids:
             return data
         for sol in shipment.sol_ids:
-            if sol.product_id.state == 'order' and \
+            if sol.product_id.state in ('produced', 'order') and \
                     sol.state in ('draft', 'wishlist', 'reservation'):
                 line_vals = {
                     'product_id': sol.product_id.id,
@@ -283,7 +283,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                     _('Error!'),
                     _('Must have one sale order line'
                         'corresponding to the wizard line'))
-            if line.sol_id.product_id.state != 'order':
+            if line.sol_id.product_id.state not in ('produced', 'order'):
                 raise orm.except_orm(
                     _('Error!'),
                     _("You can only split a sale order line "
