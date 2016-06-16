@@ -281,7 +281,7 @@ class WizardShipmentAllocation(orm.TransientModel):
             if not line.sol_id:
                 raise orm.except_orm(
                     _('Error!'),
-                    _('Must have one sale order line'
+                    _('There is no Sale Order Line'
                         'corresponding to the wizard line'))
             if line.sol_id.product_id.state not in ('produced', 'order'):
                 raise orm.except_orm(
