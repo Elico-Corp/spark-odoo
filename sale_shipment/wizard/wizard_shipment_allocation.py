@@ -349,10 +349,10 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
-            - final_qty >= product quantity on sale order line
+            - final_qty > product quantity on sale order line
                delete the old_sol,and create a new sale order.
             - final_qty < product quantity on sale order line
-              split the sale order,and update the old sale order 
+              split the sale order,and update the old sale order
               line with the residual quantity .'''
         # if final_qty = product_qty, directly confirm this sale order
         sol_pool = self.pool['sale.order.line']
@@ -413,7 +413,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                             'product_uom_qty': res_qty,
                             'final_qty': 0
                         })]})
-                elif res_qty <= 0:
+                elif res_qty < 0:
                     # delete the old sale order line.
                     res = so_pool.write(
                         cr, uid, sol.order_id.id,
@@ -443,6 +443,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         so_pool = self.pool['sale.order']
         wizard = self.browse(cr, uid, ids[0], context=context)
         shipment_id = wizard.shipment_id and wizard.shipment_id.id,
+        shipment_id = shipment_id and shipment_id[0]
 
         # check before splitting the sale order lines.
         self._check_split(wizard)
@@ -474,11 +475,12 @@ class WizardShipmentAllocation(orm.TransientModel):
                 new_so_ids.extend(so_ids)
                 new_sol_ids.extend(sol_ids)
 
-        # confirm new sale orders
+        # confirm new sale orders and write the shipmen_id to sale order.
         context['sale_shipment_id'] = shipment_id
-        for so_id in  list(set(new_so_ids)):
+        for so_id in list(set(new_so_ids)):
             so_pool.write(
-                cr, uid, [so_id], {}, context=context)
+                cr, uid, [so_id], {'sale_shipment_id': shipment_id},
+                context=context)
             so_pool.action_wait(
                 cr, uid, [so_id], context=context)
             try:
@@ -489,12 +491,24 @@ class WizardShipmentAllocation(orm.TransientModel):
                     cr, uid, [so_id], context=context)
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
+                picking_obj = self.pool['stock.picking']
+                shipment_obj = self.pool['sale.shipment']
+                shipment = shipment_obj.browse(
+                    cr, uid, shipment_id, context=context)
+                picking_ids = [
+                    move.picking_id.id for move in shipment.stock_move_ids
+                ]
+
+                picking_obj.write(
+                    cr, uid, picking_ids, {'sale_shipment_id': shipment_id},
+                    context=context)
+
             except:
                 so_pool.action_wait(
                     cr, uid, [so_id], context=context)
         wkf_service = netsvc.LocalService("workflow")
         wkf_service.trg_validate(
-            uid, 'sale.shipment', shipment_id[0],
+            uid, 'sale.shipment', shipment_id,
             'signal_shipment_confirm', cr
         )
         # return both old and new sale order lines.
