@@ -349,10 +349,10 @@ class WizardShipmentAllocation(orm.TransientModel):
 
     def _split_so(self, cr, uid, so, wizard_lines, shipment_id, context=None):
         '''Split the sale order. There are the following cases:
-            - final_qty >= product quantity on sale order line
+            - final_qty > product quantity on sale order line
                delete the old_sol,and create a new sale order.
             - final_qty < product quantity on sale order line
-              split the sale order,and update the old sale order 
+              split the sale order,and update the old sale order
               line with the residual quantity .'''
         # if final_qty = product_qty, directly confirm this sale order
         sol_pool = self.pool['sale.order.line']
@@ -361,13 +361,16 @@ class WizardShipmentAllocation(orm.TransientModel):
         # check if the wizard have all the sale order lines and full
         # quantity in the sale order.
         if self._check_confirm_all(so, wizard_lines):
-            for soline in so.order_line:
-                sol_pool.write(
-                    cr, uid, soline.id,
-                    {'final_qty': soline.product_uom_qty,
-                     'sale_shipment_id': shipment_id},
-                    context=context)
             try:
+                so_pool.write(cr, uid, [so.id], {
+                    'sale_shipment_id': shipment_id
+                }, context=context)
+                for soline in so.order_line:
+                    sol_pool.write(
+                        cr, uid, soline.id,
+                        {'final_qty': soline.product_uom_qty,
+                         'sale_shipment_id': shipment_id},
+                        context=context)
                 so_pool.action_button_confirm(
                     cr, uid, [so.id], context=context)
                 so_pool.action_wait(
@@ -413,7 +416,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                             'product_uom_qty': res_qty,
                             'final_qty': 0
                         })]})
-                elif res_qty <= 0:
+                elif res_qty < 0:
                     # delete the old sale order line.
                     res = so_pool.write(
                         cr, uid, sol.order_id.id,
