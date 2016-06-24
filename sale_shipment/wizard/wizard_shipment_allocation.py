@@ -351,7 +351,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         '''Split the sale order. There are the following cases:
             - final_qty > product quantity on sale order line
                delete the old_sol,and create a new sale order.
-            - final_qty < product quantity on sale order line
+            - final_qty <= product quantity on sale order line
               split the sale order,and update the old sale order
               line with the residual quantity .'''
         # if final_qty = product_qty, directly confirm this sale order
@@ -416,7 +416,7 @@ class WizardShipmentAllocation(orm.TransientModel):
                             'product_uom_qty': res_qty,
                             'final_qty': 0
                         })]})
-                elif res_qty < 0:
+                elif res_qty <= 0:
                     # delete the old sale order line.
                     res = so_pool.write(
                         cr, uid, sol.order_id.id,
