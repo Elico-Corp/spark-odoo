@@ -55,8 +55,17 @@
 									<field name='availability_date'/>
 									
 									<!--TODO,not only single approve,should a function include this,then add order_categ plus ann_categ  -->
-									<button name='approve_from_announcement' icon='STOCK_GO_FORWARD' type='object'  states='preorder'
-									     context="{'categ_ids':context.get('categ_ids',False),'order_categ_ids':context.get('order_categ_ids',False), }"/>
+									<button name='approve_from_announcement'
+                                            icon='STOCK_GO_FORWARD' type='object'
+                                            states='preorder,produced'
+									        context="{
+                                                'categ_ids':context.get(
+                                                    'categ_ids',False
+                                                ),
+                                                'order_categ_ids':context.get(
+                                                    'order_categ_ids',False
+                                                ), 
+                                            }"/>
 									
 								</tree>
 							</field>

@@ -165,10 +165,16 @@ class product_product(osv.osv):
         """
         if context is None:
             context = {}
-
+        product_obj = self.pool[("product.product")]
+        product = product_obj.browse(cr, uid, ids, context=context)
+        product_id = product and product[0] or False
         wkf_service = netsvc.LocalService("workflow")
-        wkf_service.trg_validate(uid, 'product.product', ids[0],
-                                 'approve', cr)
+        if product_id.state == "preorder":
+            wkf_service.trg_validate(uid, 'product.product', ids[0], 'preorder_order_approve', cr)
+        elif product_id.state == "produced":
+            wkf_service.trg_validate(uid, 'product.product', ids[0], 'approve', cr)
+        else:
+            return False
 
         categ_ids = context.get('categ_ids', False)[0][2]
         order_categ_ids = context.get('order_categ_ids', False)[0][2]

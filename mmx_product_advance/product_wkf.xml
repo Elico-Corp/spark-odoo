@@ -117,6 +117,13 @@
 		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
 		</record>
 
+		<record id="trans_preorder_order" model="workflow.transition">
+		    <field name="act_from" ref="act_preorder"/>
+		    <field name="act_to" ref="act_order"/>
+		    <field name="signal">preorder_order_approve</field>
+		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
+		</record>
+
 		<record id="trans_produced_preorder" model="workflow.transition">
 		    <field name="act_from" ref="act_produced"/>
 		    <field name="act_to" ref="act_preorder"/>
@@ -124,7 +131,7 @@
 		    <field name="condition">mmx_type in ['regular','limited_edition']</field>
 		</record>
 
-		<record id="trans_preorder_order" model="workflow.transition">
+		<record id="trans_produced_order" model="workflow.transition">
 		    <field name="act_from" ref="act_produced"/>
 		    <field name="act_to" ref="act_order"/>
 		    <field name="signal">approve</field>
