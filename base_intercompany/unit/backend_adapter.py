@@ -154,11 +154,11 @@ class ICOPSAdapter(GenericAdapter):
             pool.write(sess.cr, icops_uid, id, data,
                        context)
         except:
-	    return
             raise osv.except_osv(
                 'ICOPS Error',
                 'You can only add a new record\
                  from the original object..')
+	    return
 
     def delete(self, id):
         sess = self.session

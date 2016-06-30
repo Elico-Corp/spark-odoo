@@ -360,7 +360,7 @@ class WizardShipmentAllocation(orm.TransientModel):
         new_so_ids, new_sol_ids = [], []
         # check if the wizard have all the sale order lines and full
         # quantity in the sale order.
-        if self._check_confirm_all(so, wizard_lines):
+        if self._check_confirm_all(so, wizard_lines) and so.state != 'reservation':
             try:
                 so_pool.write(cr, uid, [so.id], {
                     'sale_shipment_id': shipment_id
@@ -427,8 +427,10 @@ class WizardShipmentAllocation(orm.TransientModel):
                 new_sol_id = sol_pool.create(
                     cr, uid, sol_data, context=context)
                 new_sol_ids.append(new_sol_id)
-            #if there is no sale order line on origin quation,delete it. 
-            if len(so.order_line) == len(deleted_lines):
+
+            # delete all the order lines in the old sale order except reservation.
+            #if there is no sale order line on origin quation,delete it.
+            if len(so.order_line) == len(deleted_lines) and so.state != 'reservation':
                 so_pool.write(
                     cr, uid, [so.id],
                     {'state': "cancel"}, context=context)
