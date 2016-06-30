@@ -46,8 +46,9 @@ class ICOPSExportMapper(ExportMapper):
         result = self._data.copy()
         for attr, mappers in self._data_children.iteritems():
             child_data = [mapper.data for mapper in mappers]
-            if child_data:
-                result[attr] = self._format_child_rows(child_data, attr)
+            # alex　commented this for fixing the issue
+            # if child_data:
+            result[attr] = self._format_child_rows(child_data, attr)
         return self._after_mapping(result)
 
     @property
@@ -120,8 +121,11 @@ class ICOPSExportMapper(ExportMapper):
             # write new line
             else:
                 res.append((0, 0, record))
+        # commented by alex
         # search for the lines that need to be deleted
-        if not res:
+        # if not res:
+        #     return [(5, 0)]
+        if (not res) and child_records != []:
             return [(5, 0)]
         domain = None
         if self._backward:
