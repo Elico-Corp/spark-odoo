@@ -165,7 +165,7 @@ class product_product(osv.osv):
         """
         if context is None:
             context = {}
-        product_obj = self.pool[("product.product")]
+        product_obj = self.pool[('product.product')]
         product = product_obj.browse(cr, uid, ids, context=context)
         product_id = product and product[0] or False
         wkf_service = netsvc.LocalService("workflow")
