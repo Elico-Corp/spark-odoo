@@ -4,6 +4,7 @@
 #    OpenERP, Open Source Management Solution
 #    Copyright (c) 2010-2013 Elico Corp. All Rights Reserved.
 #    Author: Jon chow <jon.chow@elico-corp.com>
+#    Author: Rona Lin <rona.lin@elico-corp.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -22,7 +23,7 @@
 
 {
     'name': 'MMX Product State and Type',
-    'version': '1.0',
+    'version': '7.0.1.1.0',
     'author': 'Elico Corp',
     'website': 'http://www.elico-corp.com',
     'summary': '',
