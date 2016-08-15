@@ -72,6 +72,14 @@ class MagentoAttributeSet(orm.Model):
     _defaults = {
         'skeletonSetId': SKELETON_SET_ID,
     }
+    
+    def name_get(self, cr, uid, ids, context=None):
+        result = []
+        if type(ids) != type([]):
+            ids = [ids]
+        for s in self.browse(cr, uid, ids, context=context):
+            result.append((s.id, "%s (%s)" % (s.attributeSetName, s.backend_id.name)))
+        return result
 
 
 class magento_product_product(orm.Model):
