@@ -1,5 +1,5 @@
 language: python
-sudo: false
+sudo: required
 cache:
   - pip
   - apt
@@ -37,8 +37,7 @@ install:
   - git clone --depth=1 https://github.com/Elico-Corp/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
-  - wget http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb
-  - wget https://downloads.wkhtmltopdf.org/0.12/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb
+  - wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb
   - sudo dpkg -i wkhtmltox-0.12.1_linux-trusty-amd64.deb
   - wkhtmltopdf --version
 
